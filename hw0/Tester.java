@@ -1,9 +1,13 @@
-/** Tests for hw0.
- *  @author YOUR NAME HERE
- */
+/*
+* Tests for hw0.
+ *  @E NAME HERE
+
+
 public class Tester {
 
-    /* Feel free to add your own tests.  For now, you can just follow
+
+
+ Feel free to add your own tests.  For now, you can just follow
      * the pattern you see here.  We'll look into the details of JUnit
      * testing later.
      *
@@ -14,27 +18,38 @@ public class Tester {
      * DON'T put your HW0 solutions here!  Put them in a separate
      * class and figure out how to call them from here.  You'll have
      * to modify the calls to max, threeSum, and threeSumDistinct to
-     * get them to work, but it's all good practice! */
+     * get them to work, but it's all good practice!
 
 
-    /* Helpful formatting method for running tests.
-    Prints out a statement if the test fails. */
+
+
+
+ Helpful formatting method for running tests.
+    Prints out a statement if the test fails.
+
     private static void assertTrue(boolean answer, String test) {
       if (!answer) {
         System.out.printf("Executing %s, expected true and received %b.%n", test, answer);
       }
     }
 
-    /* Helpful formatting method for running tests.
-    Prints out a statement if the test fails. */
+
+
+ Helpful formatting method for running tests.
+    Prints out a statement if the test fails.
+
     private static void assertFalse(boolean answer, String test) {
       if (answer) {
         System.out.printf("Executing %s, expected false and received %b.%n", test, answer);
       }
     }
 
-    /* Helpful formatting method for running tests.
-    Prints out a statement if the test fails. */
+
+
+ Helpful formatting method for running tests.
+    Prints out a statement if the test fails.
+
+
     private static void assertIntEquals(int a, int b, String test) {
       if (!(a == b)) {
         System.out.printf("Executing %s, expected %d and received %d.%n", test, a, b);
@@ -81,10 +96,11 @@ public class Tester {
         System.out.println("ALL FAILURES SHOWN BELOW (if none, congrats! you're good.)");
         isEvenTest();
 
-//        // UNCOMMENT THE LINES BELOW
+
 //        maxTest();
 //        wordBankTest();
 //        threeSumTest();
     }
 
 }
+*/
