@@ -1,16 +1,21 @@
 import static org.junit.Assert.*;
+
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
 
 public class MultiArrTest {
 
+    int [][] A = {{4,7,3,8,9,},
+            {2,23,53,1,5}};
+
     @Test
     public void testMaxValue() {
-        //TODO: Your code here!
+        assertEquals(53, MultiArr.maxValue(A));
     }
 
     @Test
     public void testAllRowSums() {
-        //TODO: Your code here!
+        assertEquals(new int[]{31, 84}, MultiArr.allRowSums(A));
     }
 
 

@@ -5,31 +5,52 @@
 public class MultiArr {
 
     /**
-    {{"hello","you","world"} ,{"how","are","you"}} prints:
-    Rows: 2
-    Columns: 3
-
-    {{1,3,4},{1},{5,6,7,8},{7,9}} prints:
-    Rows: 4
-    Columns: 4
-    */
+     * {{"hello","you","world"} ,{"how","are","you"}} prints:
+     * Rows: 2
+     * Columns: 3
+     * <p>
+     * {{1,3,4},{1},{5,6,7,8},{7,9}} prints:
+     * Rows: 4
+     * Columns: 4
+     */
     public static void printRowAndCol(int[][] arr) {
-        //TODO: Your code here!
+        for (int row = 0; row < arr.length; row++) {
+            for (int column = 0; column < arr[row].length; column++) {
+                System.out.println(arr[row][column]);
+            }
+        }
     }
 
     /**
-    @param arr: 2d array
-    @return maximal value present anywhere in the 2d array
-    */
+     * @param arr: 2d array
+     * @return maximal value present anywhere in the 2d array
+     */
     public static int maxValue(int[][] arr) {
-        //TODO: Your code here!
-        return 0;
+        int max = -999;
+        for (int row = 0; row < arr.length; row++) {
+            for (int column = 0; column < arr[0].length; column++) {
+                if (arr[row][column] > max) {
+                    max = arr[row][column];
+                }
+            }
+        }
+        return max;
     }
 
-    /**Return an array where each element is the sum of the
-    corresponding row of the 2d array*/
+    /**
+     * Return an array where each element is the sum of the
+     * corresponding row of the 2d array
+     */
     public static int[] allRowSums(int[][] arr) {
-        //TODO: Your code here!!
-        return null;
+        int[] sum;
+        sum = new int[arr.length];
+        for (int row = 0; row < arr.length; row++) {
+            for (int column = 0; column < arr[row].length; column++) {
+                sum[row] += arr[row][column];
+            }
+        }
+        return sum;
     }
 }
+
+
