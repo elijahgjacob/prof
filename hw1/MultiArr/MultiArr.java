@@ -28,7 +28,7 @@ public class MultiArr {
     public static int maxValue(int[][] arr) {
         int max = -999;
         for (int row = 0; row < arr.length; row++) {
-            for (int column = 0; column < arr[0].length; column++) {
+            for (int column = 0; column < arr[row].length; column++) {
                 if (arr[row][column] > max) {
                     max = arr[row][column];
                 }
