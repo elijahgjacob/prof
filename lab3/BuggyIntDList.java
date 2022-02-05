@@ -36,10 +36,14 @@ public class BuggyIntDList extends IntDList {
      */
     private DNode sortedMerge(DNode d1, DNode d2) {
 
-        // FIXME: Below code has multiple problems. Debug the code to implement correct functionality.
 
         // ------ WRITE ADDITIONAL CODE HERE AND ONLY HERE (IF NEEDED) ------
-
+        if (d1 ==null){
+            return d2;
+        }
+        if (d2 ==null){
+            return d1;
+        }
         // ------------------------------------------------------------------
 
         if (d1._val <= d2._val) {

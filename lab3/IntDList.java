@@ -47,8 +47,13 @@ public class IntDList {
      * @return The number of elements in this list.
      */
     public int size() {
-        // TODO: Implement this method and return correct value
-        return 0;
+        DNode curr = _front;
+        int size = 0;
+        while(curr != null){
+            curr = curr._prev;
+            size ++;
+        }
+        return size;
     }
 
     /**
@@ -59,12 +64,15 @@ public class IntDList {
      *              i.e 0 <= index < size.
      * @return The node at index index
      */
-    private DNode getNode(int index) {
-        // TODO: Implement this method and return correct node
-        return null;
+    public DNode getNode(int index) {
+        DNode curr = _front;
+        int x = 0;
+        for (x = 0; x < index; x++) {
+            curr = curr._next;
+        }
+        return curr;
     }
-
-    /**
+        /**
      * @param index index of element to return,
      *          where index = 0 returns the first element,
      *          index = 1 returns the second element,and so on.
@@ -73,22 +81,37 @@ public class IntDList {
      * @return The integer value at index index
      */
     public int get(int index) {
-        // TODO: Implement this method (Hint: use `getNode`)
-        return 0;
+        return getNode(index)._val;
     }
 
     /**
      * @param d value to be inserted in the front
      */
     public void insertFront(int d) {
-        // TODO: Implement this method
+        DNode nFront = new DNode(d);
+        DNode oFront = _front;
+
+        nFront._prev = oFront;
+        if(oFront != null)
+            oFront._next = nFront;
+
+        _front = nFront;
+        if(_back == null)
+            _back = nFront;
     }
 
     /**
      * @param d value to be inserted in the back
      */
     public void insertBack(int d) {
-        // TODO: Implement this method
+        DNode nBack = new DNode(d);
+        DNode oBack = _back;
+        nBack._next = oBack;
+        if(oBack != null)
+            oBack._prev = nBack;
+        _back = nBack;
+        if(_front == null)
+            _front = nBack;
     }
 
     /**
@@ -110,9 +133,20 @@ public class IntDList {
      * @return the item that was deleted
      */
     public int deleteFront() {
-        // TODO: Implement this method and return correct value
-        return 0;
+        DNode nFront = new DNode(d);
+        DNode oFront = _front;
+
+        nFront._prev = oFront;
+        if(oFront != null)
+            oFront._next = nFront;
+
+        _front = nFront;
+        if(_back == null)
+            _back = nFront;
+
+        return oFront._val;
     }
+
 
     /**
      * Removes the last item in the IntDList and returns it.
@@ -121,9 +155,17 @@ public class IntDList {
      * @return the item that was deleted
      */
     public int deleteBack() {
-        // TODO: Implement this method and return correct value
-        return 0;
+        DNode oBack = _front;
+        if (oBack == null)
+            return -1;
+        else {
+            _front = oBack._prev;
+            if(_back == oBack)
+                _back = null;
+            return oBack._val;
+        }
     }
+
 
     /**
      * @param index index of element to be deleted,
@@ -133,10 +175,25 @@ public class IntDList {
      *              i.e 0 <= index < size.
      * @return the item that was deleted
      */
-    public int deleteAtIndex(int index) {
-        // TODO: Implement this method and return correct value
-        return 0;
-    }
+
+        public int deleteAtIndex(int index) {
+            DNode curr = _front;
+            if (index >= size()) {
+                return 0;
+            }
+            if (index == 0) {
+                curr = curr._next;
+            }
+
+            int position = 0;
+            while (position < index - 1) {
+                curr = curr._next;
+                position++;
+            }
+            curr._next = curr._next._next;
+            size =-1;
+        }
+
 
     /**
      * @return a string representation of the IntDList in the form
@@ -147,8 +204,17 @@ public class IntDList {
      * System.out.println(a); //prints ab
      */
     public String toString() {
-        // TODO: Implement this method to return correct value
-        return null;
+            if (size(IntDList) == 0) {
+                return "[]";
+            }
+            String str = "[";
+            DNode curr = _front;
+            for (; curr._next != null; curr = curr._next) {
+                str += curr._val + ", ";
+            }
+            str += curr._val +"]";
+            return str;
+        }
     }
 
     /**
@@ -157,7 +223,7 @@ public class IntDList {
      * namespace" with it. This is also referred to as encapsulation.
      * Look it up for more information!
      */
-    static class DNode {
+     class DNode {
         /** Previous DNode. */
         protected DNode _prev;
         /** Next DNode. */
@@ -184,4 +250,5 @@ public class IntDList {
         }
     }
 
-}
+
+

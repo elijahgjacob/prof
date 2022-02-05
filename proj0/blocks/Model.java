@@ -15,7 +15,7 @@ import static blocks.Utils.*;
  *  determining whether a puzzle piece may be added at a given position or
  *  anywhere, and undoing or redoing moves.
  *
- *  @author
+ *  @Author Paul Hilfinger
  */
 class Model {
 
@@ -29,7 +29,7 @@ class Model {
         _height = height;
         _width = width;
         _cells = new boolean[_height][_width];
-        // FIXME
+        _hand = new ArrayList<>(3); ##FIXME
         _current = _lastHistory = -1;
     }
 
