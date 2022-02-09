@@ -29,7 +29,7 @@ class Model {
         _height = height;
         _width = width;
         _cells = new boolean[_height][_width];
-        _hand = new ArrayList<>(3); ##FIXME
+        _hand = new ArrayList<>(3);
         _current = _lastHistory = -1;
     }
 
@@ -39,7 +39,7 @@ class Model {
         _width = model.width(); _height = model.height();
         _cells = new boolean[_height][_width];
         deepCopy(model._cells, _cells);
-        // FIXME
+        _hand = model._hand;
         _current = model._current;
         _lastHistory = model._lastHistory;
         for (GameState g : model._history.subList(0, model._lastHistory + 1)) {
@@ -70,18 +70,24 @@ class Model {
         if (k < 0 || k >= _hand.size()) {
             return null;
         }
-        return null; // FIXME
+        return piece(k);
     }
 
     /** Return true iff PIECE may be added to the board with its
      *  reference point at (ROW, COL). False if PIECE == null. */
     boolean placeable(Piece piece, int row, int col) {
+        int [] [] pieceArr = new int [piece.height()][piece.width()];
         if (piece == null) {
             return false;
         }
-        // FIXME
-        return true;
-    }
+        for (int r=0; r < height(), r++){
+            for (int w = 0; w < width(),w++){
+                if (!piece.get(row,col)){
+                    return true;
+                }
+                ;
+            }
+        }
 
     /** Return true iff PIECE may be added to the board at some position. */
     boolean placeable(Piece piece) {
@@ -118,27 +124,42 @@ class Model {
     /** Return an array COUNTS such that COUNTS[0][r] is the number of
      *  filled grid squares in row r and COUNTS[1][c] is the number of
      *  filled grid cells in column c. */
-    int[][] rowColumnCounts() {
+    /**int[][] rowColumnCounts() {
         int[][] result = new int[][] { new int[_height], new int[_width] };
-        // FIXME
+        for (x=0;x<8;x++) {
+
+            }
+        }
         return result;
     }
+    */
 
     /** Clear all cells currently in completely filled rows and columns.
-     *  Also updates score(). */
+     *  Also updates score(). formula => streak * filled lines */
     void clearFilledLines() {
-        int nrows, ncols;
-        int[][] counts = rowColumnCounts();
-        nrows = ncols = 0;
-        // FIXME
-        _score += scoreClearedLines(nrows, ncols);
+//        int nrows, ncols;
+//        int[][] counts = rowColumnCounts();
+//        nrows = ncols = 0;
+//        int x;
+//        for (x = 0; x < _width; x++) {
+//            int y;
+//            for (y = 0; y < _height; y++) {
+//                if (_cells[x] = true) {
+//                    if (_cells[y] = true) {
+//                        _cells[x][y] = false;
+//                    }
+//                }
+//            }
+//            _score += scoreClearedLines(nrows, ncols);
+//        }
     }
 
-    /** Return the score increase caused by clearing full lines, given that
+    /** Return the score increase ca
+     * used by clearing full lines, given that
      *  NROWS is the number of rows cleared and NCOLS is the number
      *  of columns cleared. */
     private int scoreClearedLines(int nrows, int ncols) {
-        return 0; // FIXME
+
     }
 
     /** Return true iff the current hand is empty (i.e., piece(k) is null
@@ -165,28 +186,28 @@ class Model {
 
     /** Save the current state on the undo history. */
     void pushState() {
-        _current += 1;
-        _lastHistory = _current;
-        if (_current >= _history.size()) {
-            _history.add(new GameState());
-        }
-        _history.get(_current).saveState();
+//        _current += 1;
+//        _lastHistory = _current;
+//        if (_current >= _history.size()) {
+//            _history.add(new GameState());
+//        }
+//        _history.get(_current).saveState();
     }
 
     /** Undo to the state saved by the last call to pushState, if any.
      *  Does nothing if at the initial board. */
     void undo() {
-        if (_current > 0) {
-            return; // FIXME
-        }
+//        if (_current > 0) {
+//            return; // FIXME
+//        }
     }
 
     /** Redo one move, if possible. Does nothing if
      *  there are no available undone boards. */
     void redo() {
-        if (_current < _lastHistory) {
-            return; // FIXME
-        }
+//        if (_current < _lastHistory) {
+//            return; // FIXME
+//        }
     }
 
     /** Returns true if this puzzle round is over because the hand is not empty
@@ -204,7 +225,8 @@ class Model {
      *  or is currently filled.   That is, it returns true iff one may not
      *  add a Piece that would fill location (ROW, COL). */
     boolean get(int row, int col) {
-        return true; // FIXME
+
+        return true;
     }
 
     @Override

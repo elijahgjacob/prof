@@ -39,14 +39,24 @@ class Piece {
 
     /** Return the height of this Piece. */
     int height() {
-        return _positions.length;
+        return _positions.length
+                ;
     }
 
     /** Return true iff (ROW, COL) is a position in this Piece and is
      *  filled.  ROW and COL are relative to this Piece's reference point. */
-    boolean get(int row, int col) {
-        return true; // FIXME
-    }
+    boolean get(int row, int col) throws Exception {
+        if (row< width() && col < height()) {
+            if (_cell[row][col] = true) {
+                return true;
+            }
+            return false;
+        }
+        else {
+            throw new Exception ("Error with inputted row and column");
+        }
+        }
+
 
     /** Return true iff _positions meets all the requirements for a correctly
      *  formed piece, with at least one filled square in the top and bottom
