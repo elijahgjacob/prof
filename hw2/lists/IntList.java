@@ -9,6 +9,7 @@ public class IntList {
     public int head;
     /** Remaining elements of list. */
     public IntList tail;
+    public int length;
 
     /** A List with head HEAD0 and tail TAIL0. */
     public IntList(int head0, IntList tail0) {

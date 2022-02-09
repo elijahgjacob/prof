@@ -133,7 +133,7 @@ public class IntDList {
      * @return the item that was deleted
      */
     public int deleteFront() {
-        DNode nFront = new DNode(d);
+        DNode nFront = new DNode(int d);
         DNode oFront = _front;
 
         nFront._prev = oFront;
@@ -141,10 +141,12 @@ public class IntDList {
             oFront._next = nFront;
 
         _front = nFront;
-        if(_back == null)
+        if(_back == null) {
             _back = nFront;
+        }
 
         return oFront._val;
+
     }
 
 
@@ -191,7 +193,7 @@ public class IntDList {
                 position++;
             }
             curr._next = curr._next._next;
-            size =-1;
+            size -=1;
         }
 
 

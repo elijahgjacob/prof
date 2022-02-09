@@ -131,7 +131,7 @@ public class MatrixUtils {
      *  2089520   1162923   1124919   2098278
      *  2162923   2124919   2124919   2124919
      *
-     *  Output for sameple input: {1, 2, 1, 1, 2, 1}.
+     *  Output for sample input: {1, 2, 1, 1, 2, 1}.
      *  See 4x6.png.verticalSeam.correct for a visual picture.
      *
      *  This answer is NOT unique. There are other correct seams.
