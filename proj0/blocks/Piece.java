@@ -1,5 +1,7 @@
 package blocks;
 
+import org.antlr.v4.runtime.misc.Utils;
+
 import java.util.Arrays;
 import java.util.Formatter;
 
@@ -12,13 +14,13 @@ import static blocks.Utils.positions;
  *  Adding a Piece to the Blocks board fills a set of previously open grid
  *  cells corresponding to the positions stored in the Piece, after selecting
  *  a position on the board to correspond to the Piece's reference point.
- *  @EJ
+ *  @author
  */
 class Piece {
 
     /** Maximum dimensions of any Piece. */
     static final int MAX_PIECE_WIDTH = 4,
-        MAX_PIECE_HEIGHT = 4;
+            MAX_PIECE_HEIGHT = 4;
 
     /** A new Piece whose positions are denoted by PIECE.  PIECE contains
      *  a sequence of one or more rows separated by whitespace, where
@@ -39,31 +41,21 @@ class Piece {
 
     /** Return the height of this Piece. */
     int height() {
-        return _positions.length
-                ;
+        return _positions.length;
     }
 
     /** Return true iff (ROW, COL) is a position in this Piece and is
      *  filled.  ROW and COL are relative to this Piece's reference point. */
-    boolean get(int row, int col) throws Exception {
-        if (row< width() && col < height()) {
-            if (_cell[row][col] = true) {
-                return true;
-            }
-            return false;
-        }
-        else {
-            throw new Exception ("Error with inputted row and column");
-        }
-        }
-
+    boolean get(int row, int col) {
+        return true; // FIXME
+    }
 
     /** Return true iff _positions meets all the requirements for a correctly
      *  formed piece, with at least one filled square in the top and bottom
      *  rows and the left and right columns. */
     private boolean positionsCheck() {
         if (_positions.length > MAX_PIECE_HEIGHT
-            || _positions[0].length > MAX_PIECE_WIDTH) {
+                || _positions[0].length > MAX_PIECE_WIDTH) {
             return false;
         }
 
