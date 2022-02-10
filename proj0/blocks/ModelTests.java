@@ -38,7 +38,7 @@ public class ModelTests {
      *  of the constructor argument to Piece, but indicating the reference
      *  points of all and only the positions in MODEL at which PIECE may
      *  be placed.  */
-    private void checkPlaceable(int npiece, String placements, Model model) {
+    public void checkPlaceable(int npiece, String placements, Model model) {
         Piece piece = model.piece(npiece);
         boolean[][] places = positions(placements);
         assertEquals("Wrong height", places.length, model.height());

@@ -1,7 +1,5 @@
 package blocks;
 
-import org.antlr.v4.runtime.misc.Utils;
-
 import java.util.Arrays;
 import java.util.Formatter;
 
@@ -47,8 +45,14 @@ class Piece {
     /** Return true iff (ROW, COL) is a position in this Piece and is
      *  filled.  ROW and COL are relative to this Piece's reference point. */
     boolean get(int row, int col) {
-        return true; // FIXME
+        if (row< width() && col < height()) {
+            if (_positions[row][col] = true) {
+                return true;
+            }
+        }
+        return false;
     }
+
 
     /** Return true iff _positions meets all the requirements for a correctly
      *  formed piece, with at least one filled square in the top and bottom
