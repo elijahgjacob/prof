@@ -24,10 +24,12 @@ class PuzzleGenerator implements PuzzleSource {
     public boolean deal(Model model, int handSize) {
         assert handSize > 0;
         model.clearHand();
-        // FIXME
+        for (int n = 0; n < handSize; n++) {
+            int k = _random.nextInt(PIECES.length);
+            model.deal(PIECES[k]);
+        }
         return true;
     }
-
     @Override
     public void setSeed(long seed) {
         _random.setSeed(seed);
