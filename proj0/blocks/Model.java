@@ -193,6 +193,10 @@ class Model {
         }
         if (nrows == 0 && ncols==0) {
             _streakLength = 0;
+
+
+
+            
         } else {
             _streakLength += 1;
             int intersections = (nrows * ncols);
