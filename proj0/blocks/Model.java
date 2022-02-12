@@ -82,14 +82,13 @@ class Model {
         if (piece == null) {
             return false;
         }
-        if (piece.height() > (height() - row)) {
+        boolean x1 = piece.height() > (height() - row);
+        boolean x2 = piece.width() > (width() - col);
+        if (x1 || x2) {
             return false;
         }
-        if (piece.width() > (width() - col)) {
-            return false;
-        }
-        for (; r < piece.height(); r++) {
-            for (; c < piece.width(); c++) {
+        for (r = 0; r < piece.height(); r++) {
+            for (c = 0; c < piece.width(); c++) {
                 if (piece.get(r, c) && get(row + r, col + c)) {
                     return false;
                 }
