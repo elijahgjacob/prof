@@ -1,14 +1,10 @@
 package blocks;
-
-import blocks.Piece;
-import blocks.PuzzleSource;
-
 import java.util.Random;
 
 import static blocks.Utils.*;
 
 /** A creator of random Blocks puzzles.
- *  @author
+ *  @author P.N. Hilfinger
  */
 class PuzzleGenerator implements PuzzleSource {
 
@@ -40,58 +36,58 @@ class PuzzleGenerator implements PuzzleSource {
 
     /** Pieces available to be dealt to hand. */
     static final Piece[] PIECES = {
-            new Piece("*** *** ***"),
-            new Piece("** **"),
-            new Piece("*"),
+        new Piece("*** *** ***"),
+        new Piece("** **"),
+        new Piece("*"),
 
-            new Piece("** ** **"),
-            new Piece("*** ***"),
+        new Piece("** ** **"),
+        new Piece("*** ***"),
 
-            new Piece("**"),
-            new Piece("* *"),
-            new Piece("***"),
-            new Piece("* * *"),
+        new Piece("**"),
+        new Piece("* *"),
+        new Piece("***"),
+        new Piece("* * *"),
 
-            new Piece("** *."),
-            new Piece("** .*"),
-            new Piece("*. **"),
-            new Piece(".* **"),
+        new Piece("** *."),
+        new Piece("** .*"),
+        new Piece("*. **"),
+        new Piece(".* **"),
 
-            new Piece("** *. **"),
-            new Piece("** .* **"),
-            new Piece("*.* ***"),
-            new Piece("*** *.*"),
+        new Piece("** *. **"),
+        new Piece("** .* **"),
+        new Piece("*.* ***"),
+        new Piece("*** *.*"),
 
-            new Piece("*.. *** *.."),
-            new Piece("..* *** ..*"),
-            new Piece(".*. .*. ***"),
-            new Piece("*** .*. .*."),
+        new Piece("*.. *** *.."),
+        new Piece("..* *** ..*"),
+        new Piece(".*. .*. ***"),
+        new Piece("*** .*. .*."),
 
-            new Piece("*** ..* ..*"),
-            new Piece("..* ..* ***"),
-            new Piece("*** *.. *.."),
-            new Piece("*.. *.. ***"),
+        new Piece("*** ..* ..*"),
+        new Piece("..* ..* ***"),
+        new Piece("*** *.. *.."),
+        new Piece("*.. *.. ***"),
 
-            new Piece("** *. *."),
-            new Piece("** .* .*"),
-            new Piece("*.. ***"),
-            new Piece("*** *.."),
+        new Piece("** *. *."),
+        new Piece("** .* .*"),
+        new Piece("*.. ***"),
+        new Piece("*** *.."),
 
-            new Piece("*. .*"),
-            new Piece(".* *."),
+        new Piece("*. .*"),
+        new Piece(".* *."),
 
-            new Piece("*.. .*. ..*"),
-            new Piece("..* .*. *.."),
+        new Piece("*.. .*. ..*"),
+        new Piece("..* .*. *.."),
 
-            new Piece("*.* .*. *.*"),
-            new Piece(".*. *.* .*."),
+        new Piece("*.* .*. *.*"),
+        new Piece(".*. *.* .*."),
 
-            new Piece(".*. *** .*."),
+        new Piece(".*. *** .*."),
 
-            new Piece(".** **."),
-            new Piece("**. .**"),
-            new Piece("*. ** .*"),
-            new Piece(".* ** *.")
+        new Piece(".** **."),
+        new Piece("**. .**"),
+        new Piece("*. ** .*"),
+        new Piece(".* ** *.")
     };
 
 }

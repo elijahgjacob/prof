@@ -12,7 +12,7 @@ import static blocks.Utils.positions;
  *  Adding a Piece to the Blocks board fills a set of previously open grid
  *  cells corresponding to the positions stored in the Piece, after selecting
  *  a position on the board to correspond to the Piece's reference point.
- *  @author
+ *  @author P.N. Hilfinger
  */
 class Piece {
 
@@ -45,8 +45,8 @@ class Piece {
     /** Return true iff (ROW, COL) is a position in this Piece and is
      *  filled.  ROW and COL are relative to this Piece's reference point. */
     boolean get(int row, int col) {
-        if (row< height() && col < width() && row >=0 && col >=0) {
-            if (_positions[row][col] == true) {
+        if (row < height() && col < width() && row >= 0 && col >= 0) {
+            if (_positions[row][col]) {
                 return true;
             }
         }

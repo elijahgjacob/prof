@@ -1,7 +1,4 @@
 package blocks;
-
-import blocks.Piece;
-
 import java.util.ArrayList;
 import java.util.Formatter;
 
@@ -80,15 +77,20 @@ class Model {
     /** Return true iff PIECE may be added to the board with its
      *  reference point at (ROW, COL). False if PIECE == null. */
     boolean placeable(Piece piece, int row, int col) {
+        int r = 0;
+        int c = 0;
         if (piece == null) {
             return false;
         }
-        if (piece.height() > (height() - row) || piece.width() > (width() - col)){
+        if (piece.height() > (height() - row)) {
             return false;
         }
-        for (int r = 0; r < piece.height(); r++) {
-            for (int c =0; c <piece.width(); c++) {
-                if (piece.get(r, c) && get(row+r, col+c)) {
+        if (piece.width() > (width() - col)) {
+            return false;
+        }
+        for (; r < piece.height(); r++) {
+            for (; c < piece.width(); c++) {
+                if (piece.get(r, c) && get(row + r, col + c)) {
                     return false;
                 }
             }
@@ -98,9 +100,9 @@ class Model {
 
     /** Return true iff PIECE may be added to the board at some position. */
     boolean placeable(Piece piece) {
-        for (int r=0; r<_height; r++){
-            for(int c=0; c<_width; c++){
-                if (placeable(piece, r, c)){
+        for (int r = 0; r < _height; r++) {
+            for (int c = 0; c < _width; c++) {
+                if (placeable(piece, r, c)) {
                     return true;
                 }
             }
@@ -127,8 +129,8 @@ class Model {
         assert placeable(piece, row, col);
         for (int r = 0; r < piece.height(); r++) {
             for (int c = 0; c < piece.width(); c++) {
-                if (piece.get(r, c) == true) {
-                    _cells[r+row][c+col] = true;
+                if (piece.get(r, c)) {
+                    _cells[r + row][c + col] = true;
                     _score += 1;
                 }
             }
@@ -141,7 +143,7 @@ class Model {
      *  the hand). Also updates score(). */
     void place(int k, int row, int col) {
         place(piece(k), row, col);
-        _hand.set(k,null);
+        _hand.set(k, null);
     }
 
     /** Return an array COUNTS such that COUNTS[0][r] is the number of
@@ -149,11 +151,11 @@ class Model {
      *  filled grid cells in column c. */
     int[][] rowColumnCounts() {
         int[][] counts = new int[][] { new int[_height], new int[_width] };
-        for (int r=0;r<_height;r++){
-            for (int c=0; c < _width;c++){
-                if (_cells[r][c]==true){
-                    counts[0][r] +=1;
-                    counts[1][c] +=1;
+        for (int r = 0; r < _height; r++) {
+            for (int c = 0; c < _width; c++) {
+                if (_cells[r][c]) {
+                    counts[0][r] += 1;
+                    counts[1][c] += 1;
                 }
             }
         }
@@ -166,39 +168,35 @@ class Model {
         int nrows, ncols;
         int[][] counts = rowColumnCounts();
         nrows = ncols = 0;
-        //to count up the values in the rows
-        for (int r = 0; r < counts[0].length; r++){
-            if (counts[0][r] == height()){
+        for (int r = 0; r < counts[0].length; r++) {
+            if (counts[0][r] == height()) {
                 nrows++;
-                for (int c = 0; c < width(); c++){
-                    if (_cells[r][c]){
+                for (int c = 0; c < width(); c++) {
+                    if (_cells[r][c]) {
                         _cells[r][c] = false;
-                        _score ++;
+                        _score++;
                     }
                 }
             }
         }
-        //to count up the values in the columns
-        for (int c = 0; c < counts[1].length; c++){
-            if (counts[1][c] == width()){
+        for (int c = 0; c < counts[1].length; c++) {
+            if (counts[1][c] == width()) {
                 ncols++;
-                for (int r = 0; r <  height(); r++){
-                    if (_cells[r][c]){
+                for (int r = 0; r <  height(); r++) {
+                    if (_cells[r][c]) {
                         _cells[r][c] = false;
-                        _score ++;
+                        _score++;
                     }
 
                 }
             }
         }
-        if (nrows == 0 && ncols==0) {
+        if (nrows == 0 && ncols == 0) {
             _streakLength = 0;
         } else {
             _streakLength += 1;
-            int intersections = (nrows * ncols);
-            //_score += (nrows *width()) + (ncols * height()) - (intersections);
         }
-        _score+=scoreClearedLines(nrows,ncols);
+        _score += scoreClearedLines(nrows, ncols);
 
     }
 
@@ -209,7 +207,7 @@ class Model {
             *  NROWS is the number of rows cleared and NCOLS is the number
             *  of columns cleared. */
     private int scoreClearedLines(int nrows, int ncols) {
-        int result= ((nrows * width()) + (ncols * height()))* (_streakLength);
+        int result = ((nrows * width()) + (ncols * height())) * (_streakLength);
         return result;
     }
 
