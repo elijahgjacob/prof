@@ -4,10 +4,14 @@
  * @author Matthew Owen
  */
 public class ColumnMatchFilter extends TableFilter {
+    Table _input;
+    String _colName1,_colName2;
 
     public ColumnMatchFilter(Table input, String colName1, String colName2) {
         super(input);
-        // FIXME: Add your code here.
+        _input = input;
+        _colName1 = colName1;
+        _colName2 = colName2;
     }
 
     @Override

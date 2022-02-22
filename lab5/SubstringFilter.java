@@ -4,10 +4,14 @@
  * @author Matthew Owen
  */
 public class SubstringFilter extends TableFilter {
+    Table _input;
+    String _colName, _subStr;
 
     public SubstringFilter(Table input, String colName, String subStr) {
         super(input);
-        // FIXME: Add your code here.
+        _input = input;
+        _colName = colName;
+        _subStr = subStr;
     }
 
     @Override

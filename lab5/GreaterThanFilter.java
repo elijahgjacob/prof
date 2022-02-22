@@ -4,10 +4,14 @@
  * @author Matthew Owen
  */
 public class GreaterThanFilter extends TableFilter {
+    Table _input;
+    String _colName, _ref;
 
     public GreaterThanFilter(Table input, String colName, String ref) {
         super(input);
-        // FIXME: Add your code here.
+        _input = input;
+        _colName = colName;
+        _ref = ref;
     }
 
     @Override

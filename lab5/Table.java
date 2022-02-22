@@ -217,6 +217,7 @@ public class Table implements Iterable<Table.TableRow> {
         @Override
         public boolean hasNext() {
             if (_nextRow == null) {
+                _nextRow
                 // FIXME: Fill in the hasNext method to update the _nextRow
                 //        variable to be the next joined row to be returned
                 //        by the iterator. The rows should be returned in the
