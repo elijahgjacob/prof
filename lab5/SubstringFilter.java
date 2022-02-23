@@ -4,8 +4,7 @@
  * @author Matthew Owen
  */
 public class SubstringFilter extends TableFilter {
-    Table _input;
-    String _colName, _subStr;
+
 
     public SubstringFilter(Table input, String colName, String subStr) {
         super(input);
@@ -16,9 +15,13 @@ public class SubstringFilter extends TableFilter {
 
     @Override
     protected boolean keep() {
-        // FIXME: Replace this line with your code.
-        return false;
+        int x = _input.colNameToIndex(_colName);
+        if (_next.getValue(x).contains(_subStr)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-
-    // FIXME: Add instance variables?
+    Table _input;
+    String _colName, _subStr;
 }
