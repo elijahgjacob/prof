@@ -113,11 +113,15 @@ public abstract class PermutationTest {
 
     @Test
     public void checkcomplexpermutation() {
-        Permutation perm = getNewPermutation("(DEFG)(ABCD)", getNewAlphabet(""));
+        Permutation perm = getNewPermutation("(DEFG)(ABC)", getNewAlphabet(""));
         assertEquals('E', perm.permute('D'));
         assertEquals('F', perm.permute('E'));
         assertEquals('G', perm.permute('F'));
-        assertEquals('A', perm.permute('G'));
+        assertEquals('D', perm.permute('G'));
+        assertEquals('B', perm.permute('A'));
+        assertEquals('C', perm.permute('B'));
+        assertEquals('A', perm.permute('C'));
+
     }
 
 
