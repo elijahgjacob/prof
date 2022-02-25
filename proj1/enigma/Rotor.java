@@ -12,7 +12,6 @@ class Rotor {
     Rotor(String name, Permutation perm) {
         _name = name;
         _permutation = perm;
-        // FIXME
     }
 
     /** Return my name. */
@@ -63,18 +62,18 @@ class Rotor {
     /** Return the conversion of P (an integer in the range 0..size()-1)
      *  according to my permutation. */
     int convertForward(int p) {
-        p = p + _setting;
+        p = _permutation.wrap(p + _setting);
         p = permutation().permute(p);
-        p = p - _setting;
+        p = _permutation.wrap(p - _setting);
         return p;
     }
 
     /** Return the conversion of E (an integer in the range 0..size()-1)
      *  according to the inverse of my permutation. */
     int convertBackward(int e) {
-        e= e + _setting;
+        e = _permutation.wrap(e + _setting);
         e = permutation().invert(e);
-        e = e - _setting;
+        e = _permutation.wrap(e - _setting);
         return e;
     }
 

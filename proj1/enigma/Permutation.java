@@ -41,7 +41,7 @@ class Permutation {
     /** Return the result of applying this permutation to P modulo the
      *  alphabet size. */
     int permute(int p) {
-        if (_cycles.indexOf(p) == -1) {
+        if (_cycles.indexOf(p+1) == -1) {
             return p;
         }
         if (_cycles.charAt(_cycles.indexOf(p) + 1) == (')')) {
@@ -111,6 +111,5 @@ class Permutation {
     /** Alphabet of this permutation. */
     private Alphabet _alphabet;
 
-    // FIXME: ADDITIONAL FIELDS HERE, AS NEEDED
     private String _cycles;
 }

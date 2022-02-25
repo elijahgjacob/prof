@@ -20,8 +20,6 @@ class MovingRotor extends Rotor {
         _notches = notches;
     }
 
-    // FIXME?
-
     @Override
     void advance() {
         _setting += 1;
