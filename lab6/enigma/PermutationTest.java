@@ -103,7 +103,7 @@ public abstract class PermutationTest {
     }
 
     @Test
-    public void checkSymbolpermutation() {
+    public void checksimplepermutation() {
         String input = "(ABCDE)";
         Alphabet alpha = getNewAlphabet("ABCDE");
         Permutation perm = getNewPermutation(input,alpha);
