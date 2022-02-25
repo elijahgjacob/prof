@@ -16,10 +16,9 @@ import static enigma.TestUtils.*;
  * this class concrete by removing the 4 abstract keywords and implementing the
  * 3 abstract methods.
  *
- *  @author  P.N. Hilfinger
+ *  @author  Elijah Jacob
  */
 public abstract class PermutationTest {
-    protected String perm;
 
     /**
      * For this lab, you must use this to get a new Permutation,
@@ -94,18 +93,20 @@ public abstract class PermutationTest {
 
     @Test
     public void testchpermutation() {
-        Permutation perm = getNewPermutation("(DEFGA)", getNewAlphabet(""));
+        Permutation perm = getNewPermutation("(DEFGA)", getNewAlphabet("ADEFG"));
         assertEquals('E', perm.permute('D'));
         assertEquals('F', perm.permute('E'));
         assertEquals('G', perm.permute('F'));
         assertEquals('A', perm.permute('G'));
+        assertEquals('D', perm.permute('A'));
+
     }
 
     @Test
     public void checkSymbolpermutation() {
         String input = "(ABCDE)";
-        Alphabet alpha = getNewAlphabet();
-        Permutation perm = getNewPermutation(input, alpha);
+        Alphabet alpha = getNewAlphabet("ABCDE");
+        Permutation perm = getNewPermutation(input,alpha);
         String fromAlpha = "ABCDE";
         String toAlpha = "BCDEA";
         checkPerm("simple", fromAlpha, toAlpha, perm, alpha);
@@ -113,7 +114,7 @@ public abstract class PermutationTest {
 
     @Test
     public void checkcomplexpermutation() {
-        Permutation perm = getNewPermutation("(DEFG)(ABC)", getNewAlphabet(""));
+        Permutation perm = getNewPermutation("(DEFG)(ABC)", getNewAlphabet("ABCDEFG"));
         assertEquals('E', perm.permute('D'));
         assertEquals('F', perm.permute('E'));
         assertEquals('G', perm.permute('F'));
