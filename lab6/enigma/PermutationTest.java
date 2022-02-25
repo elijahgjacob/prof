@@ -3,6 +3,8 @@ package enigma;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
+
+import static enigma.TestUtils.UPPER_STRING;
 import static org.junit.Assert.*;
 
 import static enigma.TestUtils.*;
@@ -14,14 +16,16 @@ import static enigma.TestUtils.*;
  * this class concrete by removing the 4 abstract keywords and implementing the
  * 3 abstract methods.
  *
- *  @author
+ *  @author  P.N. Hilfinger
  */
 public abstract class PermutationTest {
+    protected String perm;
 
     /**
      * For this lab, you must use this to get a new Permutation,
      * the equivalent to:
      * new Permutation(cycles, alphabet)
+     *
      * @return a Permutation with cycles as its cycles and alphabet as
      * its alphabet
      * @see Permutation for description of the Permutation conctructor
@@ -32,6 +36,7 @@ public abstract class PermutationTest {
      * For this lab, you must use this to get a new Alphabet,
      * the equivalent to:
      * new Alphabet(chars)
+     *
      * @return an Alphabet with chars as its characters
      * @see Alphabet for description of the Alphabet constructor
      */
@@ -41,19 +46,24 @@ public abstract class PermutationTest {
      * For this lab, you must use this to get a new Alphabet,
      * the equivalent to:
      * new Alphabet()
+     *
      * @return a default Alphabet with characters ABCD...Z
      * @see Alphabet for description of the Alphabet constructor
      */
     abstract Alphabet getNewAlphabet();
 
-    /** Testing time limit. */
+    /**
+     * Testing time limit.
+     */
     @Rule
     public Timeout globalTimeout = Timeout.seconds(5);
 
-    /** Check that PERM has an ALPHABET whose size is that of
-     *  FROMALPHA and TOALPHA and that maps each character of
-     *  FROMALPHA to the corresponding character of FROMALPHA, and
-     *  vice-versa. TESTID is used in error messages. */
+    /**
+     * Check that PERM has an ALPHABET whose size is that of
+     * FROMALPHA and TOALPHA and that maps each character of
+     * FROMALPHA to the corresponding character of FROMALPHA, and
+     * vice-versa. TESTID is used in error messages.
+     */
     private void checkPerm(String testId,
                            String fromAlpha, String toAlpha,
                            Permutation perm, Alphabet alpha) {
@@ -62,14 +72,14 @@ public abstract class PermutationTest {
         for (int i = 0; i < N; i += 1) {
             char c = fromAlpha.charAt(i), e = toAlpha.charAt(i);
             assertEquals(msg(testId, "wrong translation of '%c'", c),
-                         e, perm.permute(c));
+                    e, perm.permute(c));
             assertEquals(msg(testId, "wrong inverse of '%c'", e),
-                         c, perm.invert(e));
+                    c, perm.invert(e));
             int ci = alpha.toInt(c), ei = alpha.toInt(e);
             assertEquals(msg(testId, "wrong translation of %d", ci),
-                         ei, perm.permute(ci));
+                    ei, perm.permute(ci));
             assertEquals(msg(testId, "wrong inverse of %d", ei),
-                         ci, perm.invert(ei));
+                    ci, perm.invert(ei));
         }
     }
 
@@ -82,5 +92,65 @@ public abstract class PermutationTest {
         checkPerm("identity", UPPER_STRING, UPPER_STRING, perm, alpha);
     }
 
-    // FIXME: Add tests here that pass on a correct Permutation and fail on buggy Permutations.
+    @Test
+    public void testchpermutation() {
+        Permutation perm = getNewPermutation("(DEFGA)", getNewAlphabet(""));
+        assertEquals('E', perm.permute('D'));
+        assertEquals('F', perm.permute('E'));
+        assertEquals('G', perm.permute('F'));
+        assertEquals('A', perm.permute('G'));
+    }
+
+    @Test
+    public void checkSymbolpermutation() {
+        String input = "(ABCDE)";
+        Alphabet alpha = getNewAlphabet();
+        Permutation perm = getNewPermutation(input, alpha);
+        String fromAlpha = "ABCDE";
+        String toAlpha = "BCDEA";
+        checkPerm("simple", fromAlpha, toAlpha, perm, alpha);
+    }
+
+    @Test
+    public void checkcomplexpermutation() {
+        Permutation perm = getNewPermutation("(DEFG)(ABCD)", getNewAlphabet(""));
+        assertEquals('E', perm.permute('D'));
+        assertEquals('F', perm.permute('E'));
+        assertEquals('G', perm.permute('F'));
+        assertEquals('A', perm.permute('G'));
+    }
+
+
+    @Test
+    public void testPermuteChar() {
+        Permutation e2 = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
+        assertEquals('B', e2.permute('D'));
+        assertEquals('A', e2.permute('B'));
+        assertEquals('C', e2.permute('A'));
+        Permutation e0 = getNewPermutation("(BACD)", getNewAlphabet("ABCDE"));
+        assertEquals('E', e0.permute('E'));
+    }
+
+    @Test
+    public void testInvertChar() {
+        Permutation pt = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
+        assertEquals('B', pt.invert('A'));
+        assertEquals('D', pt.invert('B'));
+        assertEquals('C', pt.invert('D'));
+        Permutation p10 = getNewPermutation("(BACD)", getNewAlphabet("ABCDE"));
+        assertEquals('E', p10.invert('E'));
+    }
+
+    @Test
+    public void testInvertInt() {
+        Permutation pt = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
+        assertEquals(1, pt.invert(0));
+        assertEquals(2, pt.invert(3));
+        assertEquals(1, pt.invert(40));
+        assertEquals(3, pt.invert(1));
+        Permutation pt0 = getNewPermutation("(BACD)", getNewAlphabet("ABCDE"));
+        assertEquals(4, pt0.invert(4));
+    }
 }
+
+
