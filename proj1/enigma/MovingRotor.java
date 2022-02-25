@@ -3,9 +3,12 @@ package enigma;
 import static enigma.EnigmaException.*;
 
 /** Class that represents a rotating rotor in the enigma machine.
- *  @author
+ *  @author P.N.Hilfinger
  */
 class MovingRotor extends Rotor {
+
+    private String _notches;
+    private int _setting;
 
     /** A rotor named NAME whose permutation in its default setting is
      *  PERM, and whose notches are at the positions indicated in NOTCHES.
@@ -14,21 +17,30 @@ class MovingRotor extends Rotor {
      */
     MovingRotor(String name, Permutation perm, String notches) {
         super(name, perm);
-        // FIXME
+        _notches = notches;
     }
 
     // FIXME?
 
     @Override
     void advance() {
-        // FIXME
+        _setting += 1;
+        _setting = _setting % permutation().size();
     }
 
     @Override
-    String notches() {
-        return "";  // FIXME
+    boolean rotates() {
+        return true;
     }
 
-    // FIXME: ADDITIONAL FIELDS HERE, AS NEEDED
+
+    @Override
+    boolean atNotch() {
+        String c = Character.toString(alphabet().toChar(_setting));
+        if (_notches.contains(c)) {
+            return true;
+        }
+        return false;
+    }
 
 }

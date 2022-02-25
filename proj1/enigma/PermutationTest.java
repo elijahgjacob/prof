@@ -50,5 +50,23 @@ public class PermutationTest {
         perm = new Permutation("", UPPER);
         checkPerm("identity", UPPER_STRING, UPPER_STRING);
     }
+    @Test
+    public void checkSymbolpermutation() {
+        perm = new Permutation ("(AB)(CD)(EFG)", new Alphabet("ABCDEFG"));
+        checkPerm("simple", "ABCDEFG", "BADCFGE");
+    }
+
+    @Test
+    public void checkcomplexpermutation() {
+        perm = new Permutation ("(XZL)(BE)(KAQP)", new Alphabet("XZLBEKAQPG"));
+        checkPerm("complex", "XZLBEKAQPG", "ZLXEBAQPKG");
+    }
+
+    @Test
+    public void checkedgepermutation() {
+        perm = new Permutation ("(L)(D)(Q)", new Alphabet("LDQ"));
+        checkPerm("edge", "LDQ", "LDQ");
+        assertFalse(perm.derangement());
+    }
 
 }

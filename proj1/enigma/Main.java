@@ -14,7 +14,7 @@ import ucb.util.CommandArgs;
 import static enigma.EnigmaException.*;
 
 /** Enigma simulator.
- *  @author
+ *  @author P.N.Hilfinger
  */
 public final class Main {
 
