@@ -54,27 +54,34 @@ public class PermutationTest {
             }
 
             @Test
-            public void checkSymbolpermutation() {
-                perm = new Permutation("(AB)(CD)(EFG)", new Alphabet("ABCDEFG"));
-                checkPerm("simple", "ABCDEFG", "BADCFGE");
+            public void checkSimplepermutation() {
+                perm = new Permutation("(ABCD)", new Alphabet("ABCD"));
+                checkPerm("simple", "ABCD", "BCDA");
             }
             @Test
-            public void checkSymbolpermutation1() {
+            public void checkSimplepermutation1() {
                 perm = new Permutation("(AB)(CD)(EFG)", new Alphabet("ABCDEFG"));
                 assertEquals('B', perm.permute('A'));
+                assertEquals('A', perm.permute('B'));
+                assertEquals('E', perm.permute('G'));
+
             }
 
 
             @Test
             public void checkcomplexpermutation() {
                 perm = new Permutation("(XZL)(BE)(KAQP)", new Alphabet("XZLBEKAQPG"));
-                checkPerm("complex", "XZLBEKAQPG", "ZLXEBAQPKG");
+                assertEquals('Z', perm.permute('X'));
+                assertEquals('B', perm.permute('E'));
+                assertEquals('Q', perm.permute('A'));
             }
 
             @Test
             public void checkedgepermutation() {
                 perm = new Permutation("(L)(D)(Q)", new Alphabet("LDQ"));
-                checkPerm("edge", "LDQ", "LDQ");
+                assertEquals('L', perm.permute('L'));
+                assertEquals('D', perm.permute('D'));
+                assertEquals('Q', perm.permute('Q'));
                 assertFalse(perm.derangement());
             }
 

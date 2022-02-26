@@ -1,18 +1,19 @@
 package enigma;
 
+import enigma.Alphabet;
+
+import java.util.ArrayList;
+
 import static enigma.EnigmaException.*;
 
 /** Represents a permutation of a range of integers starting at 0 corresponding
  *  to the characters of an alphabet.
- *  @author P.N.Hilfinger
+ *  @author Elijah G. Jacob
  */
 class Permutation {
+    private Alphabet _alphabet;
+    private String _cycles;
 
-    /** Set this Permutation to that specified by CYCLES, a string in the
-     *  form "(cccc) (cc) ..." where the c's are characters in ALPHABET, which
-     *  is interpreted as a permutation in cycle notation.  Characters in the
-     *  alphabet that are not included in any cycle map to themselves.
-     *  Whitespace is ignored. */
     Permutation(String cycles, Alphabet alphabet) {
         _alphabet = alphabet;
         _cycles = cycles;
@@ -41,54 +42,70 @@ class Permutation {
     /** Return the result of applying this permutation to P modulo the
      *  alphabet size. */
     int permute(int p) {
-        if (_cycles.indexOf(p+1) == -1) {
-            return p;
-        }
-        if (_cycles.charAt(_cycles.indexOf(p) + 1) == (')')) {
-            int index = _cycles.indexOf("(");
-            int lastInd = -1;
-            while (index < _cycles.indexOf(p) && index != -1) {
-                lastInd = index;
-                index = _cycles.indexOf("(", index + 1);
+        String [] cyclearray = _cycles.split("\\)\\(");
+        char pchar = _alphabet.toChar(wrap(p));
+        char  base;
+        for (int x =0; x < cyclearray.length; x++){
+            cyclearray [x] = cyclearray [x].replaceAll("\\(","" );
+            cyclearray [x] = cyclearray [x].replaceAll("\\)","" );
+            for (int y =0; y < cyclearray[x].length(); y++){
+                if (cyclearray[x].charAt(y) == pchar){
+                    base = cyclearray[x].charAt( wrap(y+1) % cyclearray[x].length());
+                    if (_alphabet.toInt(base) == -1){
+                        return p;
+                    }
+                    return _alphabet.toInt(base);
+                }
             }
-            return _cycles.charAt(lastInd + 1);
-        } else {
-            return _cycles.charAt(_cycles.indexOf(p) + 1);
         }
+        return p;
     }
 
     /** Return the result of applying the inverse of this permutation
      *  to  C modulo the alphabet size. */
-    int invert(int c) {
-        if (_cycles.indexOf(c)==-1) {
-            return c;
-        }
-        if (_cycles.charAt(_cycles.indexOf(c) - 1) == ('(')) {
-            int index = _cycles.indexOf(")");
-            int lastInd = -1;
-            while (index < _cycles.indexOf(c)) {
-                lastInd = index;
-                index = _cycles.indexOf(")", index + 1);
+    int invert(int c)  {
+        String [] cyclearray = _cycles.split("\\)\\(");
+        char cchar = _alphabet.toChar(wrap(c));
+        char base;
+        for (int x =0; x < cyclearray.length; x++) {
+            cyclearray [x] = cyclearray [x].replaceAll("\\(","" );
+            cyclearray [x] = cyclearray [x].replaceAll("\\)","" );
+            for (int y =0; y < cyclearray[x].length(); y++) {
+                if (cyclearray[x].charAt(y) == cchar){
+                    base = cyclearray[x].charAt( wrap(y-1) % cyclearray[x].length() );
+                    if (_alphabet.toInt(base) == -1) {
+                        return c;
+                    }
+                    return _alphabet.toInt(base);
+                }
             }
-            return _cycles.charAt(index - 1);
-        } else {
-            return _cycles.charAt(_cycles.indexOf(c) - 1);
         }
+        return c;
     }
+
 
     /** Return the result of applying this permutation to the index of P
      *  in ALPHABET, and converting the result to a character of ALPHABET. */
     char permute(char p) {
         int x = _alphabet.toInt(p);
-        x = permute(x);
-        return _alphabet.toChar(x);
+        if (x == -1){
+            return p;
+        }
+        else {
+            x = permute(x);
+            return _alphabet.toChar(x);
+        }
     }
 
     /** Return the result of applying the inverse of this permutation to C. */
     char invert(char c) {
         int y = alphabet().toInt(c);
-        y = invert(y);
-        return alphabet().toChar(y);
+        if (y == -1) {
+            return c;
+        } else {
+            y = invert(y);
+            return _alphabet.toChar(y);
+        }
     }
 
     /** Return the alphabet used to initialize this Permutation. */
@@ -108,8 +125,5 @@ class Permutation {
         return true;
     }
 
-    /** Alphabet of this permutation. */
-    private Alphabet _alphabet;
 
-    private String _cycles;
 }

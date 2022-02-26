@@ -3,15 +3,19 @@ package enigma;
 import static enigma.EnigmaException.*;
 
 /** Superclass that represents a rotor in the enigma machine.
- *  @author P.N. Hilfinger
+ *  @author Elijah G. Jacob
  */
 class Rotor {
+    private Permutation _permutation;
+    private final String _name;
     private int _setting;
+
 
     /** A rotor named NAME whose permutation is given by PERM. */
     Rotor(String name, Permutation perm) {
         _name = name;
         _permutation = perm;
+        _setting = 0;
     }
 
     /** Return my name. */
@@ -97,14 +101,4 @@ class Rotor {
     public String toString() {
         return "Rotor " + _name;
     }
-
-    /** My name. */
-    private final String _name;
-
-    /** The permutation implemented by this rotor in its 0 position. */
-    private Permutation _permutation;
-
-
-    // FIXME: ADDITIONAL FIELDS HERE, AS NEEDED
-
 }
