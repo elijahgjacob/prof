@@ -8,7 +8,7 @@ import static enigma.EnigmaException.*;
 class Rotor {
     private Permutation _permutation;
     private final String _name;
-    private int _setting;
+    protected int _setting;
 
 
     /** A rotor named NAME whose permutation is given by PERM. */
@@ -63,22 +63,26 @@ class Rotor {
         _setting = permutation().alphabet().toInt(cposn);
     }
 
+    int remainder(int p, int size){
+        int i = p % size;
+        if (i < 0) {
+            i += size;
+        }
+        return i;
+    }
+
     /** Return the conversion of P (an integer in the range 0..size()-1)
      *  according to my permutation. */
     int convertForward(int p) {
-        p = _permutation.wrap(p + _setting);
-        p = permutation().permute(p);
-        p = _permutation.wrap(p - _setting);
-        return p;
+        int val = _permutation.permute(p + _setting % size());
+        return remainder(val-_setting,size());
     }
 
     /** Return the conversion of E (an integer in the range 0..size()-1)
      *  according to the inverse of my permutation. */
     int convertBackward(int e) {
-        e = _permutation.wrap(e + _setting);
-        e = permutation().invert(e);
-        e = _permutation.wrap(e - _setting);
-        return e;
+        int val = _permutation.invert(e + _setting % size());
+        return remainder(val-_setting,size());
     }
 
     /** Returns the positions of the notches, as a string giving the letters
