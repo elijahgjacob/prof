@@ -25,7 +25,7 @@ public class PermutationTest {
 
     /**
      * Check that perm has an alphabet whose size is that of
-     * FROMALPHA and TOALPHA and that maps each character of
+     * FROMALPHA and TOAiiLPHA and that maps each character of
      * FROMALPHA to the corresponding character of FROMALPHA, and
      * vice-versa. TESTID is used in error messages.
      */

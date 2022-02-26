@@ -44,22 +44,22 @@ class Permutation {
     int permute(int p) {
         String [] cyclearray = _cycles.split("\\)\\(");
         char pchar = _alphabet.toChar(wrap(p));
-        char  base;
+        char  base = 0;
         for (int x =0; x < cyclearray.length; x++){
             cyclearray [x] = cyclearray [x].replaceAll("\\(","" );
             cyclearray [x] = cyclearray [x].replaceAll("\\)","" );
             for (int y =0; y < cyclearray[x].length(); y++){
                 if (cyclearray[x].charAt(y) == pchar){
-                    base = cyclearray[x].charAt( wrap(y+1) % cyclearray[x].length());
-                    if (_alphabet.toInt(base) == -1){
+                    base = cyclearray[x].charAt(Rotor.remainder((y+1),cyclearray[x].length()));
                         return p;
                     }
                     return _alphabet.toInt(base);
                 }
             }
-        }
         return p;
-    }
+        }
+
+
 
     /** Return the result of applying the inverse of this permutation
      *  to  C modulo the alphabet size. */
@@ -72,7 +72,7 @@ class Permutation {
             cyclearray [x] = cyclearray [x].replaceAll("\\)","" );
             for (int y =0; y < cyclearray[x].length(); y++) {
                 if (cyclearray[x].charAt(y) == cchar){
-                    base = cyclearray[x].charAt( wrap(y-1) % cyclearray[x].length() );
+                    base = cyclearray[x].charAt(Rotor.remainder((y-1),cyclearray[x].length()));
                     if (_alphabet.toInt(base) == -1) {
                         return c;
                     }
