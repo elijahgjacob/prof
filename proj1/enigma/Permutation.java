@@ -50,18 +50,16 @@ class Permutation {
      * alphabet size.
      */
     int permute(int p) {
-        String[] cyclearray = _cycles.split("\\)\\(");
-        char pchar = _alphabet.toChar(wrap(p));
+        String[] cyclearray = _cycles.split("\\) *\\(");
         char base = 0;
         for (int x = 0; x < cyclearray.length; x++) {
             cyclearray[x] = cyclearray[x].replaceAll("\\(", "");
             cyclearray[x] = cyclearray[x].replaceAll("\\)", "");
             for (int y = 0; y < cyclearray[x].length(); y++) {
-                if (cyclearray[x].charAt(y) == pchar) {
+                if (_alphabet.toInt(cyclearray[x].charAt(y)) == wrap(p)) {
                     base = cyclearray[x].charAt(Rotor.remainder((y + 1), cyclearray[x].length()));
-                    return p;
+                    return _alphabet.toInt(base);
                 }
-                return _alphabet.toInt(base);
             }
         }
         return p;
@@ -73,7 +71,7 @@ class Permutation {
      * to  C modulo the alphabet size.
      */
     int invert(int c) {
-        String[] cyclearray = _cycles.split("\\)\\(");
+        String[] cyclearray = _cycles.split("\\) *\\(");
         char cchar = _alphabet.toChar(wrap(c));
         char base;
         for (int x = 0; x < cyclearray.length; x++) {
