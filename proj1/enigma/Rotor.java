@@ -8,14 +8,13 @@ import static enigma.EnigmaException.*;
 class Rotor {
     private Permutation _permutation;
     private final String _name;
-    protected int _setting;
-
+    private int _nting;
 
     /** A rotor named NAME whose permutation is given by PERM. */
     Rotor(String name, Permutation perm) {
         _name = name;
         _permutation = perm;
-        _setting = 0;
+        _nting = 0;
     }
 
     /** Return my name. */
@@ -55,13 +54,14 @@ class Rotor {
 
     /** Set setting() to POSN.  */
     void set(int posn) {
-        _setting = posn;
+        _setting = _permutation.wrap(posn);
     }
 
     /** Set setting() to character CPOSN. */
     void set(char cposn) {
-        _setting = permutation().alphabet().toInt(cposn);
+        _setting = _permutation.alphabet().toInt(cposn);
     }
+
 
     public static int remainder(int p, int size){
         int i = p % size;
@@ -74,15 +74,15 @@ class Rotor {
     /** Return the conversion of P (an integer in the range 0..size()-1)
      *  according to my permutation. */
     int convertForward(int p) {
-        int val = _permutation.permute((p + _setting) % size());
-        return remainder(val-_setting,size());
+        int val = _permutation.permute((p + _setting)-size() % size());
+        return _permutation.wrap(val - _setting);
     }
 
     /** Return the conversion of E (an integer in the range 0..size()-1)
      *  according to the inverse of my permutation. */
     int convertBackward(int e) {
-        int val = _permutation.invert((e + _setting) % size());
-        return remainder(val-_setting,size());
+        int val = _permutation.invert((e + _setting)-size() % size());
+        return _permutation.wrap(val - _setting);
     }
 
     /** Returns the positions of the notches, as a string giving the letters
