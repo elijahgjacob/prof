@@ -9,10 +9,11 @@ class MovingRotor extends Rotor {
 
     private String _notches;
     private int _setting;
+    Rotor rotor;
 
     /** A rotor named NAME whose permutation in its default setting is
      *  PERM, and whose notches are at the positions indicated in NOTCHES.
-     *  The Rotor is initally in its 0 setting (first character of its
+     *  The Rotor is initially in its 0 setting (first character of its
      *  alphabet).
      */
     MovingRotor(String name, Permutation perm, String notches) {
@@ -22,9 +23,9 @@ class MovingRotor extends Rotor {
 
     @Override
     void advance() {
-        _setting += 1;
-        int move = permutation().wrap(_setting);
-        super.set(move);
+        int move = permutation().wrap(_setting +1);
+        set(move);
+//        _setting = move;
     }
 
     @Override
