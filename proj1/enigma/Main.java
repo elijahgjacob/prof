@@ -3,9 +3,11 @@ package enigma;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 import ucb.util.CommandArgs;
 
 import static enigma.EnigmaException.*;
@@ -83,7 +85,8 @@ public final class Main {
      *  results to _output. */
     private void process() {
         Machine enigma = readConfig();
-
+        String e = "Rotors not valid";
+        String a = " not in alphabet";
         while (_input.hasNextLine()) {
             String nextLine = _input.nextLine();
             if (nextLine.contains("*")) {
@@ -91,12 +94,12 @@ public final class Main {
             } else {
                 for (int x = 0; x < nextLine.length(); x++) {
                     if (!_alphabet.contains(nextLine.charAt(x)) && nextLine.charAt(x) != ' ') {
-                        throw new EnigmaException(nextLine.charAt(x) + " not in alphabet");
+                        throw new EnigmaException(nextLine.charAt(x) + a);
                     }
                 }
 
-                if (!enigma.Rotorflag()) {
-                    throw new EnigmaException("rotors not valid");
+                if (!enigma.rotorFlag()) {
+                    throw new EnigmaException(e);
                 }
                 printMessageLine(enigma.convert(nextLine));
             }
@@ -107,22 +110,26 @@ public final class Main {
      *  file _config. */
     private Machine readConfig() {
         try {
+            boolean flag = false;
             _alphabet = new Alphabet(_config.next());
             String numRotors = _config.next();
             String numPawls = _config.next();
             int rotorcount = Integer.parseInt(numRotors);
             int pawlcount = Integer.parseInt(numPawls);
             Collection<Rotor> allRotors = new ArrayList<>();
-            if (pawlcount+1 < rotorcount){
-                throw new EnigmaException("There is an error with the rotor and pawl input in the conf. file");
+            if (pawlcount + 1 < rotorcount) {
+                flag = true;
+                throw new EnigmaException("Error: with rotor and pawl in conf. file");
             }
-            else if (!_config.hasNext()){
+            if (!_config.hasNext()) {
+                flag = true;
                 throw new EnigmaException("No Rotors available");
             }
-            else if (allRotors.size()< pawlcount){
+            if (allRotors.size() < pawlcount) {
+                flag = true;
                 throw new EnigmaException("You need more rotors");
             }
-            else {
+            if (flag = false) {
                 allRotors.add(readRotor());
             }
             return new Machine(_alphabet, rotorcount, pawlcount, allRotors);
@@ -136,15 +143,15 @@ public final class Main {
         try {
             String rotorName = _config.next();
             String rotorConf = _config.next();
-            String cycles ="";
+            String cycles = "";
             while (_config.hasNext()) {
-                String _next = _config.next();
+                this._next = _config.next();
             }
             Permutation perm = new Permutation(cycles, _alphabet);
             if (rotorConf.startsWith("M")) {
                 String notches = rotorConf.substring(1);
                 return new MovingRotor(rotorName, perm, notches);
-            } else if (rotorConf.startsWith("N")){
+            } else if (rotorConf.startsWith("N")) {
                 return new FixedRotor(rotorName, perm);
             } else {
                 return new Reflector(rotorName, perm);
@@ -154,18 +161,18 @@ public final class Main {
         }
     }
 
-    /** Checks if every char in INPUUT is in B alphabet. @return*/
+    /** Checks that every character is in the alphabet*/
     private void charalpha(String str) {
         for (int x = 0; x < str.length(); x++) {
             if (!(_alphabet.contains(str.charAt(x)))) {
-                throw new EnigmaException(str + "make sure all of the characters are also in the Alphabet");
+                throw new EnigmaException(str + "ensure all characters are also in the Alphabet");
             }
         }
     }
 
     private void isInvalid(String str) {
         if (!str.equals("*")) {
-            throw new EnigmaException("Incorrect first input line");
+            throw new EnigmaException("Incorrect first line");
         }
     }
 

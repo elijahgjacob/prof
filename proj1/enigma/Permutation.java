@@ -1,9 +1,4 @@
 package enigma;
-
-import enigma.Alphabet;
-
-import java.util.ArrayList;
-
 import static enigma.EnigmaException.*;
 
 /** Represents a permutation of a range of integers starting at 0 corresponding
@@ -61,12 +56,10 @@ class Permutation {
                     base = cyclearray[x].charAt(Rotor.remainder((y + 1), cyclearray[x].length()));
                     return _alphabet.toInt(base);
                 }
-                }
             }
+        }
         return p;
     }
-
-
     /**
      * Return the result of applying the inverse of this permutation
      * to  C modulo the alphabet size.
@@ -127,7 +120,7 @@ class Permutation {
     boolean derangement() {
         for (int i = 0; i < alphabet().size(); i++) {
             char c = alphabet().toChar(i);
-            if (c == permute(c)){
+            if (c == permute(c)) {
                 return false;
             }
         }

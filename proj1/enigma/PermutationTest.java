@@ -84,4 +84,11 @@ public class PermutationTest {
                 assertFalse(perm.derangement());
             }
 
+            @Test
+            public void checkSimpleTransform(){
+                perm = new Permutation("(BZT)(SH)(UAM)(JPLWQ)(EFN)", UPPER);
+                String translated = "MZCDFNGSIPKWUEOLJRHBAVLXYT";
+                checkPerm("simple", UPPER_STRING, translated);
+            }
+
         }

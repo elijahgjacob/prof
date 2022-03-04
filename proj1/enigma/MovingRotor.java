@@ -23,7 +23,7 @@ class MovingRotor extends Rotor {
 
     @Override
     void advance() {
-        int move = permutation().wrap(_setting +1);
+        int move = permutation().wrap(_setting + 1);
         set(move);
     }
 

@@ -63,7 +63,7 @@ class Rotor {
     }
 
 
-    public static int remainder(int p, int size){
+    public static int remainder(int p, int size) {
         int i = p % size;
         if (i < 0) {
             i += size;
@@ -74,14 +74,14 @@ class Rotor {
     /** Return the conversion of P (an integer in the range 0..size()-1)
      *  according to my permutation. */
     int convertForward(int p) {
-        int val = _permutation.permute((p + _setting)-size() % size());
+        int val = _permutation.permute((p + _setting) - size() % size());
         return _permutation.wrap(val - _setting);
     }
 
     /** Return the conversion of E (an integer in the range 0..size()-1)
      *  according to the inverse of my permutation. */
     int convertBackward(int e) {
-        int val = _permutation.invert((e + _setting)-size() % size());
+        int val = _permutation.invert((e + _setting) - size() % size());
         return _permutation.wrap(val - _setting);
     }
 

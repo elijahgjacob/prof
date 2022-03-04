@@ -20,10 +20,5 @@ public class UnitTest {
                 MachineTest.class));
     }
 
-    @Test
-    public void squareTest() {
-
-    }
-
 
 }
