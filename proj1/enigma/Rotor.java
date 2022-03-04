@@ -8,13 +8,13 @@ import static enigma.EnigmaException.*;
 class Rotor {
     private Permutation _permutation;
     private final String _name;
-    private int _nting;
+    private int _setting;
 
     /** A rotor named NAME whose permutation is given by PERM. */
     Rotor(String name, Permutation perm) {
         _name = name;
         _permutation = perm;
-        _nting = 0;
+        _setting = 0;
     }
 
     /** Return my name. */

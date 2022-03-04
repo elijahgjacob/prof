@@ -64,7 +64,6 @@ public class PermutationTest {
                 assertEquals('B', perm.permute('A'));
                 assertEquals('A', perm.permute('B'));
                 assertEquals('E', perm.permute('G'));
-
             }
 
 

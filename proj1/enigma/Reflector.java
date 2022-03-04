@@ -2,7 +2,7 @@ package enigma;
 
 import static enigma.EnigmaException.*;
 
-/** Class that represents a reflector in the enigma.
+/** Class that represents a nor in the enigma.
  *  @author
  */
 class Reflector extends FixedRotor {
@@ -11,16 +11,19 @@ class Reflector extends FixedRotor {
      * is PERM. */
     Reflector(String name, Permutation perm) {
         super(name, perm);
-        // FIXME
     }
 
-    // FIXME?
 
     @Override
     void set(int posn) {
         if (posn != 0) {
-            throw error("reflector has only one position");
+            throw error("Reflector has only one position");
         }
+    }
+
+    @Override
+    boolean reflecting(){
+        return true;
     }
 
 }

@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 import ucb.util.CommandArgs;
 
@@ -85,16 +82,50 @@ public final class Main {
      *  file _config and apply it to the messages in _input, sending the
      *  results to _output. */
     private void process() {
-        // FIXME
+        Machine enigma = readConfig();
+
+        while (_input.hasNextLine()) {
+            String nextLine = _input.nextLine();
+            if (nextLine.contains("*")) {
+                setUp(enigma, nextLine);
+            } else {
+                for (int x = 0; x < nextLine.length(); x++) {
+                    if (!_alphabet.contains(nextLine.charAt(x)) && nextLine.charAt(x) != ' ') {
+                        throw new EnigmaException(nextLine.charAt(x) + " not in alphabet");
+                    }
+                }
+
+                if (!enigma.Rotorflag()) {
+                    throw new EnigmaException("rotors not valid");
+                }
+                printMessageLine(enigma.convert(nextLine));
+            }
+        }
     }
 
     /** Return an Enigma machine configured from the contents of configuration
      *  file _config. */
     private Machine readConfig() {
         try {
-            // FIXME
-            _alphabet = new Alphabet();
-            return new Machine(_alphabet, 2, 1, null);
+            _alphabet = new Alphabet(_config.next());
+            String numRotors = _config.next();
+            String numPawls = _config.next();
+            int rotorcount = Integer.parseInt(numRotors);
+            int pawlcount = Integer.parseInt(numPawls);
+            Collection<Rotor> allRotors = new ArrayList<>();
+            if (pawlcount+1 < rotorcount){
+                throw new EnigmaException("There is an error with the rotor and pawl input in the conf. file");
+            }
+            else if (!_config.hasNext()){
+                throw new EnigmaException("No Rotors available");
+            }
+            else if (allRotors.size()< pawlcount){
+                throw new EnigmaException("You need more rotors");
+            }
+            else {
+                allRotors.add(readRotor());
+            }
+            return new Machine(_alphabet, rotorcount, pawlcount, allRotors);
         } catch (NoSuchElementException excp) {
             throw error("configuration file truncated");
         }
@@ -103,16 +134,75 @@ public final class Main {
     /** Return a rotor, reading its description from _config. */
     private Rotor readRotor() {
         try {
-            return null; // FIXME
+            String rotorName = _config.next();
+            String rotorConf = _config.next();
+            String cycles ="";
+            while (_config.hasNext()) {
+                String _next = _config.next();
+            }
+            Permutation perm = new Permutation(cycles, _alphabet);
+            if (rotorConf.startsWith("M")) {
+                String notches = rotorConf.substring(1);
+                return new MovingRotor(rotorName, perm, notches);
+            } else if (rotorConf.startsWith("N")){
+                return new FixedRotor(rotorName, perm);
+            } else {
+                return new Reflector(rotorName, perm);
+            }
         } catch (NoSuchElementException excp) {
             throw error("bad rotor description");
+        }
+    }
+
+    /** Checks if every char in INPUUT is in B alphabet. @return*/
+    private void charalpha(String str) {
+        for (int x = 0; x < str.length(); x++) {
+            if (!(_alphabet.contains(str.charAt(x)))) {
+                throw new EnigmaException(str + "make sure all of the characters are also in the Alphabet");
+            }
+        }
+    }
+
+    private void isInvalid(String str) {
+        if (!str.equals("*")) {
+            throw new EnigmaException("Incorrect first input line");
+        }
+    }
+
+    private void plgCheck(String str) {
+        if (!str.matches("\\(.+\\)")) {
+            throw new EnigmaException("Check plugboard settings.");
         }
     }
 
     /** Set M according to the specification given on SETTINGS,
      *  which must have the format specified in the assignment. */
     private void setUp(Machine M, String settings) {
-        // FIXME
+        String[] spltInpt = settings.split("\\s+");
+
+        isInvalid(spltInpt[0]);
+
+        String[] rotorLst = new String[M.numRotors()];
+
+        for (int i = 0; i < M.numRotors(); i++) {
+            rotorLst[i] = spltInpt[i + 1];
+        }
+
+        M.insertRotors(rotorLst);
+        charalpha(spltInpt[M.numRotors() + 1]);
+        M.setRotors(spltInpt[M.numRotors() + 1]);
+
+        Permutation plugboard;
+
+        String swaps = "";
+        for (int i = M.numRotors()/* + x*/; i < spltInpt.length; i++) {
+            charalpha(spltInpt[i].substring(1, spltInpt[i].length() - 1));
+            plgCheck(spltInpt[i]);
+            swaps += spltInpt[i];
+        }
+        plugboard = new Permutation(swaps, _alphabet);
+
+        M.setPlugboard(plugboard);
     }
 
     /** Return true iff verbose option specified. */
@@ -123,7 +213,19 @@ public final class Main {
     /** Print MSG in groups of five (except that the last group may
      *  have fewer letters). */
     private void printMessageLine(String msg) {
-        // FIXME
+//        msg = msg.replace(" ","");
+        int strlen = msg.length();
+        int i = 0;
+        for (int x = 0; x < strlen / 5 + 1; x++) {
+            for (int y = 0; y < 5; y++) {
+                if (i == msg.length()) {
+                    break;
+                }
+                System.out.println(msg.charAt(i));
+                i++;
+            }
+            System.out.println(" ");
+        }
     }
 
     /** Alphabet used in this machine. */
@@ -135,9 +237,15 @@ public final class Main {
     /** Source of machine configuration. */
     private Scanner _config;
 
+    /** Next value of _input to be accessed across classes. */
+    private String _next;
+
     /** File for encoded/decoded messages. */
     private PrintStream _output;
 
     /** True if --verbose specified. */
     private static boolean _verbose;
+
+    private ArrayList<Rotor> _allRotors;
+
 }

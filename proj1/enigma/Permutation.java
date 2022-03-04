@@ -51,6 +51,7 @@ class Permutation {
      */
     int permute(int p) {
         String[] cyclearray = _cycles.split("\\) *\\(");
+        char pchar = _alphabet.toChar(wrap(p));
         char base = 0;
         for (int x = 0; x < cyclearray.length; x++) {
             cyclearray[x] = cyclearray[x].replaceAll("\\(", "");
@@ -60,8 +61,8 @@ class Permutation {
                     base = cyclearray[x].charAt(Rotor.remainder((y + 1), cyclearray[x].length()));
                     return _alphabet.toInt(base);
                 }
+                }
             }
-        }
         return p;
     }
 

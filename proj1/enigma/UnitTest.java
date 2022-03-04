@@ -1,5 +1,6 @@
 package enigma;
 
+import org.junit.Test;
 import ucb.junit.textui;
 
 /** The suite of all JUnit tests for the enigma package.
@@ -18,5 +19,11 @@ public class UnitTest {
                 MovingRotorTest.class,
                 MachineTest.class));
     }
+
+    @Test
+    public void squareTest() {
+
+    }
+
 
 }

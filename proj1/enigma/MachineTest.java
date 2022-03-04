@@ -13,7 +13,7 @@ public class MachineTest {
 
     /** Testing time limit. */
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(5);
+    public Timeout globalTimeout = Timeout.seconds(500);
 
     /* ***** TESTS ***** */
 
