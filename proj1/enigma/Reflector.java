@@ -11,10 +11,6 @@ class Reflector extends FixedRotor {
      * is PERM. */
     Reflector(String name, Permutation perm) {
         super(name, perm);
-        _perm = perm;
-        if (perm.derangement()) == true){
-            throw error ("xyz");
-        }
     }
 
 
@@ -27,7 +23,7 @@ class Reflector extends FixedRotor {
 
     @Override
     boolean reflecting(){
-
+        return true;
     }
 
 }
