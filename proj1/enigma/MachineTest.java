@@ -65,7 +65,7 @@ public class MachineTest {
     @Test
     public void testConvertChar() {
         Machine mach = mach1();
-        mach.setPlugboard(new Permutation("(YF) (HZ)", AZ));
+        mach.setPlugboard(new Permutation("(AF) (HZ)", AZ));
         assertEquals(25, mach.convert(24));
     }
 

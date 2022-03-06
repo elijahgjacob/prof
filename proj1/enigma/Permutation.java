@@ -1,12 +1,15 @@
 package enigma;
-import static enigma.EnigmaException.*;
 
 /** Represents a permutation of a range of integers starting at 0 corresponding
  *  to the characters of an alphabet.
  *  @author Elijah G. Jacob
  */
 class Permutation {
+    /** A var to init the alphabet.
+     */
     private Alphabet _alphabet;
+    /** A var to init the cycle.
+     */
     private String _cycles;
 
     Permutation(String cycles, Alphabet alphabet) {
@@ -53,7 +56,8 @@ class Permutation {
             cyclearray[x] = cyclearray[x].replaceAll("\\)", "");
             for (int y = 0; y < cyclearray[x].length(); y++) {
                 if (_alphabet.toInt(cyclearray[x].charAt(y)) == wrap(p)) {
-                    base = cyclearray[x].charAt(Rotor.remainder((y + 1), cyclearray[x].length()));
+                    int cyclelen =  cyclearray[x].length();
+                    base = cyclearray[x].charAt(Rotor.rem((y + 1), cyclelen));
                     return _alphabet.toInt(base);
                 }
             }
@@ -73,7 +77,8 @@ class Permutation {
             cyclearray[x] = cyclearray[x].replaceAll("\\)", "");
             for (int y = 0; y < cyclearray[x].length(); y++) {
                 if (cyclearray[x].charAt(y) == cchar) {
-                    base = cyclearray[x].charAt(Rotor.remainder((y - 1), cyclearray[x].length()));
+                    int cyclelen =  cyclearray[x].length();
+                    base = cyclearray[x].charAt(Rotor.rem((y - 1), cyclelen));
                     if (_alphabet.toInt(base) == -1) {
                         return c;
                     }

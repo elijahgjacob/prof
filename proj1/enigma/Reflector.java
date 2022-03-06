@@ -2,9 +2,9 @@ package enigma;
 
 import static enigma.EnigmaException.*;
 
-/** Class that represents a nor in the enigma.
- *  @author
- */
+/** Class that represents a reflector in the enigma.
+*  @author Elijah G. Jacob
+*/
 class Reflector extends FixedRotor {
 
     /** A non-moving rotor named NAME whose permutation at the 0 setting
@@ -12,7 +12,6 @@ class Reflector extends FixedRotor {
     Reflector(String name, Permutation perm) {
         super(name, perm);
     }
-
 
     @Override
     void set(int posn) {
@@ -22,8 +21,7 @@ class Reflector extends FixedRotor {
     }
 
     @Override
-    boolean reflecting(){
+    boolean reflecting() {
         return true;
     }
-
 }

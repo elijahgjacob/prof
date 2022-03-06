@@ -7,9 +7,15 @@ import static enigma.EnigmaException.*;
  */
 class MovingRotor extends Rotor {
 
+    /** A var to init notches.
+     */
     private String _notches;
+    /** A var to init settings.
+     */
     private int _setting;
-    Rotor rotor;
+    /** A var of obj rotor.
+     */
+    private Rotor rotor;
 
     /** A rotor named NAME whose permutation in its default setting is
      *  PERM, and whose notches are at the positions indicated in NOTCHES.
@@ -20,19 +26,23 @@ class MovingRotor extends Rotor {
         super(name, perm);
         _notches = notches;
     }
-
+    /** Advances the rotor by one.
+     */
     @Override
     void advance() {
         int move = permutation().wrap(_setting + 1);
         set(move);
     }
 
+    /** Rotates the rotor by one.
+     */
     @Override
     boolean rotates() {
         return true;
     }
 
-
+    /** Checks if the rotor is at a notch.
+     */
     @Override
     boolean atNotch() {
         String c = Character.toString(alphabet().toChar(_setting));

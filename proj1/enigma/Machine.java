@@ -1,8 +1,6 @@
 package enigma;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
-
 import static enigma.EnigmaException.*;
 
 /** Class that represents a complete enigma machine.
@@ -13,25 +11,34 @@ class Machine<Msg> {
      * Alphabet of my rotors.
      */
     private final Alphabet _alphabet;
+
     /**
-     * The number of rotors
+     * The number of rotors.
      */
+
     private int _numRotors;
     /**
-     * The number of pawls
+     * The number of pawls.
      */
     private int _pawls;
     /**
-     * The rotors in iterable form
+     * The rotors in iterable form.
      */
     private Rotor [] _allRotors;
     /**
-     * The plugboard permutations*/
+     * The plugboard permutations. */
     private Permutation _plugboard;
-    private int convertedmsg;
-    private String msg;
+    /**
+     * The converted message. */
+    private int convertedmsg1;
+    /**
+     * The initial message . */
+    private String firstmsg;
+    /**
+     * The utilized rotors. */
     private Rotor [] _usedRotors;
-    static HashMap<String, Rotor> rotorMap = new HashMap<>();
+    /** A hashmap for the  rotors. */
+    private static HashMap<String, Rotor> rotorMap = new HashMap<>();
 
 
     /**
@@ -74,7 +81,7 @@ class Machine<Msg> {
         boolean flag = true;
 
         if (_usedRotors.length != _numRotors) {
-            throw new EnigmaException("Wrong number of rotors");
+            throw new EnigmaException("Incorrect number of rotors");
         }
 
         for (int x = 0; x < _usedRotors.length; x++) {
@@ -92,16 +99,12 @@ class Machine<Msg> {
                 rotating++;
             }
         }
-//        still = numRotors() - reflector - rotating;
         if (reflector != 1) {
-            throw error("Wrong number of reflectors");
+            throw error("Incorrect number of reflectors");
         }
         if (rotating != numPawls()) {
-            throw error("Wrong number of moving rotors");
+            throw error("Incorrect number of moving rotors");
         }
-//        if (still != (numRotors() - numPawls())) {
-//            throw error("Wrong number of fixed rotors");
-//        }
         return flag;
     }
 
@@ -112,11 +115,12 @@ class Machine<Msg> {
         rotorFlag();
         for (int x = 0; x < _usedRotors.length; x++) {
             if (_usedRotors[x] == null) {
-                throw new EnigmaException("Error with input. Check the input file");
+                throw new EnigmaException("Error: Check the input file");
             }
             for (x = 0; x < rotors.length; x++) {
                 for (Object current : _allRotors) {
-                    if (rotors[x].equals(((Rotor) current).name().toUpperCase())) {
+                    String uppername = ((Rotor) current).name().toUpperCase();
+                    if (rotors[x].equals(uppername)) {
                         _usedRotors[x] = (Rotor) current;
                     }
                 }
@@ -171,7 +175,7 @@ class Machine<Msg> {
         for (x = _usedRotors.length - 1; x >= 0; x--) {
             c = _usedRotors[x].convertForward(c);
         }
-        for (x = 1; x <= _usedRotors.length - 1; x++) {
+        for (x = 0; x <= _usedRotors.length - 1; x++) {
             c = _usedRotors[x].convertBackward(c);
         }
         return c;
@@ -181,26 +185,27 @@ class Machine<Msg> {
         String convertedmsg = " ";
         char [] charArray = msg.toCharArray();
         for (int x = 0; x < charArray.length; x++) {
-            convertedmsg += _alphabet.toChar(convert(_alphabet.toInt(charArray[x])));
+            int alphabetlett = _alphabet.toInt(charArray[x]);
+            this.convertedmsg1 += _alphabet.toChar(convert(alphabetlett));
         }
         return convertedmsg;
     }
 
     private void advanceRotors() {
         boolean [] advance =  new boolean [_usedRotors.length];
-        advance [_usedRotors.length-1] = true;
+        advance [_usedRotors.length - 1] = true;
         for (int x = 1; x < _usedRotors.length - 1; x++) {
-            if (_usedRotors[x+1].atNotch()) {
+            if (_usedRotors[x + 1].atNotch()) {
                 advance [x] = true;
             }
         }
-        for (int x = 2; x < _usedRotors.length; x++) {
-            if (_usedRotors[x].atNotch()&& _usedRotors[x-1].rotates()) {
+        for (int x = 2; x < _usedRotors.length - 1; x++) {
+            if (_usedRotors[x].atNotch() &&  _usedRotors[x - 1].rotates()) {
                 advance [x] = true;
             }
         }
-        for (int x = 1; x < _usedRotors.length - 1; x++){
-            if (advance[x]){
+        for (int x = 0; x < _usedRotors.length; x++) {
+            if (advance[x]) {
                 _usedRotors[x].advance();
             }
         }

@@ -4,7 +4,9 @@ package enigma;
  *  to and from indices into the alphabet.
  *  @author P.N.Hilfinger
  */
+
 class Alphabet {
+    /** A string of all chars. */
     private String _chars;
 
     /** A new alphabet containing CHARS. The K-th character has index

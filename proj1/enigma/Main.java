@@ -93,8 +93,10 @@ public final class Main {
                 setUp(enigma, nextLine);
             } else {
                 for (int x = 0; x < nextLine.length(); x++) {
-                    if (!_alphabet.contains(nextLine.charAt(x)) && nextLine.charAt(x) != ' ') {
-                        throw new EnigmaException(nextLine.charAt(x) + a);
+                    if (!_alphabet.contains(nextLine.charAt(x))) {
+                        if (nextLine.charAt(x) != ' ') {
+                            throw new EnigmaException(nextLine.charAt(x) + a);
+                        }
                     }
                 }
 
@@ -119,7 +121,7 @@ public final class Main {
             Collection<Rotor> allRotors = new ArrayList<>();
             if (pawlcount + 1 < rotorcount) {
                 flag = true;
-                throw new EnigmaException("Error: with rotor and pawl in conf. file");
+                throw new EnigmaException("Err: rotor and pawl in conf. file");
             }
             if (!_config.hasNext()) {
                 flag = true;
@@ -129,7 +131,7 @@ public final class Main {
                 flag = true;
                 throw new EnigmaException("You need more rotors");
             }
-            if (flag = false) {
+            if (!flag) {
                 allRotors.add(readRotor());
             }
             return new Machine(_alphabet, rotorcount, pawlcount, allRotors);
@@ -161,14 +163,14 @@ public final class Main {
         }
     }
 
-    /** Checks that every character is in the alphabet*/
     private void charalpha(String str) {
         for (int x = 0; x < str.length(); x++) {
             if (!(_alphabet.contains(str.charAt(x)))) {
-                throw new EnigmaException(str + "ensure all characters are also in the Alphabet");
+                throw new EnigmaException(str + "Chars in cycle but not alpha");
             }
         }
     }
+
 
     private void isInvalid(String str) {
         if (!str.equals("*")) {
@@ -202,7 +204,7 @@ public final class Main {
         Permutation plugboard;
 
         String swaps = "";
-        for (int i = M.numRotors()/* + x*/; i < spltInpt.length; i++) {
+        for (int i = M.numRotors(); i < spltInpt.length; i++) {
             charalpha(spltInpt[i].substring(1, spltInpt[i].length() - 1));
             plgCheck(spltInpt[i]);
             swaps += spltInpt[i];
@@ -220,7 +222,6 @@ public final class Main {
     /** Print MSG in groups of five (except that the last group may
      *  have fewer letters). */
     private void printMessageLine(String msg) {
-//        msg = msg.replace(" ","");
         int strlen = msg.length();
         int i = 0;
         for (int x = 0; x < strlen / 5 + 1; x++) {
@@ -253,6 +254,7 @@ public final class Main {
     /** True if --verbose specified. */
     private static boolean _verbose;
 
+    /** List to show all Rotors. */
     private ArrayList<Rotor> _allRotors;
 
 }
