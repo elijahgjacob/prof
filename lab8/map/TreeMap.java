@@ -1,5 +1,7 @@
 package map;
 
+import org.checkerframework.checker.units.qual.K;
+
 public class TreeMap<K extends Comparable<K>, V> implements SimpleMap<K, V> {
     @Override
     public void put(K key, V value) {
@@ -25,9 +27,20 @@ public class TreeMap<K extends Comparable<K>, V> implements SimpleMap<K, V> {
      * right descendant based on the rules of BSTs.
      */
     private TreeMapNode putHelper(TreeMapNode node, K key, V value) {
-        // FIXME
-        return null;
-    }
+        if (node == null){
+            node = new TreeMapNode(key, value, null, null);
+        }
+        else if (node._key.compareTo(key) < 0) {
+            node._right = putHelper(node._right, key, value);
+        }
+        else if (node._key.compareTo(key) > 0) {
+            node._left = putHelper(node._left, key, value);
+        }
+        else if (node._key.compareTo(key) == 0){
+            node._value = value;
+        }
+        return node;
+}
 
     /**
      * Returns the value associated with key from either node or a descendant
@@ -38,8 +51,17 @@ public class TreeMap<K extends Comparable<K>, V> implements SimpleMap<K, V> {
      * called on either the right or left descendant based on the rules of BSTs.
      */
     private V getHelper(TreeMapNode node, K key) {
-        // FIXME
-        return null;
+        if (node == null){
+            return null;
+        }
+        else if (node._key.compareTo(key) < 0 && node._right != null) {
+            return getHelper(node._right, key);
+        }
+        else if (node._key.compareTo(key) > 0 && node._left != null) {
+            return getHelper(node._left, key);
+        }
+        return node._value;
+
     }
 
     private TreeMapNode _root;
