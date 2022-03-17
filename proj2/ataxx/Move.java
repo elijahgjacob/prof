@@ -4,6 +4,7 @@
 
 package ataxx;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -11,7 +12,7 @@ import static java.lang.Math.abs;
 
 /** Represents an Ataxx move. There is one Move object created for
  *  each distinct Move.
- *  @author
+ *  @author P.N. Hilfinger
  */
 class Move {
 
@@ -31,8 +32,8 @@ class Move {
         _row1 = (char) (row1 + '1' - 2);
         _fromIndex = row0 * EXTENDED_SIDE + col0;
         _toIndex = row1 * EXTENDED_SIDE + col1;
-        _isExtend = false; // FIXME
-        _isJump = false; // FIXME
+        _isExtend = isExtend();
+        _isJump = isJump();
     }
 
     /** A pass. */
@@ -81,12 +82,23 @@ class Move {
 
     /** Return true if this is an extension (move to adjacent square). */
     boolean isExtend() {
-        return _isExtend;
+        //extends if the absolute difference between sqrt((r2c2)^2 - (r1c1)^2) is either = 1
+        distance = (char) Math.sqrt((Math.pow(col1() - col0(), 2) + Math.pow(row1() - row0(), 2)));
+        if (distance == 1 || distance == Math.sqrt(2)) {
+            return true;
+        }
+        return false;
     }
 
     /** Return true if this is a jump (move to adjacent square). */
     boolean isJump() {
-        return _isJump;
+        distance = (char) Math.sqrt((Math.pow(col1()-col0(),2)+ Math.pow(row1()-row0(),2)));
+        while (row1() - row0() > 1 || col1() - col0() > 1) {
+            if (distance == 2 || distance == Math.sqrt(8)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Returns from column.  Undefined if a pass. */
@@ -121,9 +133,22 @@ class Move {
         return _toIndex;
     }
 
+    void addChanged(Integer index) {
+        changed.add(index);
+    }
+
+    ArrayList<Integer> getChanged() {
+        return changed;
+    }
+
     @Override
     public String toString() {
-        return ""; // FIXME
+        if (isPass()) {
+            return "-";
+        } else {
+            stringform = String.valueOf(_col0) + String.valueOf(_row0) + "-" + String.valueOf(_col1) + String.valueOf(_row1);
+        }
+        return stringform;
     }
 
     /** Syntax of a move.  Groups capture row and column. */
@@ -145,8 +170,17 @@ class Move {
     /** Move characteristics, indicating whether move is extension or jump. */
     private boolean _isExtend, _isJump;
 
-    /** From and two squares, or 0s if a pass. */
+    /** From and to squares, or 0s if a pass. */
     private char _col0, _row0, _col1, _row1;
+
+    /** Distance between two points  */
+    private char distance;
+
+    /** Input in string format  */
+    private String stringform = "";
+
+    /** /** Array list of pieces that have been changed with a move */
+    private ArrayList<Integer> changed = new ArrayList<Integer>();
 
     /** The set of all Moves other than pass, indexed by from and to column and
      *  row positions. */

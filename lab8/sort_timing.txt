@@ -11,7 +11,7 @@ Q: For any given sorting algorithm, does increasing the array size always mean t
 A: No. There are bottlenecks in the algorithms. They are most noticeable in the BubbleSort algorithm at points where N = 605,1505 and 2605. Right after these bottlenecks, at N just after these points the sorting algorithmtakes less time.
 
 Q: How does changing nrepeats change the plot?
-A: Increasing nrepeats relieves these bottlenecks
+A: Increasing nrepeats relieves these bottlenecks.
 
 Q: Is your plot the exact same as your partner's plot, even with the same values of ntrials, by, and nrepeats?
 A: Since my nrepeats is much higher, each of my lines seem to be much smoother than for a lower level of nrepeats which my partner had on his graph.

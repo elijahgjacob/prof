@@ -106,7 +106,6 @@ class AI extends Player {
             default -> 0;
             };
         }
-
         return 0; // FIXME
     }
 
