@@ -49,6 +49,63 @@ class Board {
     /** Number of consecutive non-extending moves before game ends. */
     static final int JUMP_LIMIT = 25;
 
+    /** For reasons of efficiency in copying the board,
+     *  we use a 1D array to represent it, using the usual access
+     *  algorithm: row r, column c => index(r, c).
+     *
+     *  Next, instead of using a 7x7 board, we use an 11x11 board in
+     *  which the outer two rows and columns are blocks, and
+     *  row 2, column 2 actually represents row 0, column 0
+     *  of the real board.  As a result of this trick, there is no
+     *  need to special-case being near the edge: we don't move
+     *  off the edge because it looks blocked.
+     *
+     *  Using characters as indices, it follows that if 'a' <= c <= 'g'
+     *  and '1' <= r <= '7', then row r, column c of the board corresponds
+     *  to _board[(c -'a' + 2) + 11 (r - '1' + 2) ]. */
+    private PieceColor[] _board;
+
+    /** Player that is next to move. */
+    private PieceColor _whoseMove;
+
+    /** Number of consecutive non-extending Jumps since the
+     *  last clear or the beginning of the game. */
+    private int _numJumps;
+
+    /** Number of consecutive moves since the
+     *  last clear or the beginning of the game. */
+    private int _numMoves;
+
+    /** Total number of unblocked squares. */
+    private int _totalOpen;
+
+    /** Number of blue and red pieces, indexed by the ordinal positions of
+     *  enumerals BLUE and RED. */
+    private int[] _numPieces = new int[BLUE.ordinal() + 1];
+
+    /** Set to winner when game ends (EMPTY if tie).  Otherwise is null. */
+    private PieceColor _winner;
+
+    /** List of all (non-undone) moves since the last clear or beginning of
+     *  the game. */
+    private ArrayList<Move> _allMoves; //didn't need to use
+
+    /* The undo stack. We keep a stack of squares that have changed and
+     * their previous contents.  Any given move may involve several such
+     * changes, so we mark the start of the changes for each move (including
+     * passes) with a null. */
+
+    /** Stack of linearized indices of squares that have been modified and
+     *  not undone. Nulls mark the beginnings of full moves. */
+    private Stack<Integer> _undoSquares = new Stack<Integer>(); //didn't need to use
+    /** Stack of pieces formally at corresponding squares in _UNDOSQUARES. */
+    private Stack<PieceColor> _undoPieces = new Stack<PieceColor>();  //didn't need to use
+
+    /** Stack of pieces formally at corresponding squares in _UNDOSQUARES. */
+    private Stack<PieceColor[]> _boardStack = new Stack<>();
+
+
+
     /** A new, cleared board in the initial configuration. */
     Board() {
         _board  = new PieceColor[EXTENDED_SIDE * EXTENDED_SIDE];
@@ -70,7 +127,6 @@ class Board {
         _undoSquares = board0._undoSquares; //changed var to object of PieceColor
         _undoPieces = board0._undoPieces;
         _totalOpen = SIDE * SIDE;
-        //_redPieces = board0.redPieces();
         // FIXME
         setNotifier(NOP);
     }
@@ -267,6 +323,7 @@ class Board {
 
     /** Make the MOVE on this Board, assuming it is legal. */ // FIXME
     void makeMove(Move move) {
+        startUndo();
         if (!legalMove(move)) {
             throw error("Illegal move: %s", move);
         }
@@ -274,9 +331,8 @@ class Board {
             pass();
             return;
         }
-        _allMoves.add(move);
+        //_allMoves.add(move);
         _numMoves +=1;
-        startUndo();
         PieceColor opponent = _whoseMove.opposite();
         set(move.toIndex(), _whoseMove);
         for (int x =-1; x<2; x++) {
@@ -311,6 +367,7 @@ class Board {
         announce();
     }
 
+
     /** Update to indicate that the current player passes, assuming it
      *  is legal to do so. Passing is undoable. */ // FIXME+
     void pass() {
@@ -322,49 +379,47 @@ class Board {
         announce();
     }
 
-    /** Undo the last move. */
+    /** Undo the last move. */  // FIXME
     void undo() {
-        // FIXME
-        if (_numMoves == 0) {
-            return;
+        _board = _boardStack.pop();
+        if (_numJumps > 0){
+            _numJumps -= 1;
         }
-        _numMoves -= 1;
-        for (Integer i : _allMoves.get(_allMoves.size() - 1).getChanged()) {
-            set(i, get(i).opposite());
+        _numPieces = new int[BLUE.ordinal() + 1];
+        int max = 101;
+        int start = 24;
+        while (start < max) {
+            for (int y = start; y < start + 7; y++) {
+                if (get(y) == BLUE){
+                    incrPieces(BLUE, 1);
+                } else if (get(y) == RED){
+                    incrPieces(RED, 1);
+                } else if (get(y) == EMPTY){
+                    incrPieces(EMPTY, 1);
+                } else {
+                    incrPieces(BLOCKED, 1);
+                }
+            }
+            start += 11;
         }
-        // while the index != null
-        // undo square at that index = undo piece at that index
-        // move the piece back to the original place
-        // change the initial colors to the opposite
-        // remove the
-        _undoPieces.pop();
-        _undoPieces.pop();
-        _undoPieces.pop();
-
-        _undoSquares.pop();
-        _undoSquares.pop();
-
         _whoseMove = _whoseMove.opposite();
-        _allMoves.remove(_allMoves.size() - 1);
-        _winner = null;
         _numMoves -= 1;
+        _winner = null;
         announce();
     }
 
     /** Indicate beginning of a move in the undo stack. See the
      * _undoSquares and _undoPieces instance variable comments for
-     * details on how the beginning of moves are marked. */
-    private void startUndo() {        // FIXME
-        _undoSquares.add(_numJumps);
-        _undoSquares.add(null);
-
-
+     * details on how the beginning of moves are marked.
+     * @return*/ //FIXME
+    private void startUndo() {
+        PieceColor[] clone = _board.clone();
+        _boardStack.push(clone);
     }
 
-    /** Add an undo action for changing SQ on current board. */
-    private void addUndo(int sq) {        // FIXME
-        _undoSquares.add(sq);
-        _undoPieces.add(get(sq));
+
+    /** Add an undo action for changing SQ on current board. */ //did not use
+    private void addUndo(int sq) {  //FIXME
     }
 
     /** Return true iff it is legal to place a block at C R. */ //FIXME+
@@ -503,58 +558,4 @@ class Board {
 
     /** Use _notifier.accept(this) to announce changes to this board. */
     private Consumer<Board> _notifier;
-
-    /** For reasons of efficiency in copying the board,
-     *  we use a 1D array to represent it, using the usual access
-     *  algorithm: row r, column c => index(r, c).
-     *
-     *  Next, instead of using a 7x7 board, we use an 11x11 board in
-     *  which the outer two rows and columns are blocks, and
-     *  row 2, column 2 actually represents row 0, column 0
-     *  of the real board.  As a result of this trick, there is no
-     *  need to special-case being near the edge: we don't move
-     *  off the edge because it looks blocked.
-     *
-     *  Using characters as indices, it follows that if 'a' <= c <= 'g'
-     *  and '1' <= r <= '7', then row r, column c of the board corresponds
-     *  to _board[(c -'a' + 2) + 11 (r - '1' + 2) ]. */
-    private final PieceColor[] _board;
-
-    /** Player that is next to move. */
-    private PieceColor _whoseMove;
-
-    /** Number of consecutive non-extending Jumps since the
-     *  last clear or the beginning of the game. */
-    private int _numJumps;
-
-    /** Number of consecutive moves since the
-     *  last clear or the beginning of the game. */
-    private int _numMoves;
-
-    /** Total number of unblocked squares. */
-    private int _totalOpen;
-
-    /** Number of blue and red pieces, indexed by the ordinal positions of
-     *  enumerals BLUE and RED. */
-    private int[] _numPieces = new int[BLUE.ordinal() + 1];
-
-    /** Set to winner when game ends (EMPTY if tie).  Otherwise is null. */
-    private PieceColor _winner;
-
-    /** List of all (non-undone) moves since the last clear or beginning of
-     *  the game. */
-    private ArrayList<Move> _allMoves;
-
-    /* The undo stack. We keep a stack of squares that have changed and
-     * their previous contents.  Any given move may involve several such
-     * changes, so we mark the start of the changes for each move (including
-     * passes) with a null. */
-
-    /** Stack of linearized indices of squares that have been modified and
-     *  not undone. Nulls mark the beginnings of full moves. */
-    private Stack<Integer> _undoSquares = new Stack<Integer>();
-    /** Stack of pieces formally at corresponding squares in _UNDOSQUARES. */
-    private Stack<PieceColor> _undoPieces = new Stack<PieceColor>();
-
-
 }
