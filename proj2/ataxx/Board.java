@@ -63,10 +63,13 @@ class Board {
         _board = board0._board.clone();
         _whoseMove= board0._whoseMove;
         _numMoves = board0._numMoves;
-        _numPieces = board0._numPieces;
+        for (int x = 0; x < _numPieces.length; x++){
+            _numPieces[x] = board0._numPieces[x];
+        }
         _numJumps = board0._numJumps;
         _undoSquares = board0._undoSquares; //changed var to object of PieceColor
         _undoPieces = board0._undoPieces;
+        _totalOpen = SIDE * SIDE;
         //_redPieces = board0.redPieces();
         // FIXME
         setNotifier(NOP);
@@ -89,6 +92,8 @@ class Board {
         _whoseMove = RED;
         _numMoves = 0;
         _numJumps = 0;
+        _numPieces [2] = 2;
+        _numPieces [3] = 2;
         int x;
         for (x=0; x< 121; x++) {
             _board[x] = BLOCKED;
@@ -114,10 +119,6 @@ class Board {
      *  having been MAX_JUMPS consecutive jumps without intervening extends,
      *  or if neither player can move and both have the same number of pieces.*/
     PieceColor getWinner() {
-        boolean winflag = false;
-        if (_numJumps >= JUMP_LIMIT){
-            return EMPTY;
-        }
         return _winner;
     }
 
@@ -185,12 +186,14 @@ class Board {
 
     /** Return true iff MOVE is legal on the current board. */ //FIXME+
     boolean legalMove(Move move) {
-        if (move != null) { //legal move
+        if (move != null && _winner == null) { //legal move and no winner
             if (_board[move.fromIndex()] != _whoseMove) { // if the piece is that color
                 return false;
-            } else if (move.isJump() || move.isExtend()) { //if the move is a jump or an extend
-                if (_board[move.toIndex()] == EMPTY) { //if board is empty at that spot
-                    return true;
+            } else {
+                if (!move.isPass()) {
+                    if (_board[move.toIndex()] == EMPTY) { //if board is empty at that spot
+                        return true;
+                    }
                 }
             }
         }
@@ -276,23 +279,35 @@ class Board {
         startUndo();
         PieceColor opponent = _whoseMove.opposite();
         set(move.toIndex(), _whoseMove);
-        if (move.isJump()) {
-            _numJumps += 1;
-            _board[move.fromIndex()] = EMPTY;
-        } else {
-            _numJumps = 0;
-            incrPieces(_whoseMove, 1);
-        }
         for (int x =-1; x<2; x++) {
             for (int y = -1; y < 2; y++) {
                 int neighborix = neighbor(move.toIndex(), x, y);
                 if (get(neighborix) == opponent) {
                     set(neighborix, _whoseMove);
+                    incrPieces(_whoseMove, 1);
+                    incrPieces(_whoseMove.opposite(), - 1);
                     move.addChanged(neighborix);
                 }
             }
         }
+        if (move.isJump()) {
+            _numJumps += 1;
+            set(move.fromIndex(), EMPTY);
+        } else {
+            _numJumps = 0;
+            incrPieces(_whoseMove, 1);
+        }
         _whoseMove = opponent;
+        if (!canMove(_whoseMove) &!canMove(_whoseMove.opposite())) {
+            if (_numJumps >= JUMP_LIMIT || redPieces() == bluePieces()) {
+                _winner = EMPTY;
+            }
+            if (redPieces() > bluePieces()) {
+                _winner = RED;
+            } else {
+                _winner = BLUE;
+            }
+        }
         announce();
     }
 
@@ -317,7 +332,11 @@ class Board {
         for (Integer i : _allMoves.get(_allMoves.size() - 1).getChanged()) {
             set(i, get(i).opposite());
         }
-
+        // while the index != null
+        // undo square at that index = undo piece at that index
+        // move the piece back to the original place
+        // change the initial colors to the opposite
+        // remove the
         _undoPieces.pop();
         _undoPieces.pop();
         _undoPieces.pop();
@@ -328,24 +347,24 @@ class Board {
         _whoseMove = _whoseMove.opposite();
         _allMoves.remove(_allMoves.size() - 1);
         _winner = null;
+        _numMoves -= 1;
         announce();
     }
 
     /** Indicate beginning of a move in the undo stack. See the
      * _undoSquares and _undoPieces instance variable comments for
      * details on how the beginning of moves are marked. */
-    private void startUndo() {
-        // FIXME
+    private void startUndo() {        // FIXME
+        _undoSquares.add(_numJumps);
         _undoSquares.add(null);
 
 
     }
 
     /** Add an undo action for changing SQ on current board. */
-    private void addUndo(int sq) {
-        // FIXME
+    private void addUndo(int sq) {        // FIXME
         _undoSquares.add(sq);
-        _undoPieces.add(_board[sq]);
+        _undoPieces.add(get(sq));
     }
 
     /** Return true iff it is legal to place a block at C R. */ //FIXME+
@@ -375,10 +394,19 @@ class Board {
         if (legalBlock(c, r)) {
             if (legalBlock(colsref, r) && legalBlock(c, rowsref)) {
                 unrecordedSet(c, r, BLOCKED);
-                unrecordedSet(colsref, r, BLOCKED);
-                unrecordedSet(c, rowsref, BLOCKED);
-                unrecordedSet(colsref, rowsref, BLOCKED);
-
+                _totalOpen -=1;
+                if (get (colsref, r ) != BLOCKED) {
+                    unrecordedSet(colsref, r, BLOCKED);
+                    _totalOpen -= 1;
+                }
+                if (get (c, rowsref) != BLOCKED) {
+                    unrecordedSet(c, rowsref, BLOCKED);
+                    _totalOpen -= 1;
+                }
+                if (get (colsref, rowsref) != BLOCKED) {
+                    unrecordedSet(colsref, rowsref, BLOCKED);
+                    _totalOpen -= 1;
+                }
             }
         }
         if (!canMove(RED) && !canMove(BLUE)) {
@@ -395,27 +423,6 @@ class Board {
 
     /** Return total number of unblocked squares. */
     int totalOpen() {
-        _numPieces[EMPTY.ordinal()] = 0;
-        int max = 101;
-        int start = 24;
-        while (start < max) {
-            for (int y = start; y < start + 7; y++) {
-                if (get(y)== EMPTY) {
-                    _numPieces[EMPTY.ordinal()]+=1 ;
-                }
-                if (get(y)== BLOCKED) {
-                    _numPieces[BLOCKED.ordinal()]+=1 ;
-                }
-                if (get(y)== RED) {
-                    _numPieces[RED.ordinal()]+=1 ;
-                }
-                if (get(y)== BLUE) {
-                    _numPieces[BLUE.ordinal()]+=1 ;
-                }
-            }
-            start += 11;
-        }
-        _totalOpen = numPieces(EMPTY);
         return _totalOpen;
     }
 

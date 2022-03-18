@@ -82,9 +82,11 @@ class Move {
 
     /** Return true if this is an extension (move to adjacent square). */
     boolean isExtend() {
-        //extends if the absolute difference between sqrt((r2c2)^2 - (r1c1)^2) is either = 1
-        distance = (char) Math.sqrt((Math.pow(col1() - col0(), 2) + Math.pow(row1() - row0(), 2)));
-        if (distance == 1 || distance == Math.sqrt(2)) {
+        int distance = abs(_fromIndex - _toIndex);
+        if (distance == 1 || distance == 10) {
+            return true;
+        }
+        if (distance ==11 || distance == 12){
             return true;
         }
         return false;
@@ -92,11 +94,18 @@ class Move {
 
     /** Return true if this is a jump (move to adjacent square). */
     boolean isJump() {
-        distance = (char) Math.sqrt((Math.pow(col1()-col0(),2)+ Math.pow(row1()-row0(),2)));
-        while (row1() - row0() > 1 || col1() - col0() > 1) {
-            if (distance == 2 || distance == Math.sqrt(8)) {
-                return true;
-            }
+        int distance = abs(_fromIndex - _toIndex);
+        if (distance == 2){
+            return true;
+        }
+        if (distance >= 20 && distance <= 24){
+            return true;
+        }
+        if (distance == 13) {
+            return true;
+        }
+        if (distance == 9) {
+            return true;
         }
         return false;
     }
