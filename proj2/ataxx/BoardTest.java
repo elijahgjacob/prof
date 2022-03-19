@@ -543,4 +543,27 @@ public class BoardTest {
             {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, RED},
             {BLUE, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, RED}
     };
+
+    @Test
+    public void testFullBoard() {
+        Board b = new Board();
+        b.setBlock("b1");
+        b.setBlock("c1");
+        b.setBlock("a2");
+        b.setBlock("c2");
+        b.setBlock("a3");
+        b.setBlock("b3");
+        b.setBlock("a4");
+        b.setBlock("b4");
+        b.setBlock("c4");
+
+        String[] moves = {
+                "a7-b6",
+                "g7-f6",
+                "b6-c5"
+        };
+        makeMoves(b, moves);
+        System.out.print(b);
+    }
+
 }

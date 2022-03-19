@@ -336,7 +336,7 @@ class Board {
         }
         _whoseMove = opponent;
         if (!canMove(_whoseMove) &!canMove(_whoseMove.opposite())) {
-            if (_numJumps >= JUMP_LIMIT || redPieces() == bluePieces()) {
+            if (_numJumps >= JUMP_LIMIT || openPieces() ==0 && redPieces() == bluePieces()) {
                 _winner = EMPTY;
             }
             if (redPieces() > bluePieces()) {
@@ -467,9 +467,9 @@ class Board {
                 }
             }
         }
-        if (!canMove(RED) && !canMove(BLUE)) {
-            _winner = EMPTY;
-        }
+        //if (!canMove(RED) && !canMove(BLUE)) {
+        //    _winner = EMPTY;
+        //}
 
         announce();
     }
