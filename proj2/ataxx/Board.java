@@ -245,7 +245,6 @@ class Board {
     /** Return true iff player WHO can move, ignoring whether it is
      *  that player's move and whether the game is over. */// FIXME+
     boolean canMove(PieceColor who) {
-        who = whoseMove();
         for (int x = 0; x < _board.length; x++) {
             if (_board[x] == who) {
                 for (int colsaway = 0; colsaway < 2 ; colsaway++) {
