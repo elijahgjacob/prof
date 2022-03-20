@@ -39,70 +39,93 @@ import static ataxx.GameException.error;
 
 class Board {
 
-    /** Number of squares on a side of the board. */
+    /**
+     * Number of squares on a side of the board.
+     */
     static final int SIDE = Move.SIDE;
 
-    /** Length of a side + an artificial 2-deep border region.
-     * This is unrelated to a move that is an "extend". */
+    /**
+     * Length of a side + an artificial 2-deep border region.
+     * This is unrelated to a move that is an "extend".
+     */
     static final int EXTENDED_SIDE = Move.EXTENDED_SIDE;
 
-    /** Number of consecutive non-extending moves before game ends. */
+    /**
+     * Number of consecutive non-extending moves before game ends.
+     */
     static final int JUMP_LIMIT = 25;
 
-    /** For reasons of efficiency in copying the board,
-     *  we use a 1D array to represent it, using the usual access
-     *  algorithm: row r, column c => index(r, c).
-     *
-     *  Next, instead of using a 7x7 board, we use an 11x11 board in
-     *  which the outer two rows and columns are blocks, and
-     *  row 2, column 2 actually represents row 0, column 0
-     *  of the real board.  As a result of this trick, there is no
-     *  need to special-case being near the edge: we don't move
-     *  off the edge because it looks blocked.
-     *
-     *  Using characters as indices, it follows that if 'a' <= c <= 'g'
-     *  and '1' <= r <= '7', then row r, column c of the board corresponds
-     *  to _board[(c -'a' + 2) + 11 (r - '1' + 2) ]. */
+    /**
+     * For reasons of efficiency in copying the board,
+     * we use a 1D array to represent it, using the usual access
+     * algorithm: row r, column c => index(r, c).
+     * <p>
+     * Next, instead of using a 7x7 board, we use an 11x11 board in
+     * which the outer two rows and columns are blocks, and
+     * row 2, column 2 actually represents row 0, column 0
+     * of the real board.  As a result of this trick, there is no
+     * need to special-case being near the edge: we don't move
+     * off the edge because it looks blocked.
+     * <p>
+     * Using characters as indices, it follows that if 'a' <= c <= 'g'
+     * and '1' <= r <= '7', then row r, column c of the board corresponds
+     * to _board[(c -'a' + 2) + 11 (r - '1' + 2) ].
+     */
     private PieceColor[] _board;
 
-    /** Player that is next to move. */
+    /**
+     * Player that is next to move.
+     */
     private PieceColor _whoseMove;
 
-    /** Number of consecutive non-extending Jumps since the
-     *  last clear or the beginning of the game. */
+    /**
+     * Number of consecutive non-extending Jumps since the
+     * last clear or the beginning of the game.
+     */
     private int _numJumps;
 
-    /** Number of consecutive moves since the
-     *  last clear or the beginning of the game. */
+    /**
+     * Number of consecutive moves since the
+     * last clear or the beginning of the game.
+     */
     private int _numMoves;
 
-    /** Total number of unblocked squares. */
+    /**
+     * Total number of unblocked squares.
+     */
     private int _totalOpen;
 
-    /** Number of blue and red pieces, indexed by the ordinal positions of
-     *  enumerals BLUE and RED. */
+    /**
+     * Number of blue and red pieces, indexed by the ordinal positions of
+     * enumerals BLUE and RED.
+     */
     private int[] _numPieces = new int[BLUE.ordinal() + 1];
 
-    /** Set to winner when game ends (EMPTY if tie).  Otherwise is null. */
+    /**
+     * Set to winner when game ends (EMPTY if tie).  Otherwise is null.
+     */
     private PieceColor _winner;
 
 
-
-    /** A new, cleared board in the initial configuration. */
+    /**
+     * A new, cleared board in the initial configuration.
+     */
     Board() {
-        _board  = new PieceColor[EXTENDED_SIDE * EXTENDED_SIDE];
+        _board = new PieceColor[EXTENDED_SIDE * EXTENDED_SIDE];
         setNotifier(NOP);
         clear();
         _allMoves = new ArrayList<>();
     }
 
-    /** A board whose initial contents are copied from BOARD0, but whose
-     *  undo history is clear, and whose notifier does nothing. */  // FIXME
+    /**
+     * A board whose initial contents are copied from BOARD0, but whose
+     * undo history is clear, and whose notifier does nothing.
+     */  // FIXME
     Board(Board board0) {
         _board = board0._board.clone();
-        _whoseMove= board0._whoseMove;
+        _whoseMove = board0._whoseMove;
         _numMoves = board0._numMoves;
-        for (int x = 0; x < _numPieces.length; x++){
+        for (int x = 0; x < _numPieces.length; x++) {
             _numPieces[x] = board0._numPieces[x];
         }
         _numJumps = board0._numJumps;
@@ -112,27 +135,33 @@ class Board {
         setNotifier(NOP);
     }
 
-    /** Return the linearized index of square COL ROW. */
+    /**
+     * Return the linearized index of square COL ROW.
+     */
     static int index(char col, char row) {
         return (row - '1' + 2) * EXTENDED_SIDE + (col - 'a' + 2);
     }
 
-    /** Return the linearized index of the square that is DC columns and DR
-     *  rows away from the square with index SQ. */
+    /**
+     * Return the linearized index of the square that is DC columns and DR
+     * rows away from the square with index SQ.
+     */
     static int neighbor(int sq, int dc, int dr) {
         return sq + dc + dr * EXTENDED_SIDE;
     }
 
-    /** Clear me to my starting state, with pieces in their initial
-     *  positions and no blocks. */ //FIXME+
+    /**
+     * Clear me to my starting state, with pieces in their initial
+     * positions and no blocks.
+     */ //FIXME+
     void clear() {
         _whoseMove = RED;
         _numMoves = 0;
         _numJumps = 0;
-        _numPieces [2] = 2;
-        _numPieces [3] = 2;
+        _numPieces[2] = 2;
+        _numPieces[3] = 2;
         int x;
-        for (x=0; x< 121; x++) {
+        for (x = 0; x < 121; x++) {
             _board[x] = BLOCKED;
         }
         int max = 101;
@@ -151,77 +180,103 @@ class Board {
         announce();
     }
 
-    /** Return the winner, if there is one yet, and otherwise null.  Returns
-     *  EMPTY in the case of a draw, which can happen as a result of there
-     *  having been MAX_JUMPS consecutive jumps without intervening extends,
-     *  or if neither player can move and both have the same number of pieces.*/
+    /**
+     * Return the winner, if there is one yet, and otherwise null.  Returns
+     * EMPTY in the case of a draw, which can happen as a result of there
+     * having been MAX_JUMPS consecutive jumps without intervening extends,
+     * or if neither player can move and both have the same number of pieces.
+     */
     PieceColor getWinner() {
         return _winner;
     }
 
-    /** Return number of red pieces on the board. */
+    /**
+     * Return number of red pieces on the board.
+     */
     int redPieces() {
         return numPieces(RED);
     }
 
-    /** Return number of blue pieces on the board. */
+    /**
+     * Return number of blue pieces on the board.
+     */
     int bluePieces() {
         return numPieces(BLUE);
     }
 
-    /** Return number of empty pieces on the board. */
+    /**
+     * Return number of empty pieces on the board.
+     */
     int openPieces() {
         return numPieces(EMPTY);
     }
 
-    /** Return number of COLOR pieces on the board. */
+    /**
+     * Return number of COLOR pieces on the board.
+     */
     int numPieces(PieceColor color) {
         return _numPieces[color.ordinal()];
     }
 
-    /** Increment numPieces(COLOR) by K. */
+    /**
+     * Increment numPieces(COLOR) by K.
+     */
     private void incrPieces(PieceColor color, int k) {
         _numPieces[color.ordinal()] += k;
     }
 
-    /** The current contents of square CR, where 'a'-2 <= C <= 'g'+2, and
-     *  '1'-2 <= R <= '7'+2.  Squares outside the range a1-g7 are all
-     *  BLOCKED.  Returns the same value as get(index(C, R)). */
+    /**
+     * The current contents of square CR, where 'a'-2 <= C <= 'g'+2, and
+     * '1'-2 <= R <= '7'+2.  Squares outside the range a1-g7 are all
+     * BLOCKED.  Returns the same value as get(index(C, R)).
+     */
     PieceColor get(char c, char r) {
         return _board[index(c, r)];
     }
 
-    /** Return the current contents of square with linearized index SQ. */
+    /**
+     * Return the current contents of square with linearized index SQ.
+     */
     PieceColor get(int sq) {
         return _board[sq];
     }
 
-    /** Set get(C, R) to V, where 'a' <= C <= 'g', and
-     *  '1' <= R <= '7'. This operation is undoable. */
+    /**
+     * Set get(C, R) to V, where 'a' <= C <= 'g', and
+     * '1' <= R <= '7'. This operation is undoable.
+     */
     private void set(char c, char r, PieceColor v) {
         set(index(c, r), v);
     }
 
-    /** Set square with linearized index SQ to V.  This operation is
-     *  undoable. */
+    /**
+     * Set square with linearized index SQ to V.  This operation is
+     * undoable.
+     */
     private void set(int sq, PieceColor v) {
         addUndo(sq);
         _board[sq] = v;
     }
 
-    /** Set square at C R to V (not undoable). This is used for changing
-     * contents of the board without updating the undo stacks. */
+    /**
+     * Set square at C R to V (not undoable). This is used for changing
+     * contents of the board without updating the undo stacks.
+     */
     private void unrecordedSet(char c, char r, PieceColor v) {
         _board[index(c, r)] = v;
     }
 
-    /** Set square at linearized index SQ to V (not undoable). This is used
-     * for changing contents of the board without updating the undo stacks. */
+    /**
+     * Set square at linearized index SQ to V (not undoable). This is used
+     * for changing contents of the board without updating the undo stacks.
+     */
     private void unrecordedSet(int sq, PieceColor v) {
         _board[sq] = v;
     }
 
-    /** Return true iff MOVE is legal on the current board. */ //FIXME+
+    /**
+     * Return true iff MOVE is legal on the current board.
+     */ //FIXME+
     boolean legalMove(Move move) {
         if (move != null && _winner == null) { //legal move and no winner
             if (_board[move.fromIndex()] != _whoseMove) { // if the piece is that color
@@ -237,18 +292,22 @@ class Board {
         return false;
     }
 
-    /** Return true iff C0 R0 - C1 R1 is legal on the current board. */
+    /**
+     * Return true iff C0 R0 - C1 R1 is legal on the current board.
+     */
     boolean legalMove(char c0, char r0, char c1, char r1) {
         return legalMove(Move.move(c0, r0, c1, r1));
     }
 
-    /** Return true iff player WHO can move, ignoring whether it is
-     *  that player's move and whether the game is over. */// FIXME+
+    /**
+     * Return true iff player WHO can move, ignoring whether it is
+     * that player's move and whether the game is over.
+     */// FIXME+
     boolean canMove(PieceColor who) {
         for (int x = 0; x < _board.length; x++) {
             if (_board[x] == who) {
-                for (int colsaway = 0; colsaway < 2 ; colsaway++) {
-                    for (int rowsaway = 0; rowsaway < 2; rowsaway++){
+                for (int colsaway = 0; colsaway < 2; colsaway++) {
+                    for (int rowsaway = 0; rowsaway < 2; rowsaway++) {
                         if (_board[neighbor(x, colsaway, rowsaway)] == EMPTY) {
                             return true;
                         }
@@ -260,39 +319,48 @@ class Board {
     }
 
 
-
-    /** Return the color of the player who has the next move.  The
-     *  value is arbitrary if the game is over. */
+    /**
+     * Return the color of the player who has the next move.  The
+     * value is arbitrary if the game is over.
+     */
     PieceColor whoseMove() {
         return _whoseMove;
     }
 
-    /** Return total number of moves and passes since the last
-     *  clear or the creation of the board. */
+    /**
+     * Return total number of moves and passes since the last
+     * clear or the creation of the board.
+     */
     int numMoves() {
         return _numMoves; // FIXME D
     }
 
-    /** Return number of non-pass moves made in the current game since the
-     *  last extend move added a piece to the board (or since the
-     *  start of the game). Used to detect end-of-game. */
+    /**
+     * Return number of non-pass moves made in the current game since the
+     * last extend move added a piece to the board (or since the
+     * start of the game). Used to detect end-of-game.
+     */
     int numJumps() {
         return _numJumps;  //FIXME D
     }
 
-    /** Assuming MOVE has the format "-" or "C0R0-C1R1", make the denoted
-     *  move ("-" means "pass"). */
+    /**
+     * Assuming MOVE has the format "-" or "C0R0-C1R1", make the denoted
+     * move ("-" means "pass").
+     */
     void makeMove(String move) {
         if (move.equals("-")) {
             makeMove(Move.pass());
         } else {
             makeMove(Move.move(move.charAt(0), move.charAt(1), move.charAt(3),
-                               move.charAt(4)));
+                    move.charAt(4)));
         }
     }
 
-    /** Perform the move C0R0-C1R1, or pass if C0 is '-'.  For moves
-     *  other than pass, assumes that legalMove(C0, R0, C1, R1). */
+    /**
+     * Perform the move C0R0-C1R1, or pass if C0 is '-'.  For moves
+     * other than pass, assumes that legalMove(C0, R0, C1, R1).
+     */
     void makeMove(char c0, char r0, char c1, char r1) {
         if (c0 == '-') {
             makeMove(Move.pass());
@@ -301,7 +369,9 @@ class Board {
         }
     }
 
-    /** Make the MOVE on this Board, assuming it is legal. */ // FIXME
+    /**
+     * Make the MOVE on this Board, assuming it is legal.
+     */ // FIXME
     void makeMove(Move move) {
         startUndo();
         if (!legalMove(move)) {
@@ -312,16 +382,16 @@ class Board {
             return;
         }
         //_allMoves.add(move);
-        _numMoves +=1;
+        _numMoves += 1;
         PieceColor opponent = _whoseMove.opposite();
         set(move.toIndex(), _whoseMove);
-        for (int x =-1; x<2; x++) {
+        for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 int neighborix = neighbor(move.toIndex(), x, y);
                 if (get(neighborix) == opponent) {
                     set(neighborix, _whoseMove);
                     incrPieces(_whoseMove, 1);
-                    incrPieces(_whoseMove.opposite(), - 1);
+                    incrPieces(_whoseMove.opposite(), -1);
                     move.addChanged(neighborix);
                 }
             }
@@ -334,14 +404,27 @@ class Board {
             incrPieces(_whoseMove, 1);
         }
         _whoseMove = opponent;
-        if (!canMove(_whoseMove) &!canMove(_whoseMove.opposite())) {
-            if (_numJumps >= JUMP_LIMIT || openPieces() ==0 && redPieces() == bluePieces()) {
+
+        _winner = null;
+
+        if (_numJumps == JUMP_LIMIT) {
+            _winner = EMPTY;
+        }
+        if (_numPieces[_whoseMove.ordinal()] == 0) {
+            _winner = _whoseMove.opposite();
+        }
+        if (_numPieces[_whoseMove.opposite().ordinal()] == 0) {
+            _winner = opponent;
+        }
+        if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
+            if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]) {
                 _winner = EMPTY;
-            }
-            if (redPieces() > bluePieces()) {
-                _winner = RED;
             } else {
-                _winner = BLUE;
+                if (_numPieces[_whoseMove.ordinal()] > _numPieces[opponent.ordinal()]) {
+                    _winner = _whoseMove;
+                } else {
+                    _winner = opponent;
+                }
             }
         }
         announce();
