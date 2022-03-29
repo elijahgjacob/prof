@@ -86,7 +86,7 @@ class Move {
         if (distance == 1 || distance == 10) {
             return true;
         }
-        if (distance ==11 || distance == 12){
+        if (distance == 11 || distance == 12){
             return true;
         }
         return false;
@@ -95,7 +95,7 @@ class Move {
     /** Return true if this is a jump (move to adjacent square). */
     boolean isJump() {
         int distance = abs(_fromIndex - _toIndex);
-        if (distance == 2){
+        if (distance == 2) {
             return true;
         }
         if (distance >= 20 && distance <= 24){
@@ -167,7 +167,7 @@ class Move {
     /** Size of a side of the board. */
     static final int SIDE = 7;
 
-    /** A move*/
+    /** A move.*/
     private int move;
 
     /** Size of side of a board plus 2-deep boundary. */
@@ -185,13 +185,13 @@ class Move {
     /** From and to squares, or 0s if a pass. */
     private char _col0, _row0, _col1, _row1;
 
-    /** Distance between two points  */
+    /** Distance between two points. */
     private char distance;
 
-    /** Input in string format  */
+    /** Input in string format.  */
     private String stringform = "";
 
-    /** /** Array list of pieces that have been changed with a move */
+    /** /** Array list of pieces that have been changed with a move.*/
     private ArrayList<Integer> changed = new ArrayList<Integer>();
 
     /** The set of all Moves other than pass, indexed by from and to column and

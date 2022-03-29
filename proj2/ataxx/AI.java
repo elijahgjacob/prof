@@ -11,7 +11,7 @@ import static ataxx.PieceColor.*;
 import static java.lang.Math.max;
 
 /** A Player that computes its own moves.
- *  @author
+ *  @author Paul N. Hilfinger
  */
 class AI extends Player {
 
@@ -67,10 +67,7 @@ class AI extends Player {
      *  above. */
     private Move _lastFoundMove;
 
-    void movesArray (Board board){
-        // 1. add all often the possible moves and their associated scores to an array/hashmap
-       // 2. Alpha beta pruning process to pick the best possible route
-
+    void movesArray(Board board) {
         ArrayList<Move> movesArr = new ArrayList<>();
         for (int x = 0; x < board.length(); x++) {
             if (board.get(x) == board.whoseMove()) {
@@ -84,7 +81,7 @@ class AI extends Player {
                             char r1 = board.reverseindexr(toInd);
                             if (board.legalMove(Move.move(c0, r0, c1, r1))) {
                                 movesArr.add(Move.move(c0, r0, c1, r1));
-                           }
+                            }
                         }
                     }
                 }
@@ -152,7 +149,7 @@ class AI extends Player {
             default -> 0;
             };
         }
-        return board.bluePieces() - board.redPieces(); // FIXME
+        return board.bluePieces() - board.redPieces();
     }
 
     /** Pseudo-random number generator for move computation. */

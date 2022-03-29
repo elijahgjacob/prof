@@ -120,7 +120,7 @@ class Board {
     /**
      * A board whose initial contents are copied from BOARD0, but whose
      * undo history is clear, and whose notifier does nothing.
-     */  // FIXME
+     */
     Board(Board board0) {
         _board = board0._board.clone();
         _whoseMove = board0._whoseMove;
@@ -129,8 +129,6 @@ class Board {
             _numPieces[x] = board0._numPieces[x];
         }
         _numJumps = board0._numJumps;
-        _undoSquares = board0._undoSquares; //didn't need
-        _undoPieces = board0._undoPieces; //didn't need
         _totalOpen = SIDE * SIDE;
         setNotifier(NOP);
     }
@@ -142,12 +140,12 @@ class Board {
         return (row - '1' + 2) * EXTENDED_SIDE + (col - 'a' + 2);
     }
 
-    char reverseindexc(int sq){
-        char c = (char) ((sq - (2 * EXTENDED_SIDE  + 2))  % EXTENDED_SIDE + 'a');
+    char reverseindexc(int sq) {
+        char c = (char) ((sq - (2 * EXTENDED_SIDE  + 2)) % EXTENDED_SIDE + 'a');
         return c;
     }
     char reverseindexr(int sq){
-        char r = (char) (((sq - (2 * EXTENDED_SIDE + 2)))  / (EXTENDED_SIDE + '1'));
+        char r = (char) (((sq - (2 * EXTENDED_SIDE + 2))) / (EXTENDED_SIDE + '1'));
         return r;
     }
 
@@ -162,7 +160,7 @@ class Board {
     /**
      * Clear me to my starting state, with pieces in their initial
      * positions and no blocks.
-     */ //FIXME+
+     */
     void clear() {
         _whoseMove = RED;
         _numMoves = 0;

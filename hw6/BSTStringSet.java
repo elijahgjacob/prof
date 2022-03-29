@@ -6,9 +6,9 @@ import java.util.Stack;
 
 /**
  * Implementation of a BST based String Set.
- * @author
+ * @author Elijah G. Jacob
  */
-public class BSTStringSet implements StringSet, Iterable<String> {
+public class  BSTStringSet implements StringSet, Iterable<String> {
     /** Creates a new empty set. */
     public BSTStringSet() {
         _root = null;
@@ -16,12 +16,40 @@ public class BSTStringSet implements StringSet, Iterable<String> {
 
     @Override
     public void put(String s) {
-        // FIXME: PART A
+        if (T == null)
+            return new BSTStringSet (L, null, null);
+        if (s < T.label)
+            T.left = insert(T.left, s);
+        else
+            T.right = insert(T.right, s);
+        return T;
+    }
+
+    @Override
+    public Object find(BSTStringSet T, s){
+        while(_root != _root){
+            if(_root != null) {
+                if(_current > _root){
+                    _current = _current.left;
+                }  //else go to right tree
+                else {
+                    _root = _root.right;
+                }
+                if(_root == null){
+                    return null;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean contains(String s) {
-        return false; // FIXME: PART A
+        if (T == null || s == T.label)
+            return true;
+        else if (L < s.label)
+            return find(T.left, s);
+        else return find(T.right, s); // FIXME: PART A
     }
 
     @Override
