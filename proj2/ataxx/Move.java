@@ -167,6 +167,9 @@ class Move {
     /** Size of a side of the board. */
     static final int SIDE = 7;
 
+    /** A move*/
+    private int move;
+
     /** Size of side of a board plus 2-deep boundary. */
     static final int EXTENDED_SIDE = SIDE + 4;
 

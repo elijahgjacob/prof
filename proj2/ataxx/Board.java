@@ -142,6 +142,15 @@ class Board {
         return (row - '1' + 2) * EXTENDED_SIDE + (col - 'a' + 2);
     }
 
+    char reverseindexc(int sq){
+        char c = (char) ((sq - (2 * EXTENDED_SIDE  + 2))  % EXTENDED_SIDE + 'a');
+        return c;
+    }
+    char reverseindexr(int sq){
+        char r = (char) (((sq - (2 * EXTENDED_SIDE + 2)))  / (EXTENDED_SIDE + '1'));
+        return r;
+    }
+
     /**
      * Return the linearized index of the square that is DC columns and DR
      * rows away from the square with index SQ.
@@ -360,13 +369,15 @@ class Board {
     /**
      * Perform the move C0R0-C1R1, or pass if C0 is '-'.  For moves
      * other than pass, assumes that legalMove(C0, R0, C1, R1).
+     * @return
      */
-    void makeMove(char c0, char r0, char c1, char r1) {
+    Move makeMove(char c0, char r0, char c1, char r1) {
         if (c0 == '-') {
             makeMove(Move.pass());
         } else {
             makeMove(Move.move(c0, r0, c1, r1));
         }
+        return null;
     }
 
     /**
@@ -410,20 +421,20 @@ class Board {
         if (_numJumps == JUMP_LIMIT) {
             _winner = EMPTY;
         }
-        if (_numPieces[_whoseMove.ordinal()] == 0) {
-            _winner = _whoseMove.opposite();
+        if (_numPieces[RED.ordinal()] == 0) {
+            _winner = BLUE;
         }
-        if (_numPieces[_whoseMove.opposite().ordinal()] == 0) {
-            _winner = opponent;
+        if (_numPieces[BLUE.ordinal()] == 0) {
+            _winner = RED;
         }
         if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
             if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]) {
                 _winner = EMPTY;
             } else {
-                if (_numPieces[_whoseMove.ordinal()] > _numPieces[opponent.ordinal()]) {
-                    _winner = _whoseMove;
+                if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
+                    _winner = RED;
                 } else {
-                    _winner = opponent;
+                    _winner = BLUE;
                 }
             }
         }
@@ -643,4 +654,8 @@ class Board {
 
     /** Use _notifier.accept(this) to announce changes to this board. */
     private Consumer<Board> _notifier;
+
+    public int length() {
+        return _board.length;
+    }
 }
