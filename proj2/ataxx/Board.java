@@ -416,8 +416,14 @@ class Board {
 
         _winner = null;
 
-        if (_numJumps == JUMP_LIMIT) {
-            _winner = EMPTY;
+        if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]){
+            if (_numJumps == JUMP_LIMIT) {
+                _winner = EMPTY;
+            if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())){
+                _winner = EMPTY;
+            }
+        }
+
         }
         if (_numPieces[RED.ordinal()] == 0) {
             _winner = BLUE;
@@ -426,15 +432,12 @@ class Board {
             _winner = RED;
         }
         if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
-            if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]) {
-                _winner = EMPTY;
+            if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
+                _winner = RED;
             } else {
-                if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
-                    _winner = RED;
-                } else {
-                    _winner = BLUE;
-                }
+                _winner = BLUE;
             }
+
         }
         announce();
     }
