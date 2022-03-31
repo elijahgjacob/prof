@@ -558,9 +558,9 @@ class Board {
                 }
             }
         }
-        //if (!canMove(RED) && !canMove(BLUE)) {
-        //    _winner = EMPTY;
-        //}
+        if (!canMove(RED) && !canMove(BLUE)) {
+            _winner = EMPTY;
+        }
 
         announce();
     }

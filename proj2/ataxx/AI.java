@@ -18,7 +18,7 @@ import static java.lang.Math.min;
 class AI extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 2;
+    private static final int MAX_DEPTH = 4;
     /** A position magnitude indicating a win (for red if positive, blue
      *  if negative). */
     private static final int WINNING_VALUE = Integer.MAX_VALUE - 20;
@@ -85,6 +85,8 @@ class AI extends Player {
         /* We use WINNING_VALUE + depth as the winning value to favor
          * wins that happen sooner rather than later (depth is larger the
          * fewer moves have been made. */
+
+
         alpha = Integer.MIN_VALUE;
         beta = Integer.MAX_VALUE;
         ArrayList<Move> movesArr = new ArrayList<>();
@@ -111,6 +113,7 @@ class AI extends Player {
         if (depth == 0 || board.getWinner() != null) {
             return staticScore(board, WINNING_VALUE + depth);
         }
+
         for (int x = 0; x < movesArr.size(); x++) {
             board.makeMove(movesArr.get(x));
             if (sense == 1) {
