@@ -9,6 +9,8 @@ import java.util.Random;
 
 import static ataxx.PieceColor.*;
 import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 
 /** A Player that computes its own moves.
  *  @author Paul N. Hilfinger
@@ -16,12 +18,16 @@ import static java.lang.Math.max;
 class AI extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 4;
+    private static final int MAX_DEPTH = 2;
     /** A position magnitude indicating a win (for red if positive, blue
      *  if negative). */
     private static final int WINNING_VALUE = Integer.MAX_VALUE - 20;
     /** A magnitude greater than a normal value. */
     private static final int INFTY = Integer.MAX_VALUE;
+
+    final int alpha = Integer.MIN_VALUE;
+
+    final int beta = Integer.MAX_VALUE;
 
 
     /** A new AI for GAME that will play MYCOLOR. SEED is used to initialize
@@ -67,12 +73,26 @@ class AI extends Player {
      *  above. */
     private Move _lastFoundMove;
 
-    void movesArray(Board board) {
+    /** Find a move from position BOARD and return its value, recording
+     *  the move found in _foundMove iff SAVEMOVE. The move
+     *  should have maximal value or have value > BETA if SENSE==1,
+     *  and minimal value or value < ALPHA if SENSE==-1. Searches up to
+     *  DEPTH levels.  Searching at level 0 simply returns a static estimate
+     *  of the board value and does not set _foundMove. If the game is over
+     *  on BOARD, does not set _foundMove. */
+    private int minMax(Board board, int depth, boolean saveMove, int sense,
+                       int alpha, int beta) {
+        /* We use WINNING_VALUE + depth as the winning value to favor
+         * wins that happen sooner rather than later (depth is larger the
+         * fewer moves have been made. */
+        alpha = Integer.MIN_VALUE;
+        beta = Integer.MAX_VALUE;
         ArrayList<Move> movesArr = new ArrayList<>();
         for (int x = 0; x < board.length(); x++) {
-            if (board.get(x) == board.whoseMove()) {
-                for (int colsaway = 0; colsaway < 2; colsaway++) {
-                    for (int rowsaway = 0; rowsaway < 2; rowsaway++) {
+            PieceColor pc = board.whoseMove();
+            if (board.get(x) == pc) {
+                for (int colsaway = -1; colsaway < 2; colsaway++) {
+                    for (int rowsaway = -1; rowsaway < 2; rowsaway++) {
                         int toInd = board.neighbor(x, colsaway, rowsaway);
                         if (board.get(toInd) == EMPTY) {
                             char c0 = board.reverseindexc(x);
@@ -88,51 +108,25 @@ class AI extends Player {
             }
         }
 
-    }
-
-
-
-    /** Find a move from position BOARD and return its value, recording
-     *  the move found in _foundMove iff SAVEMOVE. The move
-     *  should have maximal value or have value > BETA if SENSE==1,
-     *  and minimal value or value < ALPHA if SENSE==-1. Searches up to
-     *  DEPTH levels.  Searching at level 0 simply returns a static estimate
-     *  of the board value and does not set _foundMove. If the game is over
-     *  on BOARD, does not set _foundMove. */
-    private int minMax(Board board, int depth, boolean saveMove, int sense,
-                       int alpha, int beta) {
-        /* We use WINNING_VALUE + depth as the winning value to favor
-         * wins that happen sooner rather than later (depth is larger the
-         * fewer moves have been made. */
-        movesArray(board);
-        ArrayList<Move> movesArr = new ArrayList<>();
         if (depth == 0 || board.getWinner() != null) {
             return staticScore(board, WINNING_VALUE + depth);
         }
         for (int x = 0; x < movesArr.size(); x++) {
             board.makeMove(movesArr.get(x));
             if (sense == 1) {
-                int bestsofar = Integer.MIN_VALUE;
-                int response = minMax(board, depth - 1, false, -1, alpha, beta);
-                if (response > alpha) {
-                    alpha = response;
-                    alpha = max(alpha, bestsofar);
-                    if (saveMove) {
-                        _lastFoundMove = movesArr.get(x);
-                    }
+                int response = minMax(board, depth - 1, false, 1, alpha, beta);
+                alpha = max(alpha, response);
+                if (saveMove) {
+                    _lastFoundMove = movesArr.get(x);
                 }
             } else {
-                int bestsofar = Integer.MAX_VALUE;
                 int response = minMax(board, depth - 1, false, -1, alpha, beta);
-                if (response < beta) {
-                    beta = response;
-                    beta = max(beta, bestsofar);
-                    if (saveMove) {
-                        _lastFoundMove = movesArr.get(x);
-                    }
+                beta = min(beta, response);
+                if (saveMove) {
+                    _lastFoundMove = movesArr.get(x);
                 }
-                board.undo();
             }
+            board.undo();
         }
         return staticScore(board, WINNING_VALUE + depth);
     }

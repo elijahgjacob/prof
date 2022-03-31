@@ -145,8 +145,9 @@ class Board {
         return c;
     }
     char reverseindexr(int sq){
-        char r = (char) (((sq - (2 * EXTENDED_SIDE + 2))) / (EXTENDED_SIDE + '1'));
-        return r;
+        return (char) ((sq / EXTENDED_SIDE) - 2 + '1');
+        // char r = (char) (((sq - (2 * EXTENDED_SIDE + 2))) / (EXTENDED_SIDE + '1'));
+        // return r;
     }
 
     /**
@@ -179,7 +180,6 @@ class Board {
             }
             start += 11;
         }
-
         unrecordedSet(24, BLUE);
         unrecordedSet(96, BLUE);
         unrecordedSet(30, RED);
@@ -313,8 +313,8 @@ class Board {
     boolean canMove(PieceColor who) {
         for (int x = 0; x < _board.length; x++) {
             if (_board[x] == who) {
-                for (int colsaway = 0; colsaway < 2; colsaway++) {
-                    for (int rowsaway = 0; rowsaway < 2; rowsaway++) {
+                for (int colsaway = -1; colsaway < 2; colsaway++) {
+                    for (int rowsaway = -1; rowsaway < 2; rowsaway++) {
                         if (_board[neighbor(x, colsaway, rowsaway)] == EMPTY) {
                             return true;
                         }
@@ -380,7 +380,7 @@ class Board {
 
     /**
      * Make the MOVE on this Board, assuming it is legal.
-     */ // FIXME
+     */
     void makeMove(Move move) {
         startUndo();
         if (!legalMove(move)) {
@@ -396,7 +396,7 @@ class Board {
         set(move.toIndex(), _whoseMove);
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
-                int neighborix = neighbor(move.toIndex(), x, y);
+                int neighborix = neighbor(move.toIndex(), x, y); //have to go through all pieces on the board and change all colors
                 if (get(neighborix) == opponent) {
                     set(neighborix, _whoseMove);
                     incrPieces(_whoseMove, 1);
