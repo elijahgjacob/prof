@@ -1,7 +1,3 @@
-/* Skeleton code copyright (C) 2008, 2022 Paul N. Hilfinger and the
- * Regents of the University of California.  Do not distribute this or any
- * derivative work without permission. */
-
 package ataxx;
 
 import java.util.ArrayList;
@@ -86,7 +82,7 @@ class Move {
         if (distance == 1 || distance == 10) {
             return true;
         }
-        if (distance == 11 || distance == 12){
+        if (distance == 11 || distance == 12) {
             return true;
         }
         return false;
@@ -98,7 +94,7 @@ class Move {
         if (distance == 2) {
             return true;
         }
-        if (distance >= 20 && distance <= 24){
+        if (distance >= 20 && distance <= 24) {
             return true;
         }
         if (distance == 13) {
@@ -155,7 +151,12 @@ class Move {
         if (isPass()) {
             return "-";
         } else {
-            stringform = String.valueOf(_col0) + String.valueOf(_row0) + "-" + String.valueOf(_col1) + String.valueOf(_row1);
+            String a = String.valueOf(_col0);
+            String b = String.valueOf(_row0);
+            String c = String.valueOf(_col1);
+            String d = String.valueOf(_row1);
+
+            stringform = a + b + c + d;
         }
         return stringform;
     }
@@ -214,3 +215,4 @@ class Move {
         }
     }
 }
+

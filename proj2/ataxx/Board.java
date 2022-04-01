@@ -1,7 +1,3 @@
-/* Skeleton code copyright (C) 2008, 2022 Paul N. Hilfinger and the
- * Regents of the University of California.  Do not distribute this or any
- * derivative work without permission. */
-
 package ataxx;
 
 import java.util.Arrays;
@@ -144,10 +140,8 @@ class Board {
         char c = (char) ((sq - (2 * EXTENDED_SIDE  + 2)) % EXTENDED_SIDE + 'a');
         return c;
     }
-    char reverseindexr(int sq){
+    char reverseindexr(int sq) {
         return (char) ((sq / EXTENDED_SIDE) - 2 + '1');
-        // char r = (char) (((sq - (2 * EXTENDED_SIDE + 2))) / (EXTENDED_SIDE + '1'));
-        // return r;
     }
 
     /**
@@ -163,28 +157,27 @@ class Board {
      * positions and no blocks.
      */
     void clear() {
-        _winner = null;
         _whoseMove = RED;
         _numMoves = 0;
         _numJumps = 0;
-        _numPieces[RED.ordinal()] = 2;
-        _numPieces[BLUE.ordinal()] = 2;
+        _numPieces[2] = 2;
+        _numPieces[3] = 2;
         int x;
-        for (x = 0; x < (EXTENDED_SIDE * EXTENDED_SIDE); x++) {
+        for (x = 0; x < 121; x++) {
             _board[x] = BLOCKED;
         }
         int max = 101;
         int start = 24;
         while (start < max) {
-            for (int y = start; y < start + SIDE; y++) {
+            for (int y = start; y < start + 7; y++) {
                 _board[y] = EMPTY;
             }
             start += 11;
         }
-        unrecordedSet(EXTENDED_SIDE*2 + 2, BLUE);
-        unrecordedSet((SIDE * SIDE * 2) - 2 , BLUE);
-        unrecordedSet(SIDE * 2 + 2, RED);
-        unrecordedSet((SIDE * SIDE * 2) - 8, RED);
+        unrecordedSet(24, BLUE);
+        unrecordedSet(96, BLUE);
+        unrecordedSet(30, RED);
+        unrecordedSet(90, RED);
         announce();
     }
 
@@ -417,13 +410,8 @@ class Board {
 
         _winner = null;
 
-        if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]){
-            if (_numJumps == JUMP_LIMIT) {
-                _winner = EMPTY;
-            if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())){
-                _winner = EMPTY;
-            }
-        }
+        if (_numJumps == JUMP_LIMIT) {
+            _winner = EMPTY;
         }
         if (_numPieces[RED.ordinal()] == 0) {
             _winner = BLUE;
@@ -432,10 +420,14 @@ class Board {
             _winner = RED;
         }
         if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
-            if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
-                _winner = RED;
-            } else if (_numPieces[RED.ordinal()] < _numPieces[BLUE.ordinal()]) {
-                _winner = BLUE;
+            if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]) {
+                _winner = EMPTY;
+            } else {
+                if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
+                    _winner = RED;
+                } else {
+                    _winner = BLUE;
+                }
             }
         }
         announce();
@@ -447,13 +439,12 @@ class Board {
     void pass() {
         assert !canMove(_whoseMove);
         _numMoves += 1;
-        _numJumps+=1;
+        _numJumps += 1;
         startUndo();
         _whoseMove = _whoseMove.opposite();
         announce();
     }
     /** START UNDO SECTION */
-
     /** List of all (non-undone) moves since the last clear or beginning of
      *  the game. */
     private ArrayList<Move> _allMoves; //didn't need to use
@@ -472,10 +463,10 @@ class Board {
     private Stack<PieceColor[]> _boardStack = new Stack<PieceColor[]>();  //didn't need to use
 
 
-    /** Undo the last move. */
+    /** Undo the last move. */  // FIXME+
     void undo() {
         _board = _boardStack.pop();
-        if (_numJumps > 0){
+        if (_numJumps > 0) {
             _numJumps -= 1;
         }
         _numPieces = new int[BLUE.ordinal() + 1];
@@ -483,11 +474,11 @@ class Board {
         int start = 24;
         while (start < max) {
             for (int y = start; y < start + 7; y++) {
-                if (get(y) == BLUE){
+                if (get(y) == BLUE) {
                     incrPieces(BLUE, 1);
-                } else if (get(y) == RED){
+                } else if (get(y) == RED) {
                     incrPieces(RED, 1);
-                } else if (get(y) == EMPTY){
+                } else if (get(y) == EMPTY) {
                     incrPieces(EMPTY, 1);
                 } else {
                     incrPieces(BLOCKED, 1);
@@ -504,7 +495,7 @@ class Board {
     /** Indicate beginning of a move in the undo stack. See the
      * _undoSquares and _undoPieces instance variable comments for
      * details on how the beginning of moves are marked.
-     * @return*/
+     * @return*/ //FIXME+
     private void startUndo() {
         PieceColor[] clone = _board.clone();
         _boardStack.push(clone);
@@ -520,7 +511,7 @@ class Board {
 
     /** Return true iff it is legal to place a block at C R. */ //FIXME+
     boolean legalBlock(char c, char r) {
-        return _numMoves== 0 && get(c, r) == EMPTY;
+        return _numMoves == 0 && get(c, r) == EMPTY;
     }
 
     /** Return true iff it is legal to place a block at CR. */
@@ -545,16 +536,16 @@ class Board {
         if (legalBlock(c, r)) {
             if (legalBlock(colsref, r) && legalBlock(c, rowsref)) {
                 unrecordedSet(c, r, BLOCKED);
-                _totalOpen -=1;
-                if (get (colsref, r ) != BLOCKED) {
+                _totalOpen -= 1;
+                if (get(colsref, r) != BLOCKED) {
                     unrecordedSet(colsref, r, BLOCKED);
                     _totalOpen -= 1;
                 }
-                if (get (c, rowsref) != BLOCKED) {
+                if (get(c, rowsref) != BLOCKED) {
                     unrecordedSet(c, rowsref, BLOCKED);
                     _totalOpen -= 1;
                 }
-                if (get (colsref, rowsref) != BLOCKED) {
+                if (get(colsref, rowsref) != BLOCKED) {
                     unrecordedSet(colsref, rowsref, BLOCKED);
                     _totalOpen -= 1;
                 }
@@ -614,20 +605,20 @@ class Board {
             out.format(" ");
             for (char c = 'a'; c <= 'g'; c += 1) {
                 switch (get(c, r)) {
-                case RED:
-                    out.format(" r");
-                    break;
-                case BLUE:
-                    out.format(" b");
-                    break;
-                case BLOCKED:
-                    out.format(" X");
-                    break;
-                case EMPTY:
-                    out.format(" -");
-                    break;
-                default:
-                    break;
+                    case RED:
+                        out.format(" r");
+                        break;
+                    case BLUE:
+                        out.format(" b");
+                        break;
+                    case BLOCKED:
+                        out.format(" X");
+                        break;
+                    case EMPTY:
+                        out.format(" -");
+                        break;
+                    default:
+                        break;
                 }
             }
             out.format("%n");

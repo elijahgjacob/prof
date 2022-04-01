@@ -558,9 +558,9 @@ public class BoardTest {
         b.setBlock("c4");
 
         String[] moves = {
-                "a7-b6",
-                "g7-f6",
-                "b6-c5"
+            "a7-b6",
+            "g7-f6",
+            "b6-c5"
         };
         makeMoves(b, moves);
         System.out.print(b);
