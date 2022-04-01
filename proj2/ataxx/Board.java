@@ -163,27 +163,28 @@ class Board {
      * positions and no blocks.
      */
     void clear() {
+        _winner = null;
         _whoseMove = RED;
         _numMoves = 0;
         _numJumps = 0;
-        _numPieces[2] = 2;
-        _numPieces[3] = 2;
+        _numPieces[RED.ordinal()] = 2;
+        _numPieces[BLUE.ordinal()] = 2;
         int x;
-        for (x = 0; x < 121; x++) {
+        for (x = 0; x < (EXTENDED_SIDE * EXTENDED_SIDE); x++) {
             _board[x] = BLOCKED;
         }
         int max = 101;
         int start = 24;
         while (start < max) {
-            for (int y = start; y < start + 7; y++) {
+            for (int y = start; y < start + SIDE; y++) {
                 _board[y] = EMPTY;
             }
             start += 11;
         }
-        unrecordedSet(24, BLUE);
-        unrecordedSet(96, BLUE);
-        unrecordedSet(30, RED);
-        unrecordedSet(90, RED);
+        unrecordedSet(EXTENDED_SIDE*2 + 2, BLUE);
+        unrecordedSet((SIDE * SIDE * 2) - 2 , BLUE);
+        unrecordedSet(SIDE * 2 + 2, RED);
+        unrecordedSet((SIDE * SIDE * 2) - 8, RED);
         announce();
     }
 
@@ -396,7 +397,7 @@ class Board {
         set(move.toIndex(), _whoseMove);
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
-                int neighborix = neighbor(move.toIndex(), x, y); //have to go through all pieces on the board and change all colors
+                int neighborix = neighbor(move.toIndex(), x, y);
                 if (get(neighborix) == opponent) {
                     set(neighborix, _whoseMove);
                     incrPieces(_whoseMove, 1);
@@ -423,7 +424,6 @@ class Board {
                 _winner = EMPTY;
             }
         }
-
         }
         if (_numPieces[RED.ordinal()] == 0) {
             _winner = BLUE;
@@ -434,10 +434,9 @@ class Board {
         if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
             if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
                 _winner = RED;
-            } else {
+            } else if (_numPieces[RED.ordinal()] < _numPieces[BLUE.ordinal()]) {
                 _winner = BLUE;
             }
-
         }
         announce();
     }
@@ -473,7 +472,7 @@ class Board {
     private Stack<PieceColor[]> _boardStack = new Stack<PieceColor[]>();  //didn't need to use
 
 
-    /** Undo the last move. */  // FIXME+
+    /** Undo the last move. */
     void undo() {
         _board = _boardStack.pop();
         if (_numJumps > 0){
@@ -505,7 +504,7 @@ class Board {
     /** Indicate beginning of a move in the undo stack. See the
      * _undoSquares and _undoPieces instance variable comments for
      * details on how the beginning of moves are marked.
-     * @return*/ //FIXME+
+     * @return*/
     private void startUndo() {
         PieceColor[] clone = _board.clone();
         _boardStack.push(clone);
