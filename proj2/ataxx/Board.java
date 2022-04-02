@@ -277,20 +277,23 @@ class Board {
 
     /**
      * Return true iff MOVE is legal on the current board.
-     */ //FIXME+
+     */
     boolean legalMove(Move move) {
-        if (move != null && _winner == null) { //legal move and no winner
-            if (_board[move.fromIndex()] != _whoseMove) { // if the piece is that color
+        if (_winner != null){
+            return false;
+        }
+        else {
+            if (move == null) {
                 return false;
-            } else {
-                if (!move.isPass()) {
-                    if (_board[move.toIndex()] == EMPTY) { //if board is empty at that spot
-                        return true;
-                    }
-                }
+            } else if (_board[move.toIndex()] != EMPTY) {
+                return false;
+            } else if (move.isPass() && canMove(_whoseMove)) {
+                return false;
+            } else if (_board[move.fromIndex()] != _whoseMove) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -384,7 +387,6 @@ class Board {
             pass();
             return;
         }
-        //_allMoves.add(move);
         _numMoves += 1;
         PieceColor opponent = _whoseMove.opposite();
         set(move.toIndex(), _whoseMove);
@@ -410,9 +412,15 @@ class Board {
 
         _winner = null;
 
-        if (_numJumps == JUMP_LIMIT) {
-            _winner = EMPTY;
-        }
+        if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]) {
+            if (_numJumps == JUMP_LIMIT) {
+                _winner = EMPTY;
+            }
+            if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
+                _winner = EMPTY;
+                }
+            }
+
         if (_numPieces[RED.ordinal()] == 0) {
             _winner = BLUE;
         }
@@ -420,14 +428,10 @@ class Board {
             _winner = RED;
         }
         if (!canMove(_whoseMove) && !canMove(_whoseMove.opposite())) {
-            if (_numPieces[RED.ordinal()] == _numPieces[BLUE.ordinal()]) {
-                _winner = EMPTY;
+            if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
+                _winner = RED;
             } else {
-                if (_numPieces[RED.ordinal()] > _numPieces[BLUE.ordinal()]) {
-                    _winner = RED;
-                } else {
-                    _winner = BLUE;
-                }
+                _winner = BLUE;
             }
         }
         announce();
@@ -435,7 +439,7 @@ class Board {
 
 
     /** Update to indicate that the current player passes, assuming it
-     *  is legal to do so. Passing is undoable. */ // FIXME+
+     *  is legal to do so. Passing is undoable. */
     void pass() {
         assert !canMove(_whoseMove);
         _numMoves += 1;

@@ -47,8 +47,8 @@ class Move {
     static Move move(char col0, char row0, char col1, char row1) {
         assert col0 >= 'a' && row0 >= '1' && col1 >= 'a' - 2 && row1 >= '1' - 2;
         return
-            ALL_MOVES[col0 - 'a' + 2][row0 - '1' + 2]
-            [col1 - 'a' + 2][row1 - '1' + 2];
+                ALL_MOVES[col0 - 'a' + 2][row0 - '1' + 2]
+                        [col1 - 'a' + 2][row1 - '1' + 2];
     }
 
     /** Return the Move denoted by STR, or null if STR is not a syntactically
@@ -60,7 +60,7 @@ class Move {
         } else if (mat.group(1) != null) {
             String moveStr = mat.group(1);
             return move(moveStr.charAt(0), moveStr.charAt(1),
-                        moveStr.charAt(3), moveStr.charAt(4));
+                    moveStr.charAt(3), moveStr.charAt(4));
         } else {
             return pass();
         }
@@ -163,7 +163,7 @@ class Move {
 
     /** Syntax of a move.  Groups capture row and column. */
     private static final Pattern MOVE_PATN =
-        Pattern.compile("([a-z][1-9a-f]-[a-z][1-9a-f])|(-)");
+            Pattern.compile("([a-z][1-9a-f]-[a-z][1-9a-f])|(-)");
 
     /** Size of a side of the board. */
     static final int SIDE = 7;
@@ -198,7 +198,7 @@ class Move {
     /** The set of all Moves other than pass, indexed by from and to column and
      *  row positions. */
     private static final Move[][][][] ALL_MOVES =
-        new Move[EXTENDED_SIDE][EXTENDED_SIDE][EXTENDED_SIDE][EXTENDED_SIDE];
+            new Move[EXTENDED_SIDE][EXTENDED_SIDE][EXTENDED_SIDE][EXTENDED_SIDE];
 
     static {
         for (int c = 2; c < SIDE + 2; c += 1) {
@@ -207,7 +207,7 @@ class Move {
                     for (int dr = -2; dr <= 2; dr += 1) {
                         if (dc != 0 || dr != 0) {
                             ALL_MOVES[c][r][c + dc][r + dr] =
-                                new Move(c, r, c + dc, r + dr);
+                                    new Move(c, r, c + dc, r + dr);
                         }
                     }
                 }
