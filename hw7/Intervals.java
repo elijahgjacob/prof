@@ -1,20 +1,19 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 /** HW #7, Sorting ranges.
- *  @author
+ *  @author Paul N. Hilfinger
   */
 public class Intervals {
     /** Assuming that INTERVALS contains two-element arrays of integers,
      *  <x,y> with x <= y, representing intervals of ints, this returns the
      *  total length covered by the union of the intervals. */
     public static int coveredLength(List<int[]> intervals) {
-        // REPLACE WITH APPROPRIATE STATEMENTS.
-        return 0;
+        intervals.sort(Comparator.comparingInt(arr -> arr[0]));
+
+
     }
 
     /** Test intervals. */

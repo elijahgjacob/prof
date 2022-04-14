@@ -15,7 +15,7 @@ public class MySortingAlgorithmsTest {
     private SortingAlgorithm[] algorithms = {
         new MySortingAlgorithms.InsertionSort(),
         new MySortingAlgorithms.SelectionSort(),
-        new MySortingAlgorithms.MergeSort(),
+        //new MySortingAlgorithms.MergeSort(),
         // new MySortingAlgorithms.CountingSort(),
         // new MySortingAlgorithms.HeapSort(),
         //new MySortingAlgorithms.QuickSort(),

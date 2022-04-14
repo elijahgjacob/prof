@@ -1,3 +1,5 @@
+import org.checkerframework.checker.units.qual.min;
+
 import java.util.Arrays;
 
 /**
@@ -42,7 +44,15 @@ public class MySortingAlgorithms {
     public static class InsertionSort implements SortingAlgorithm {
         @Override
         public void sort(int[] array, int k) {
-            // FIXME
+            for (int i = 1; i < k ; ++i) {
+                int temp = array[i];
+                int j = i - 1;
+                while (j >= 0 && array[j] > temp) {
+                    array[j + 1] = array[j];
+                    j = j - 1;
+                }
+                array[j + 1] = temp;
+            }
         }
 
         @Override
@@ -60,7 +70,18 @@ public class MySortingAlgorithms {
     public static class SelectionSort implements SortingAlgorithm {
         @Override
         public void sort(int[] array, int k) {
-            // FIXME
+            int j;
+            for (int i = 0; i < k-1; i++) {
+                int min = i;
+                for (j = i + 1; j < k; j++) {
+                    if (array[j] <= array[min]) {
+                        min = j;
+                    }
+                }
+                int temp = array[i];
+                array[i] = array[min];
+                array[min] = temp;
+            }
         }
 
         @Override
@@ -146,9 +167,48 @@ public class MySortingAlgorithms {
      * LSD Sort implementation.
      */
     public static class LSDSort implements SortingAlgorithm {
-        @Override
-        public void sort(int[] a, int k) {
-            // FIXME
+//took out an @Override
+        static int getMax (int [] arr, int k){ //finds the smallest item in the array
+            int max = arr[0];
+            for (int i = 1; i < k; i++) {
+                if (arr[i] > max)
+                    max = arr[i];
+            }
+            return max;
+        }
+
+        static void countSort(int arr[], int k, int exp) {
+            int output[] = new int[k]; // output array
+            int count[] = new int[10]; //digit array
+            for (int i =0; i < 10; i++){ //sets all elements of the count array to 0
+                count [i] = 0;
+            }
+
+            for (int i = 0; i < k; i++){ //frequency of digits are calculated
+                int z = arr[i]/exp % 10;
+                count [z] += 1 ; //populates
+            }
+
+            for (int i = 1; i < 10; i++){ //sort
+                count [i] += count [i - 1];
+            }
+
+            for (int i = k - 1; i >= 0; i--) { //Elements are placed into the array in order
+                int z = arr[i]/exp % 10;
+                output[count[z] - 1] = arr[i];
+                count[z] -= 1;
+            }
+
+            for (int i = 0; i < k; i++){
+                arr[i] = output[i];
+            }
+
+        }
+        public void sort(int[] arr, int k) {
+            int maxdig = getMax(arr, k); // Find the maximum number to know the number of digits
+            for (int exp = 1; maxdig / exp > 0; exp *= 10) { //counting sort for every digit
+                countSort(arr, k, exp);
+            }
         }
 
         @Override
