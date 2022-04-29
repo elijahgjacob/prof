@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
+import java.util.TreeMap;
 
 
 /** Assorted utilities.
@@ -189,14 +190,14 @@ class Utils {
     /* OTHER FILE UTILITIES */
 
     /** Return the concatentation of FIRST and OTHERS into a File designator,
-     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
+     *  analogous to the {@link java.nio.file.Paths#get(String, String[])}
      *  method. */
     static File join(String first, String... others) {
         return Paths.get(first, others).toFile();
     }
 
     /** Return the concatentation of FIRST and OTHERS into a File designator,
-     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
+     *  analogous to the {@link java.nio.file.Paths#get(String, String[])}
      *  method. */
     static File join(File first, String... others) {
         return Paths.get(first.getPath(), others).toFile();

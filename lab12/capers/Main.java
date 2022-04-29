@@ -52,7 +52,24 @@ public class Main {
         switch (args[0]) {
             case "story":
                 writeStory(args);
-                break;
+                break;if (args.length == 0) {
+                exitWithError("Must have at least one argument");
+            }
+            setupPersistence();
+            switch (args[0]) {
+                case "story":
+                    writeStory(args);
+                    break;
+                case "dog":
+                    makeDog(args);
+                    break;
+                case "birthday":
+                    celebrateBirthday(args);
+                    break;
+                default:
+                    exitWithError(String.format("Unknown command: %s", args[0]));
+            }
+            return;
             case "dog":
                 makeDog(args);
                 break;

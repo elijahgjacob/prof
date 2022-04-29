@@ -1,5 +1,3 @@
-import org.checkerframework.checker.units.qual.min;
-
 import java.util.Arrays;
 
 /**
@@ -96,15 +94,63 @@ public class MySortingAlgorithms {
       * not the entire algorithm, which is easier to do recursively.
       */
     public static class MergeSort implements SortingAlgorithm {
-        @Override
-        public void sort(int[] array, int k) {
-            // FIXME
+        public static void merge(int[] array, int high, int low, int mid) {
+            int k = array.length;
+            high = Integer.MIN_VALUE;
+            low = Integer.MAX_VALUE;
+            mid = Math.floorDiv(array.length, 2);
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] > high) {
+                    high = i;
+                }
+            }
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] < low) {
+                    low = i;
+                }
+            }
+            int leftArr[] = new int[mid - low + 1];
+            int rightArr[] = new int[high - mid];
+
+            for (int i = 0; i < leftArr.length; i++) {
+                leftArr[i] = array[low + i];
+            }
+            for (int i = 0; i < rightArr.length; i++) {
+                rightArr[i] = array[mid + i + 1];
+            }
+
+            int left = 0;
+            int right = 0;
+
+            for (int i = low; i < high + 1; i++) {
+                if (left < leftArr.length && right < rightArr.length) {
+                    if (leftArr[left] < rightArr[right]) {
+                        array[i] = leftArr[left];
+                        left++;
+                    } else {
+                        array[i] = rightArr[right];
+                        right++;
+                    }
+                } else if (left < leftArr.length) {
+                    array[i] = leftArr[left];
+                    left++;
+                } else if (right < rightArr.length) {
+                    array[i] = rightArr[right];
+                    right++;
+                }
+            }
+
         }
-
-        // may want to add additional methods
-
+        void sort(int[] array, int high, int low) {
+            if (high <= low) {
+                int mid = (low + high) / 2;
+                sort(array, low, mid);
+                sort(array, mid + 1, high);
+                merge(array, low, mid, high);
+            }
+        }
         @Override
-        public String toString() {
+        public String toString () {
             return "Merge Sort";
         }
     }

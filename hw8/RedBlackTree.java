@@ -1,6 +1,6 @@
 /**
  * Simple Red-Black tree implementation, where the keys are of type T.
- @author
+ @author Elijah G. Jacob
  */
 public class RedBlackTree<T extends Comparable<T>> {
 
