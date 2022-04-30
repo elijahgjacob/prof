@@ -8,10 +8,10 @@ public class Commit implements Serializable {
     /** Current Working Directory. */
     static final File CWD = new File(".");
 
-    /** Main metadata folder. */
+    /** Main folder. */
     static final File GITLET_DIR = new File(CWD,".gitlet");
 
-    /** Directory folder that contains all of the commit information */
+    /** Directory folder that contains each commit hash*/
     static final File COMMIT_DIR = Utils.join(GITLET_DIR, "commits");
 
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss YYYY Z");

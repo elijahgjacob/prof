@@ -8,22 +8,9 @@ import java.util.TreeMap;
 import static gitlet.Utils.*;
 
 public class Commands implements Serializable {
-    boolean flag = false;
-    /**
-     * Var for current branch
-     */
-    private static String currbranch;
-    /**
-     * Var for current message
-     */
+    /** Var for current message*/
     private static String message = "";
-    /**
-     * Var for branch
-     */
-    private static String branchname;
-    /**
-     * Current Working Directory.
-     */
+    /**Current Working Directory.*/
     static final File CWD = new File(".");
     /** Main metadata folder*/
     static final File GITLET_FOLDER = new File(CWD, ".gitlet");
@@ -37,7 +24,6 @@ public class Commands implements Serializable {
     private String currBranch; // need to add it in the headfile
     private String parentID1 = " ";
     private String timestamp = " ";
-    private final SimpleDateFormat timeFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss YYYY Z");
     public final String stagingareafn = "StagingArea";
     /**
      * Method for init command
@@ -117,7 +103,7 @@ public class Commands implements Serializable {
                 updatedContents.remove(filename, b);
             }
             Commit next = new Commit(message, updatedContents);
-            Branches b = Branches.getBranches(branchname);
+            Branches b = Branches.getBranches(branchname); //fix
             b.updateBranch(branchname, next.getCommitID());
             h.updateHead(next.getCommitID(), branchname);
             Head.saveHead(h);
