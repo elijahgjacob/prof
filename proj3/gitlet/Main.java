@@ -12,6 +12,7 @@ public class Main {
         String first = args[0];
         String filename = " ";
         String message = " ";
+        String commitID = " ";
         Commands c = new Commands();
         if (args.length == 0) { //error handling for input
             System.out.println("Must have at least one argument");
@@ -33,11 +34,10 @@ public class Main {
                 }
                 break;
             case "commit":
-                while (!c.commit(message)) {
-                    if (args.length < 3) {
-                        System.out.println("Please enter a commit message");
-                    }
+                if (args.length < 3) {
+                    System.out.println("Please enter a commit message");
                 }
+                c.commit(args[2]);
             case "log":
                 if (args.length > 2){
                     System.out.println("Please enter git --log only");

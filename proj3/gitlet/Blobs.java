@@ -16,11 +16,11 @@ public class Blobs implements Serializable {
     private String contentstr;
 
     /** Blob constructor inputs NAME. **/
-    public Blobs(String name) {
-        File file = new File(name);
-        this.name = name;
-        this.contents = Utils.readContents(file);
-        this.contentstr = Utils.readContentsAsString(file);
+    public Blobs(String filename) {
+        File f = new File(filename);
+        this.name = filename;
+        this.contents = Utils.readContents(f);
+        this.contentstr = Utils.readContentsAsString(f);
         this.blobID = hash();
     }
 

@@ -4,16 +4,15 @@ import java.io.File;
 import java.io.Serializable;
 
 public class Head implements Serializable {
-    private static String filename = "HEAD";
+    private static final String filename = "HEAD";
     private static String commitID;
-    private static String branchname;
+    private static String branchName;
 
-    /** Head constructor inputs NAME. **/
-    public Head(String commitID) {
-        this.commitID = commitID;
+    /** Constructor takes in the branch that is checked out and the front commit of that branch. **/
+    public Head() {
     }
 
-    public static String getcommitID(){
+    public static String getCommitID(){
         return commitID;
     }
 
@@ -22,8 +21,14 @@ public class Head implements Serializable {
         return Utils.readObject(f, Head.class);
     }
 
-    public static void writeHead(String commitID){
+    // updateHead updates the HEAD contents and publishes to filesystem.
+    public void updateHead(String newCommitID, String newBranchName){
+        commitID = newCommitID;
+        branchName = newBranchName;
+    }
+
+    public static void saveHead(Head h){
         File inFile = new File(filename);
-        Utils.writeObject(inFile, commitID);
+        Utils.writeObject(inFile, h);
     }
 }
