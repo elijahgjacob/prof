@@ -6,12 +6,17 @@ import java.util.TreeMap;
 
 public class Branches implements Serializable {
     /** <String, String> <branchname, commitID></branchname,></String,> **/
-    private static TreeMap<String, String> branchNameToCommit = new TreeMap<>();
+    public static TreeMap<String, String> branchNameToCommit = new TreeMap<>();
     // Filename of the Branch file.
     private static final String filename = "BRANCH";
+    public String branchName;
+    public String commitID;
 
     /** Branch constructor**/
     public Branches() {
+        this.branchName = branchName;
+        this.commitID = commitID;
+        this.branchNameToCommit = branchNameToCommit;
     }
     /** Method returns branchName to Commit TreeMap **/
     public static TreeMap<String, String> getBranchNameToCommit() {

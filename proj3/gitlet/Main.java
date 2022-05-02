@@ -64,7 +64,7 @@ public class Main {
                 c.commit(message);
                 break;
             case "checkout":
-                if (args.length == 2) {
+                if (args.length == 3) {
                     String checkoutFN = args[2];
                     if (!c.saveInit()) {
                         System.out.println("Directory not initialized");
@@ -72,9 +72,9 @@ public class Main {
                     }
                     c.checkout1(checkoutFN);
                 }
-                if (args.length == 3){
+                if (args.length == 4){
                     String commitID  = args[1];
-                    String checkoutFN1 = args[2];
+                    String checkoutFN1 = args[3];
                     if (!c.saveInit()) {
                         System.out.println("Directory not initialized");
                         System.exit(0);
@@ -104,11 +104,13 @@ public class Main {
                 }
                 c.log();
                 break;
-//            case "status":
-//                if (!c.saveInit()) {
-//                    System.out.println("Directory not initialized");
-//                    System.exit(0);
-//                }
+            case "status":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                c.status();
+                break;
 //                if (args.length > 2) {
 //                    System.out.println("Please enter 'git status' only");
 //                    System.exit(0);

@@ -169,27 +169,26 @@ public class Commands implements Serializable {
         return false;
     }
 
-    public boolean checkout2 (String commitID, String filename) {
+    public void checkout2 (String commitID, String fileName) {
         Head h = Head.getHead();
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
-        if (!headCommit.fileNameToBlobID().containsKey(filename)) {
-            System.out.println("File does not exist in that commit.");
-            return false;
+        if (!headCommit.fileNameToBlobID().containsKey(fileName)) {
+            System.out.println("File does not exist in that commit.1");
+            System.exit(0);
         } else {
             Commit commitToCheckout = Commit.readCommit(commitID);
             if (commitToCheckout == null) {
-                return false;
+                System.exit(0);
             }
-            if (!commitToCheckout.getFileNameToBlobID(commitID).equals(filename)){
+            if (!commitToCheckout.fileNameToBlobID().containsKey(fileName)){
                 System.out.println("File does not exist in that commit.");
-                return false;
+                System.exit(0);
             }
-            String blobID = headCommit.getFileNameToBlobID(filename);
-            Blobs b = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same filename
+            String blobID = commitToCheckout.getFileNameToBlobID(fileName);
+            Blobs b = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same fileName
             Blobs.saveBlob(b);
-            writeContents(join(CWD, filename), b.getcontentsstr());
-            return true;
+            writeContents(join(CWD, fileName), b.getcontentsstr());
         }
     }
 

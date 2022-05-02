@@ -49,16 +49,16 @@ public class UnitTest {
         TreeMap<String, String> blob1Map = new TreeMap<>();
         blob1Map.put(c, blob1.getBlobID());
         TreeMap<String, String> blob2Map = new TreeMap<>();
+        TreeMap<String, String> branchNameToCommit = new TreeMap<>();
         blob2Map.put("filea", blob1.getBlobID());
         blob2Map.put("fileb", blob2.getBlobID());
         String message = "first";
         String message1 = "second";
         Commit firstcommit = new Commit(message, blob1Map, null);
         Branches b = new Branches();
-        b.updateBranch("master", firstcommit.getCommitID());
         Branches.saveBranch(b);
         Commit secondcommit = new Commit(message1, blob2Map, firstcommit.getCommitID());
-        b.updateBranch("master", secondcommit.getCommitID());
+        Branches nb = new Branches();
         Branches.saveBranch(b);
         assertEquals("first", firstcommit.getMessage());
         assertEquals("second", secondcommit.getMessage());

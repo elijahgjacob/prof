@@ -39,8 +39,8 @@ public class Commit implements Serializable {
         return fileNameToBlobID;
     }
 
-    public String getFileNameToBlobID(String commitID){
-        return fileNameToBlobID.get(commitID);
+    public String getFileNameToBlobID(String fileName){
+        return fileNameToBlobID.get(fileName);
     }
 
     /** Method adds the commit by commitID to the branchName **/
