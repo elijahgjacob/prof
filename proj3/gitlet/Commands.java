@@ -235,7 +235,6 @@ public class Commands implements Serializable {
             System.out.println(headCommit.getMessage());
             System.out.println(" ");
             System.out.print("===");
-            Commit headCommit = Commit.readCommit(headCommit.getParentID1());
             }
         }
 
