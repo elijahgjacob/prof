@@ -4,17 +4,17 @@ import java.io.*;
 
 public class Head implements Serializable {
     private static final String filename = "HEAD";
-    private String newCommitID;
-    private String newBranchName;
+    static String newCommitID;
+    static String newBranchName;
 
 
     /** Constructor takes in the branch that is checked out and the front commit of that branch. **/
     public Head(){
     }
 
-//    public static String getCommitID(){
-//        return newCommitID;
-//    }
+    public static String getCommitID(){
+        return newCommitID;
+    }
 
 //    public String getHash(String newCommitID, String newBranchName){
 //        try {

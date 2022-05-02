@@ -9,24 +9,16 @@ import java.util.TreeMap;
 import static gitlet.Utils.*;
 
 public class Commands implements Serializable {
-    /**
-     * Current Working Directory.
-     */
+    /**Current Working Directory.*/
     static final File CWD = new File(System.getProperty("user.dir"));
-    /**
-     * Main metadata folder
-     */
+    /** Main metadata folder*/
     static final File GITLET_DIR = Utils.join(CWD, ".gitlet");
     static final File BRANCH_DIR = Utils.join(GITLET_DIR, "branches");
-    /**
-     * Directory folder that every commit
-     */
+    /** * Directory folder that every commit */
     static final File COMMIT_DIR = Utils.join(GITLET_DIR, "commits");
 
 
-    /**
-     * File that holds the Head commitID
-     */
+    /** * File that holds the Head commitID */
     static final File HEAD = Utils.join(GITLET_DIR, "HEAD");
     static final File master = Utils.join(BRANCH_DIR, "master");
     static final File STAGING_AREA = Utils.join(GITLET_DIR, "STAGING_AREA");
@@ -40,7 +32,6 @@ public class Commands implements Serializable {
 
     /**
      * Method for init command
-     *
      * @return t/f
      */
 
@@ -71,7 +62,7 @@ public class Commands implements Serializable {
         return false;
     }
 
-    public boolean saveInit() {
+    public boolean saveInit(){
         return GITLET_DIR.exists();
     }
 
@@ -105,10 +96,10 @@ public class Commands implements Serializable {
     }
 
 
-    public boolean commit(String message) {
+    public boolean commit (String message){
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
         Head h = Head.getHead();
-        String headCommitID = h.newCommitID;
+        String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         if (stage.toAdd.isEmpty()) {
             if (stage.toRemove.isEmpty()) {
@@ -117,21 +108,21 @@ public class Commands implements Serializable {
             }
         }
         TreeMap<String, String> updatedContents = new TreeMap<>();
-        for (String filename : headCommit.fileNameToBlobID().keySet()) { //goes through all files in the commit file
+        for (String filename : headCommit.fileNameToBlobID().keySet()){ //goes through all files in the commit file
             String blobID = headCommit.getFileNameToBlobID(headCommitID); //gets the blobID of each file
             updatedContents.put(filename, blobID); //puts the files in a new hashmap
         }
-        for (String filename : stage.toAdd.keySet()) {
+        for (String filename : stage.toAdd.keySet()){
             String blobID = stage.toAdd.get(filename);
             updatedContents.put(filename, blobID);
         }
-        for (String filename : stage.toRemove.keySet()) {
+        for (String filename : stage.toRemove.keySet()){
             String blobID = stage.toRemove.get(filename);
             updatedContents.remove(filename, blobID);
         }
         Commit next = new Commit(message, updatedContents, parentID1);
         String newCommitID = next.commitID;
-        String newBranchName = Branches.getBranchName(newCommitID);
+        String newBranchName= Branches.getBranchName(newCommitID);
         Branches b = new Branches(); //fix
         b.updateBranch(newBranchName, newCommitID);
         h.updateHead(newCommitID, newBranchName);
@@ -144,9 +135,8 @@ public class Commands implements Serializable {
         System.out.println("Successful commit");
         return true;
     }
-}
 
-/**
+
     public boolean log() {
         //for each commit in the branch
         Head h = Head.getHead();
@@ -316,5 +306,6 @@ public class Commands implements Serializable {
 //        return readContents(file);
 //    }
 
+
+
 }
- **/

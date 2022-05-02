@@ -79,59 +79,59 @@ public class Main {
                     System.exit(0);
                 }
                 break;
-            case "log":
-                if (args.length > 2){
-                    System.out.println("Please enter git --log only");
-                    System.exit(0);
-                }
-                c.log();
-                break;
-            case "status":
-                if (!c.saveInit()) {
-                    System.out.println("Directory not initialized");
-                    System.exit(0);
-                }
-                if (args.length > 2) {
-                    System.out.println("Please enter 'git status' only");
-                    System.exit(0);
-                }
-                c.status();
-                break;
-            case "branch":
-                if (!c.saveInit()) {
-                    System.out.println("Directory not initialized");
-                    System.exit(0);
-                }
-                if (args.length > 3) {
-                    System.out.println("Please enter the right amount of arguments");
-                    System.exit(0);
-                }
-            case "rmbranch":
-                if (!c.saveInit()) {
-                    System.out.println("Directory not initialized");
-                    System.exit(0);
-                }
-                if (args.length > 3) {
-                    System.out.println("Please enter the right amount of arguments");
-                }
-                if (args.length < 3) {
-                    System.out.println("Please enter the branch name");
-                }
-
-            case "reset":
-                if (!c.saveInit()) {
-                    System.out.println("Directory not initialized");
-                    System.exit(0);
-                }
-                if (args.length > 2) {
-                    System.out.println("Please enter 'git reset' only");
-                    System.exit(0);
-                }
-            case "merge":
-                if (!c.saveInit()) {
-                    System.out.println("Directory not initialized");
-                    System.exit(0);
-                }
+//            case "log":
+//                if (args.length > 2){
+//                    System.out.println("Please enter git --log only");
+//                    System.exit(0);
+//                }
+//                c.log();
+//                break;
+//            case "status":
+//                if (!c.saveInit()) {
+//                    System.out.println("Directory not initialized");
+//                    System.exit(0);
+//                }
+//                if (args.length > 2) {
+//                    System.out.println("Please enter 'git status' only");
+//                    System.exit(0);
+//                }
+//                c.status();
+//                break;
+//            case "branch":
+//                if (!c.saveInit()) {
+//                    System.out.println("Directory not initialized");
+//                    System.exit(0);
+//                }
+//                if (args.length > 3) {
+//                    System.out.println("Please enter the right amount of arguments");
+//                    System.exit(0);
+//                }
+//            case "rmbranch":
+//                if (!c.saveInit()) {
+//                    System.out.println("Directory not initialized");
+//                    System.exit(0);
+//                }
+//                if (args.length > 3) {
+//                    System.out.println("Please enter the right amount of arguments");
+//                }
+//                if (args.length < 3) {
+//                    System.out.println("Please enter the branch name");
+//                }
+//
+//            case "reset":
+//                if (!c.saveInit()) {
+//                    System.out.println("Directory not initialized");
+//                    System.exit(0);
+//                }
+//                if (args.length > 2) {
+//                    System.out.println("Please enter 'git reset' only");
+//                    System.exit(0);
+//                }
+//            case "merge":
+//                if (!c.saveInit()) {
+//                    System.out.println("Directory not initialized");
+//                    System.exit(0);
+//                }
             default:
                 System.out.println("Invalid command");
         }
