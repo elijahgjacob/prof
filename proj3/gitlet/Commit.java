@@ -30,7 +30,7 @@ public class Commit implements Serializable {
         this.parentID1 = parentID1;
         this.message = message;
         Date date = new Date();
-        this.timestamp = timeFormat.format(date);
+        timestamp = timeFormat.format(date);
         this.commitID = getCommitID();
         this.fileNameToBlobID = fileNameToBlobID;
     }

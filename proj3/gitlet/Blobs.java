@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.*;
+import java.sql.Blob;
 import java.util.TreeMap;
 
 public class Blobs implements Serializable {
@@ -12,7 +13,14 @@ public class Blobs implements Serializable {
     private byte[] contents;
     /** Contents as a string for testing. **/
     private String contentstr;
+    /** Current Working Directory. */
+    static final File CWD = new File(".");
 
+    /** Main folder. */
+    static final File GITLET_DIR = new File(CWD,".gitlet");
+
+    /** Directory folder that contains each commit hash*/
+    static final File BLOBS_DIR = Utils.join(GITLET_DIR, "blobs");
     /** Blob constructor inputs NAME. **/
     public Blobs(String filename) {
         File f = new File(filename);
@@ -26,30 +34,25 @@ public class Blobs implements Serializable {
         return this.blobID;
     }
 
+    public String getcontentsstr(){
+        return this.contentstr;
+    }
+
     /** Returns hash generated. **/
     public String hash() {
-        String var = "";
-        var+= name;
-        var+= contents;
-        return Utils.sha1(var);
+        String hash= Utils.sha1(Utils.serialize(contents));
+        return hash;
     }
 
     public static Blobs getBlob(String blobID) {
-        Blobs blob;
-        File inFile = new File(blobID);
-        try {
-            ObjectInputStream inp =
-                    new ObjectInputStream(new FileInputStream(inFile));
-            blob = (Blobs) inp.readObject();
-            inp.close();
-        } catch (IOException | ClassNotFoundException excp) {
-            blob = null;
-        }
-        return blob;
+        Blobs b;
+        File inFile = Utils.join(".gitlet/blobs/", blobID);
+        b = Utils.readObject(inFile, Blobs.class);
+        return b;
     }
 
-    public void saveBlob(){
-        File inFile = new File(blobID);
-        Utils.writeContents(inFile, this);
+    public static void saveBlob(Blobs b){
+        File inFile = new File(BLOBS_DIR, b.getBlobID());
+        Utils.writeObject(inFile, b);
     }
 }

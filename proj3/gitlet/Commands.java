@@ -16,7 +16,8 @@ public class Commands implements Serializable {
     static final File BRANCH_DIR = Utils.join(GITLET_DIR, "branches");
     /** * Directory folder that every commit */
     static final File COMMIT_DIR = Utils.join(GITLET_DIR, "commits");
-
+    /** * Directory folder that holds every blob */
+    static final File BLOBS_DIR = Utils.join(GITLET_DIR, "blobs");
 
     /** * File that holds the Head commitID */
     static final File HEAD = Utils.join(GITLET_DIR, "HEAD");
@@ -40,7 +41,8 @@ public class Commands implements Serializable {
         new File(".gitlet/commits").mkdir();
         new File(".gitlet/branches").mkdir();
         new File(".gitlet/merge").mkdir();
-        join(".gitlet", "HEAD", "STAGING_AREA");
+        new File(".gitlet/blobs").mkdir();
+        join(".gitlet", "HEAD");
         join(".gitlet", "STAGING_AREA");
         join(BRANCH_DIR, "master");
         StagingArea stage = new StagingArea();
@@ -77,15 +79,16 @@ public class Commands implements Serializable {
                     return false;
                 }
             }
-            if (stage.toRemove.size() == 0) {
+            if (stage.toRemove.size() != 0) {
                 if (stage.toRemove.containsKey(filename)) {
                     stage.toRemove.remove(filename);
                     StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
                     stage.saveStagingArea(stage);
                 }
             }
-            Blobs b = new Blobs(filename);
-            stage.toAdd.put(filename, b.getBlobID());
+            Blobs bl = new Blobs(filename);
+            stage.toAdd.put(filename, bl.getBlobID());
+            Blobs.saveBlob(bl);
             StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
             stage.saveStagingArea(stage);
             return true;
@@ -96,7 +99,7 @@ public class Commands implements Serializable {
     }
 
 
-    public boolean commit (String message){
+    public void commit (String message){
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
         Head h = Head.getHead();
         String headCommitID = h.getCommitID();
@@ -105,26 +108,36 @@ public class Commands implements Serializable {
         if (stage.toAdd.isEmpty()) {
             if (stage.toRemove.isEmpty()) {
                 System.out.println("Nothing to add");
-                return false;
+                System.exit(0);
             }
         }
         if (headCommit.fileNameToBlobID().isEmpty()) {
             for (String filename : stage.toAdd.keySet()){
                 String blobID = stage.toAdd.get(filename);
                 updatedContents.put(filename, blobID);
+                Blobs bl = new Blobs(filename);// need to reconstruct the blob from the headCommit with the same filename
+                Blobs.saveBlob(bl);
             }
         } else {
             for (String filename : headCommit.fileNameToBlobID().keySet()) { //goes through all files in the commit file
-                String blobID = headCommit.getFileNameToBlobID(headCommitID); //gets the blobID of each file
-                updatedContents.put(filename, blobID); //puts the files in a new hashmap
+                String blobID = headCommit.getFileNameToBlobID(filename); //gets the blobID of each file
+                updatedContents.put(filename, blobID);
+                Blobs bl = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same filename
+                Blobs.saveBlob(bl);//puts the files in a new hashmap
             }
             for (String filename : stage.toAdd.keySet()) {
                 String blobID = stage.toAdd.get(filename);
                 updatedContents.put(filename, blobID);
+                Blobs bl = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same filename
+                Blobs.saveBlob(bl);
+
             }
             for (String filename : stage.toRemove.keySet()) {
                 String blobID = stage.toRemove.get(filename);
                 updatedContents.remove(filename, blobID);
+                Blobs bl = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same filename
+                Blobs.saveBlob(bl);
+
             }
         }
         Commit next = new Commit(message, updatedContents, headCommitID);
@@ -139,9 +152,6 @@ public class Commands implements Serializable {
         stage.toAdd.clear();
         stage.toRemove.clear();
         stage.saveStagingArea(stage);
-        System.out.println("Successful commit");
-        return true;
-
     }
 
     public boolean checkout1(String filename) {
@@ -149,9 +159,10 @@ public class Commands implements Serializable {
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         if (headCommit.fileNameToBlobID().containsKey(filename)){
-            String blobID = headCommit.getFileNameToBlobID(headCommitID);
-            Blobs b = Blobs.getBlob(blobID);
-            b.saveBlob();
+            String blobID = headCommit.getFileNameToBlobID(filename);
+            Blobs b = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same filename
+            Blobs.saveBlob(b);
+            writeContents(join(CWD, filename), b.getcontentsstr());
             return true;
         }
         System.out.println("Files does not exist in that commit");
@@ -176,7 +187,7 @@ public class Commands implements Serializable {
             }
             String blobID = commitToCheckout.getFileNameToBlobID(commitID);
             Blobs b = Blobs.getBlob(blobID);
-            b.saveBlob();
+            Blobs.saveBlob(b);
             return true;
         }
     }
@@ -204,7 +215,7 @@ public class Commands implements Serializable {
                 String blobID = headCommit.fileNameToBlobID().get(filename);
                 Blobs b = Blobs.getBlob(blobID);
                 join(CWD, blobID).delete();
-                b.saveBlob();
+                Blobs.saveBlob(b);
                 Head.saveHead(h);
             }
         }
@@ -212,21 +223,22 @@ public class Commands implements Serializable {
     }
 
 
-    public boolean log() {
+    public void log() {
         //for each commit in the branch
         Head h = Head.getHead();
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
-        while (headCommitID != null) {
-            try {
-                commitFormat(headCommit.getMessage(), headCommit);
-            } catch (NullPointerException excp){
-                headCommitID = " ";
-                return false;
+        while (headCommit != null){
+            System.out.println("===");
+            System.out.println("commit " + headCommitID);
+            System.out.println("Date: " + headCommit.getTime());
+            System.out.println(headCommit.getMessage());
+            System.out.println(" ");
+            System.out.print("===");
+            Commit headCommit = Commit.readCommit(headCommit.getParentID1());
             }
         }
-        return true;
-    }
+
 
     public boolean globalLog(){
         List<String> commitsList= plainFilenamesIn(COMMIT_DIR);
@@ -243,9 +255,10 @@ public class Commands implements Serializable {
 
     public void commitFormat(String headCommitID, Commit headCommit) {
         System.out.println("===");
-        System.out.println("commit" + headCommitID);
+        System.out.println("commit " + headCommitID);
         System.out.println("Date: " + headCommit.getTime());
         System.out.println(headCommit.getMessage());
+        System.out.println(" ");
         System.out.print("===");
     }
 

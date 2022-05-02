@@ -41,16 +41,8 @@ public class Branches implements Serializable {
     /**Returns the Branch object with that branchName*/
     public static Branches getBranches(String branchName){
         Branches b;
-        File inFile = Utils.join(".gitlet/branches", branchName);
-        try {
-            ObjectInputStream inp =
-                    new ObjectInputStream(new FileInputStream(inFile));
-            b = (Branches) inp.readObject();
-            inp.close();
-        } catch (IOException | ClassNotFoundException excp) {
-            System.out.println("No branch with that name exists.");
-            b = null;
-        }
+        File inFile = new File(".gitlet/"+branchName);
+        b = Utils.readObject(inFile, Branches.class);
         return b;
     }
 
