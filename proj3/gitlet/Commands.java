@@ -235,7 +235,7 @@ public class Commands implements Serializable {
                 System.out.println("commit " + headCommitID);
                 System.out.println("Date: " + headCommit.getTime());
                 System.out.println(headCommit.getMessage());
-                System.out.println(" ");
+                System.out.println("");
                 headCommitID = headCommit.getParentID1();
                 headCommit = Commit.readCommit(headCommitID);
             }
