@@ -64,16 +64,23 @@ public class Main {
                 c.commit(message);
                 break;
             case "checkout":
-                String checkoutFN = args[2];
-                if (!c.saveInit()) {
-                    System.out.println("Directory not initialized");
-                    System.exit(0);
+                if (args.length == 2) {
+                    String checkoutFN = args[2];
+                    if (!c.saveInit()) {
+                        System.out.println("Directory not initialized");
+                        System.exit(0);
+                    }
+                    c.checkout1(checkoutFN);
                 }
-                if (args.length != 3) {
-                    System.out.println("Please enter the right amount of arguments");
-                    System.exit(0);
+                if (args.length == 3){
+                    String commitID  = args[1];
+                    String checkoutFN1 = args[2];
+                    if (!c.saveInit()) {
+                        System.out.println("Directory not initialized");
+                        System.exit(0);
+                    }
+                    c.checkout2(commitID, checkoutFN1);
                 }
-                c.checkout1(checkoutFN);
                 break;
             case "rm":
                 if (!c.saveInit()) {

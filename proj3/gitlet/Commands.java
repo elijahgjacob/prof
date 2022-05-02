@@ -185,9 +185,10 @@ public class Commands implements Serializable {
                 System.out.println("File does not exist in that commit.");
                 return false;
             }
-            String blobID = commitToCheckout.getFileNameToBlobID(commitID);
-            Blobs b = Blobs.getBlob(blobID);
+            String blobID = headCommit.getFileNameToBlobID(filename);
+            Blobs b = Blobs.getBlob(blobID);// need to reconstruct the blob from the headCommit with the same filename
             Blobs.saveBlob(b);
+            writeContents(join(CWD, filename), b.getcontentsstr());
             return true;
         }
     }
@@ -228,15 +229,20 @@ public class Commands implements Serializable {
         Head h = Head.getHead();
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
-        while (headCommit != null){
-            System.out.println("===");
-            System.out.println("commit " + headCommitID);
-            System.out.println("Date: " + headCommit.getTime());
-            System.out.println(headCommit.getMessage());
-            System.out.println(" ");
-            System.out.print("===");
+        try {
+            while (headCommit != null) {
+                System.out.println("===");
+                System.out.println("commit " + headCommitID);
+                System.out.println("Date: " + headCommit.getTime());
+                System.out.println(headCommit.getMessage());
+                System.out.println(" ");
+                headCommitID = headCommit.getParentID1();
+                headCommit = Commit.readCommit(headCommitID);
             }
+        } catch (NullPointerException excp){
+           System.exit(0);
         }
+    }
 
 
     public boolean globalLog(){
