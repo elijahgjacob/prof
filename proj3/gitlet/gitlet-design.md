@@ -19,10 +19,12 @@ Master is the active branch
 ### add()
 Sends the file to staging, if it is already in the staging and it is re-added, the original contents overwritten.
 Only takes in one file in at a time
+If it is in the remove area, and it is added, it is removed from the remove area.
+
 ####Variables used: 
-* CWD
-* Commit ID
-* Parent ID
+* filename
+* toAdd (TreeMap)
+* toRemove (TreeMap)
 
 ### commit()
 A new commit is added, staging is cleared. 

@@ -20,18 +20,35 @@ public class Commit implements Serializable {
     public String timestamp;
     public String parentID1;
     public String commitID;
-    private TreeMap<String, String> filenameToBlobID; //commitID, Blobs
+//    /** TreeMap for storing commits and all the files that they are linked to in their respective state  **/
+//    private TreeMap<String, String> commitIDtoFileName; //commitID, filename //, .toString(contents[])
 
-    public Commit(String message, TreeMap<String, Blobs> blobs){
+    /** TreeMap for storing fileNames and their according BlobIDs. **/
+    private TreeMap<String, String> fileNameToBlobID; //fileName, BlobID //wug.txt, .toString(contents[])
+
+    public Commit(String message, TreeMap<String, String> commitIDtoFileName, String parentID1){
+        this.parentID1 = parentID1;
         this.message = message;
         Date date = new Date();
         this.timestamp = timeFormat.format(date);
         this.commitID = getCommitID();
     }
 
-    TreeMap<String, String> getFilenameToBlobID() {
-        return filenameToBlobID;
+    public TreeMap<String, String> fileNameToBlobID() {
+        return fileNameToBlobID;
     }
+
+    public String getFileNameToBlobID(String commitID){
+        return fileNameToBlobID.get(commitID);
+    }
+
+//    public TreeMap<String, String> commitIDtoFileName() {
+//        return commitIDtoFileName;
+//    }
+//
+//    public String getCommitIDtoFileName(String commitID){
+//        return commitIDtoFileName.get(commitID);
+//    }
 
     String getMessage(){
         return message;
@@ -41,14 +58,26 @@ public class Commit implements Serializable {
         return timestamp;
     }
 
+    public String getParentID1(){
+        return parentID1;
+    }
+
     public String getCommitID(){
-        String hash = Utils.sha1(Utils.serialize(this));
-        return hash;
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ObjectOutputStream objectStream = new ObjectOutputStream(stream);
+            objectStream.writeObject(this);
+            objectStream.close();
+            return Utils.sha1(stream.toByteArray());
+        } catch (IOException excp){
+            throw new IllegalArgumentException( ("Error occurred during hash"));
+        }
+
     }
 
     public static Commit readCommit(String commitID){
         Commit c;
-        File inFile = Utils.join(COMMIT_DIR, commitID);
+        File inFile = Utils.join(".gitlet/", commitID);
         try {
             ObjectInputStream inp =
                     new ObjectInputStream(new FileInputStream(inFile));
@@ -60,9 +89,9 @@ public class Commit implements Serializable {
         }
         return c;
     }
-    public static void writeCommit(Commit commit){
-        File inFile = Utils.join(COMMIT_DIR, commit.getCommitID());
-        Utils.writeContents(inFile, commit);
+
+    public static void saveCommit(Commit commit){
+        Utils.writeContents(COMMIT_DIR, commit.getCommitID());
     }
 
 

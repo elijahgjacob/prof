@@ -1,9 +1,7 @@
 package gitlet;
 
 import java.io.*;
-import java.sql.Blob;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 public class Blobs implements Serializable {
     /**Name of file. **/
@@ -28,20 +26,15 @@ public class Blobs implements Serializable {
         return this.blobID;
     }
 
-    public void setBlobID(String id){
-        this.blobID = id;
-    }
-
     /** Returns hash generated. **/
     public String hash() {
         String var = "";
         var+= name;
         var+= contents;
-        var+= contentstr;
         return Utils.sha1(var);
     }
 
-    public static Blobs readBlob(String blobID) {
+    public static Blobs getBlob(String blobID) {
         Blobs blob;
         File inFile = new File(blobID);
         try {
@@ -55,7 +48,7 @@ public class Blobs implements Serializable {
         return blob;
     }
 
-    public void writeBlob(){
+    public void saveBlob(){
         File inFile = new File(blobID);
         Utils.writeContents(inFile, this);
     }

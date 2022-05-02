@@ -3,6 +3,10 @@ package gitlet;
 import ucb.junit.textui;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.sql.Blob;
 import java.util.TreeMap;
 
 import static org.junit.Assert.*;
@@ -22,19 +26,54 @@ public class UnitTest {
     @Test
     public void initTest() {
         String message1 = "init";
-        TreeMap<String, Blobs> commitmap1 = new TreeMap<>();
+        TreeMap<String, String> commitmap1 = new TreeMap<>();
         String message2 = "init";
-        TreeMap<String, Blobs> commitmap2 = new TreeMap<>();
-        Commit commit1 = new Commit(message1, commitmap1);
-        Commit commit2 = new Commit(message2, commitmap2);
-        assertEquals(null, commit1.getFilenameToBlobID());
-        assertEquals(null, commit2.getFilenameToBlobID());
+        TreeMap<String, String> commitmap2 = new TreeMap<>();
+        Commit commit1 = new Commit(message1, commitmap1, null);
+        Commit commit2 = new Commit(message2, commitmap2, commit1.getCommitID());
+        assertEquals(commit1.getCommitID(), commit2.getParentID1());
         assertNotEquals(commit1, commit2);
-
+    }
+    @Test
+    public void singleBranchTest() throws IOException {
+        String c = "abc";
+        File fnc = new File("filea");
+        fnc.createNewFile();
+        Utils.writeContents(fnc, c);
+        Blobs blob1 = new Blobs(fnc.getName());
+        String e = "abcde";
+        File fne = new File("fileb");
+        fnc.createNewFile();
+        Utils.writeContents(fne, e);
+        Blobs blob2 = new Blobs(fnc.getName());
+        TreeMap<String, String> blob1Map = new TreeMap<>();
+        blob1Map.put(c, blob1.getBlobID());
+        TreeMap<String, String> blob2Map = new TreeMap<>();
+        blob2Map.put("filea", blob1.getBlobID());
+        blob2Map.put("fileb", blob2.getBlobID());
+        String message = "first";
+        String message1 = "second";
+        Commit firstcommit = new Commit(message, blob1Map, null);
+        Branches b = new Branches();
+        b.updateBranch("master", firstcommit.getCommitID());
+        Branches.saveBranch(b);
+        Commit secondcommit = new Commit(message1, blob2Map, firstcommit.getCommitID());
+        b.updateBranch("master", secondcommit.getCommitID());
+        Branches.saveBranch(b);
+        assertEquals("first", firstcommit.getMessage());
+        assertEquals("second", secondcommit.getMessage());
+        assertEquals(null, b.getBranches("master"));
+        assertEquals(secondcommit.getCommitID(), b.getBranchNameToCommit().get("master"));
     }
 
-    public void addTest(){
-
+    //@Test
+    public void addTest() throws IOException {
+        File fnc = new File("filea");
+//        Commands.toAdd.put(fnc.Commit.get)
+        Commands repo = new Commands();
+        repo.add(fnc.getName());
+        //StagingArea stage = StagingArea.readStagingArea("STAGE");
+        //assertEquals(true, stage.toAdd.containsKey(fnc));
     }
 
 }
