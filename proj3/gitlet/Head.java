@@ -35,7 +35,7 @@ public class Head implements Serializable {
 //        headID = this.getHash(newCommitID, newBranchName);
     }
 
-    public static Head getHead(){
+    public static Head readHead(){
         Head head;
         File inFile = new File(".gitlet/"+filename);
         head = Utils.readObject(inFile, Head.class);

@@ -83,6 +83,7 @@ public class Main {
                 }
                 break;
             case "rm":
+                String fN = args[1];
                 if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
@@ -91,10 +92,7 @@ public class Main {
                     System.out.println("Please enter the right amount of arguments");
                     System.exit(0);
                 }
-                if (!c.add(args[1])) {
-                    System.out.println("File does not exist.");
-                    System.exit(0);
-                }
+                c.rm(fN);
                 break;
 
             case "log":

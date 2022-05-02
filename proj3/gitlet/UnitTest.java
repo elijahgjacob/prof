@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.sql.Blob;
 import java.util.TreeMap;
 
 import static org.junit.Assert.*;
@@ -62,7 +60,7 @@ public class UnitTest {
         Branches.saveBranch(b);
         assertEquals("first", firstcommit.getMessage());
         assertEquals("second", secondcommit.getMessage());
-        assertEquals(null, b.getBranches("master"));
+        assertEquals(null, b.readBranches("master"));
         assertEquals(secondcommit.getCommitID(), b.getBranchNameToCommit().get("master"));
     }
 
