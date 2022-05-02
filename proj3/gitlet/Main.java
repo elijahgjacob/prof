@@ -21,9 +21,11 @@ public class Main {
             case "init":
                 if (args.length > 1){
                     System.out.println("Please enter the right amount of arguments.");
+                    System.exit(0);
                 }
-                else if (!c.saveInit()){
+                else if (c.saveInit()){
                     System.out.println("A Gitlet version-control system already exists in the current directory.");
+                    System.exit(0);
                 }
                 c.init();
                 break;
@@ -60,24 +62,24 @@ public class Main {
                 }
                 break;
             case "commit":
-                String message = args[2];
-                c.commit(message);
-                if (c.saveInit()) {
+                String message = args[1];
+                if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
                 }
-                if (args.length == 2) {
-                    System.out.println("Please enter a commit mesage");
+                if (args.length == 1) {
+                    System.out.println("Please enter a commit message");
                     System.exit(0);
                 }
-                if (args.length > 3) {
+                if (args.length > 2) {
                     System.out.println("Please enter the right amount of arguments");
                     System.exit(0);
                 }
-                if (!c.commit(args[2])) {
-                    System.out.println("Nothing to commit");
-                    System.exit(0);
-                }
+//                if (!c.commit(args[1])) {
+//                    System.out.println("Nothing to commit");
+//                    System.exit(0);
+//                }
+                c.commit(message);
                 break;
 //            case "log":
 //                if (args.length > 2){

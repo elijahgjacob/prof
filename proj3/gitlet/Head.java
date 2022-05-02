@@ -4,15 +4,15 @@ import java.io.*;
 
 public class Head implements Serializable {
     private static final String filename = "HEAD";
-    static String newCommitID;
-    static String newBranchName;
+    private String newCommitID;
+    private String newBranchName;
 
 
     /** Constructor takes in the branch that is checked out and the front commit of that branch. **/
     public Head(){
     }
 
-    public static String getCommitID(){
+    public String getCommitID(){
         return newCommitID;
     }
 
@@ -38,14 +38,7 @@ public class Head implements Serializable {
     public static Head getHead(){
         Head head;
         File inFile = new File(".gitlet/"+filename);
-        try {
-            ObjectInputStream inp =
-                    new ObjectInputStream(new FileInputStream(inFile));
-            head = (Head) inp.readObject();
-            inp.close();
-        } catch (IOException | ClassNotFoundException excp) {
-            head = null;
-        }
+        head = Utils.readObject(inFile, Head.class);
         return head;
     }
 

@@ -26,20 +26,26 @@ public class Commit implements Serializable {
     /** TreeMap for storing fileNames and their according BlobIDs. **/
     private TreeMap<String, String> fileNameToBlobID; //fileName, BlobID //wug.txt, .toString(contents[])
 
-    public Commit(String message, TreeMap<String, String> commitIDtoFileName, String parentID1){
+    public Commit(String message, TreeMap<String, String> fileNameToBlobID, String parentID1){
         this.parentID1 = parentID1;
         this.message = message;
         Date date = new Date();
         this.timestamp = timeFormat.format(date);
         this.commitID = getCommitID();
+        this.fileNameToBlobID = fileNameToBlobID;
     }
-
+    /** TreeMap for storing fileNames and their according BlobIDs. //fileName, BlobID //wug.txt, BlobID **/
     public TreeMap<String, String> fileNameToBlobID() {
         return fileNameToBlobID;
     }
 
     public String getFileNameToBlobID(String commitID){
         return fileNameToBlobID.get(commitID);
+    }
+
+    /** Method adds the commit by commitID to the branchName **/
+    public void updateFileNameToBlobID(String fileName, String blobID) {
+        fileNameToBlobID.put(fileName, blobID);
     }
 
 //    public TreeMap<String, String> commitIDtoFileName() {
@@ -63,37 +69,20 @@ public class Commit implements Serializable {
     }
 
     public String getCommitID(){
-        try {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-            objectStream.writeObject(this);
-            objectStream.close();
-            return Utils.sha1(stream.toByteArray());
-        } catch (IOException excp){
-            throw new IllegalArgumentException( ("Error occurred during hash"));
-        }
-
+        String hash= Utils.sha1(Utils.serialize(this));
+        return hash;
     }
 
     public static Commit readCommit(String commitID){
         Commit c;
-        File inFile = Utils.join(".gitlet/", commitID);
-        try {
-            ObjectInputStream inp =
-                    new ObjectInputStream(new FileInputStream(inFile));
-            c = (Commit) inp.readObject();
-            inp.close();
-        } catch (IOException | ClassNotFoundException excp) {
-            System.out.println("No commit with that id exists.");
-            c = null;
-        }
+        File inFile = Utils.join(".gitlet/commits/", commitID);
+        c = Utils.readObject(inFile, Commit.class);
         return c;
     }
 
     public static void saveCommit(Commit commit){
-        Utils.writeContents(COMMIT_DIR, commit.getCommitID());
+        File inFile = Utils.join(COMMIT_DIR, commit.getCommitID());
+        Utils.writeObject(inFile, commit);
     }
-
-
 
 }

@@ -35,31 +35,28 @@ public class Commands implements Serializable {
      * @return t/f
      */
 
-    public boolean init() throws IOException, ClassNotFoundException {
-        if (!saveInit()) {
-            new File(".gitlet").mkdir();
-            new File(".gitlet/commits").mkdir();
-            new File(".gitlet/branches").mkdir();
-            new File(".gitlet/merge").mkdir();
-            join(".gitlet", "HEAD", "STAGING_AREA");
-            join(".gitlet", "STAGING_AREA");
-            join(BRANCH_DIR, "master");
-            StagingArea stage = new StagingArea();
-            StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
-            StagingArea.saveStagingArea(stage);
-            TreeMap<String, String> commitIDtoFileName = new TreeMap<>();
-            Commit initialCommit = new Commit("initial commit", commitIDtoFileName, null);
-            String initialCommitID = initialCommit.commitID;
-            TreeMap<String, String> fileNametoBlobID = new TreeMap<>();
-            Branches b = new Branches();
-            b.updateBranch("master", initialCommitID);
-            Branches.saveBranch(b);
-            Head h = new Head();
-            h.updateHead(initialCommitID, "master");
-            Head.saveHead(h);
-            return true;
-        }
-        return false;
+    public void init() throws IOException, ClassNotFoundException {
+        new File(".gitlet").mkdir();
+        new File(".gitlet/commits").mkdir();
+        new File(".gitlet/branches").mkdir();
+        new File(".gitlet/merge").mkdir();
+        join(".gitlet", "HEAD", "STAGING_AREA");
+        join(".gitlet", "STAGING_AREA");
+        join(BRANCH_DIR, "master");
+        StagingArea stage = new StagingArea();
+        StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
+        StagingArea.saveStagingArea(stage);
+        TreeMap<String, String> commitIDtoFileName = new TreeMap<>();
+        Commit initialCommit = new Commit("initial commit", new TreeMap<>(), null);
+        String initialCommitID = initialCommit.getCommitID();
+        Commit.saveCommit(initialCommit);
+        TreeMap<String, String> fileNametoBlobID = new TreeMap<>();
+        Branches b = new Branches();
+        b.updateBranch("master", initialCommitID);
+        Branches.saveBranch(b);
+        Head h = new Head();
+        h.updateHead(initialCommitID, "master");
+        Head.saveHead(h);
     }
 
     public boolean saveInit(){
@@ -69,6 +66,10 @@ public class Commands implements Serializable {
     public boolean add(String filename) throws IOException, NullPointerException {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
         File file = new File(filename);
+        if (stage == null){
+            System.out.println("Stage doesn't exist.");
+            System.exit(0);
+        }
         try {
             if (stage.toAdd.size() != 0) {
                 if (stage.toAdd.containsKey(filename)) {
@@ -87,7 +88,6 @@ public class Commands implements Serializable {
             stage.toAdd.put(filename, b.getBlobID());
             StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
             stage.saveStagingArea(stage);
-            System.out.println(filename + "successfully added");
             return true;
         } catch (NullPointerException excp) {
             System.out.println("Stage is empty");
@@ -101,27 +101,34 @@ public class Commands implements Serializable {
         Head h = Head.getHead();
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
+        TreeMap<String, String> updatedContents = new TreeMap<>();
         if (stage.toAdd.isEmpty()) {
             if (stage.toRemove.isEmpty()) {
                 System.out.println("Nothing to add");
                 return false;
             }
         }
-        TreeMap<String, String> updatedContents = new TreeMap<>();
-        for (String filename : headCommit.fileNameToBlobID().keySet()){ //goes through all files in the commit file
-            String blobID = headCommit.getFileNameToBlobID(headCommitID); //gets the blobID of each file
-            updatedContents.put(filename, blobID); //puts the files in a new hashmap
+        if (headCommit.fileNameToBlobID().isEmpty()) {
+            for (String filename : stage.toAdd.keySet()){
+                String blobID = stage.toAdd.get(filename);
+                updatedContents.put(filename, blobID);
+            }
+        } else {
+            for (String filename : headCommit.fileNameToBlobID().keySet()) { //goes through all files in the commit file
+                String blobID = headCommit.getFileNameToBlobID(headCommitID); //gets the blobID of each file
+                updatedContents.put(filename, blobID); //puts the files in a new hashmap
+            }
+            for (String filename : stage.toAdd.keySet()) {
+                String blobID = stage.toAdd.get(filename);
+                updatedContents.put(filename, blobID);
+            }
+            for (String filename : stage.toRemove.keySet()) {
+                String blobID = stage.toRemove.get(filename);
+                updatedContents.remove(filename, blobID);
+            }
         }
-        for (String filename : stage.toAdd.keySet()){
-            String blobID = stage.toAdd.get(filename);
-            updatedContents.put(filename, blobID);
-        }
-        for (String filename : stage.toRemove.keySet()){
-            String blobID = stage.toRemove.get(filename);
-            updatedContents.remove(filename, blobID);
-        }
-        Commit next = new Commit(message, updatedContents, parentID1);
-        String newCommitID = next.commitID;
+        Commit next = new Commit(message, updatedContents, headCommitID);
+        String newCommitID = next.getCommitID();
         String newBranchName= Branches.getBranchName(newCommitID);
         Branches b = new Branches(); //fix
         b.updateBranch(newBranchName, newCommitID);
@@ -134,13 +141,81 @@ public class Commands implements Serializable {
         stage.saveStagingArea(stage);
         System.out.println("Successful commit");
         return true;
+
+    }
+
+    public boolean checkout1(String filename) {
+        Head h = Head.getHead();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
+        if (headCommit.fileNameToBlobID().containsKey(filename)){
+            String blobID = headCommit.getFileNameToBlobID(headCommitID);
+            Blobs b = Blobs.getBlob(blobID);
+            b.saveBlob();
+            return true;
+        }
+        System.out.println("Files does not exist in that commit");
+        return false;
+    }
+
+    public boolean checkout2 (String commitID, String filename) {
+        Head h = Head.getHead();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
+        if (!headCommit.fileNameToBlobID().containsKey(filename)) {
+            System.out.println("File does not exist in that commit.");
+            return false;
+        } else {
+            Commit commitToCheckout = Commit.readCommit(commitID);
+            if (commitToCheckout == null) {
+                return false;
+            }
+            if (!commitToCheckout.getFileNameToBlobID(commitID).equals(filename)){
+                System.out.println("File does not exist in that commit.");
+                return false;
+            }
+            String blobID = commitToCheckout.getFileNameToBlobID(commitID);
+            Blobs b = Blobs.getBlob(blobID);
+            b.saveBlob();
+            return true;
+        }
+    }
+
+    public boolean checkout3(String branchName) {
+        Head h = Head.getHead();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
+        Branches BRANCHES = Branches.getBranches(branchName);
+        if (!BRANCHES.getBranchNameToCommit().containsKey(branchName)) {
+            System.out.println("No such branch exists");
+            return false;
+        } try {
+            // commitID for the commit at the front of current branch.
+            String branchHeadCommitID = BRANCHES.getBranchNameToCommit().get(branchName);
+            Commit branchHeadCommit = Commit.readCommit(branchHeadCommitID);
+            for (String filename : branchHeadCommit.fileNameToBlobID().keySet()) {
+                if (!headCommit.fileNameToBlobID().containsKey(filename)) {
+                    System.out.println("File not tracked");
+                    return false;
+                }
+            }
+        } catch (NullPointerException exception) {
+            for (String filename : headCommit.fileNameToBlobID().keySet()) {
+                String blobID = headCommit.fileNameToBlobID().get(filename);
+                Blobs b = Blobs.getBlob(blobID);
+                join(CWD, blobID).delete();
+                b.saveBlob();
+                Head.saveHead(h);
+            }
+        }
+        return true;
     }
 
 
     public boolean log() {
         //for each commit in the branch
         Head h = Head.getHead();
-        String headCommitID = Head.getCommitID();
+        String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         while (headCommitID != null) {
             try {
@@ -174,72 +249,6 @@ public class Commands implements Serializable {
         System.out.print("===");
     }
 
-    public boolean checkout1(String filename) {
-        Head head = Head.getHead();
-        String headCommitID = Head.getCommitID();
-        Commit headCommit = Commit.readCommit(headCommitID);
-        if (headCommit.fileNameToBlobID().containsKey(filename)){
-            String blobID = headCommit.getFileNameToBlobID(headCommitID);
-            Blobs b = Blobs.getBlob(blobID);
-            b.saveBlob();
-            return true;
-        }
-        System.out.println("Files does not exist in that commit");
-        return false;
-    }
-
-    public boolean checkout2 (String commitID, String filename) {
-        Head head = Head.getHead();
-        String headCommitID = Head.getCommitID();
-        Commit headCommit = Commit.readCommit(headCommitID);
-        if (!headCommit.fileNameToBlobID().containsKey(filename)) {
-            System.out.println("File does not exist in that commit.");
-            return false;
-        } else {
-            Commit commitToCheckout = Commit.readCommit(commitID);
-            if (commitToCheckout == null) {
-                return false;
-            }
-            if (!commitToCheckout.getFileNameToBlobID(commitID).equals(filename)){
-                System.out.println("File does not exist in that commit.");
-                return false;
-            }
-            String blobID = commitToCheckout.getFileNameToBlobID(commitID);
-            Blobs b = Blobs.getBlob(blobID);
-            b.saveBlob();
-            return true;
-        }
-    }
-
-    public boolean checkout3(String branchName) {
-        Head head = Head.getHead();
-        String headCommitID = Head.getCommitID();
-        Commit headCommit = Commit.readCommit(headCommitID);
-        Branches BRANCHES = Branches.getBranches(branchName);
-        if (!BRANCHES.getBranchNameToCommit().containsKey(branchName)) {
-            System.out.println("No such branch exists");
-            return false;
-        } try {
-            // commitID for the commit at the front of current branch.
-            String branchHeadCommitID = BRANCHES.getBranchNameToCommit().get(branchName);
-            Commit branchHeadCommit = Commit.readCommit(branchHeadCommitID);
-            for (String filename : branchHeadCommit.fileNameToBlobID().keySet()) {
-                if (!headCommit.fileNameToBlobID().containsKey(filename)) {
-                    System.out.println("File not tracked");
-                    return false;
-                }
-            }
-            } catch (NullPointerException exception) {
-                for (String filename : headCommit.fileNameToBlobID().keySet()) {
-                    String blobID = headCommit.fileNameToBlobID().get(filename);
-                    Blobs b = Blobs.getBlob(blobID);
-                    join(CWD, blobID).delete();
-                    b.saveBlob();
-                    Head.saveHead(head);
-                }
-            }
-        return true;
-    }
 
     public boolean branch(String branchName){
         Head h = Head.getHead();

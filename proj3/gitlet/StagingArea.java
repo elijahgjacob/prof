@@ -59,14 +59,7 @@ public class StagingArea implements Serializable {
     public static StagingArea readStagingArea(String stagingID) {
         StagingArea stage;
         File inFile = new File(".gitlet/"+stagingID);
-        try {
-            ObjectInputStream inp =
-                    new ObjectInputStream(new FileInputStream(inFile));
-            stage = (StagingArea) inp.readObject();
-            inp.close();
-        } catch (IOException | ClassNotFoundException excp) {
-            stage = null;
-        }
+        stage = Utils.readObject(inFile, StagingArea.class);
         return stage;
     }
 
