@@ -60,22 +60,31 @@ public class Main {
                 c.commit(message);
                 break;
             case "checkout":
-                if (args.length == 3) {
-                    String checkoutFN = args[2];
+                if (args.length == 3 && args[1].equals("--")){
                     if (!c.saveInit()) {
                         System.out.println("Directory not initialized");
                         System.exit(0);
                     }
+                    String checkoutFN = args[2];
                     c.checkout1(checkoutFN);
-                }
-                if (args.length == 4){
+                } else if (args.length == 4 && args[2].equals("--")){
+                    if (!c.saveInit()) {
+                        System.out.println("Directory not initialized");
+                        System.exit(0);
+                    }
                     String commitID  = args[1];
                     String checkoutFN1 = args[3];
-                    if (!c.saveInit()) {
-                        System.out.println("Directory not initialized");
-                        System.exit(0);
-                    }
                     c.checkout2(commitID, checkoutFN1);
+                } else if (args.length == 3 && !args[1].equals("--")){
+                        if (!c.saveInit()) {
+                            System.out.println("Directory not initialized");
+                            System.exit(0);
+                        }
+                        String branchName = args[1];
+                        c.checkout3(branchName);
+                } else {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 break;
             case "rm":

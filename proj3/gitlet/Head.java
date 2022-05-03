@@ -20,15 +20,15 @@ public class Head implements Serializable {
     public void updateHead(String newCommitID, String newBranchName){
         this.newCommitID = newCommitID;
         this.newBranchName = newBranchName;
-//        headID = this.getHash(newCommitID, newBranchName);
     }
 
-    public static Head readHead(){
-        Head head;
-        File inFile = new File(".gitlet/"+filename);
-        head = Utils.readObject(inFile, Head.class);
-        return head;
-    }
+    public static Head readHead() {
+            Head head;
+            File inFile = new File(".gitlet/" + filename);
+            head = Utils.readObject(inFile, Head.class);
+            return head;
+        }
+
 
 
     public static void saveHead(Head head){

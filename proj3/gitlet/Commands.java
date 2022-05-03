@@ -214,7 +214,7 @@ public class Commands implements Serializable {
             writeContents(join(CWD, fileName), b.getcontentsstr());
             return true;
         }
-        System.out.println("Files does not exist in that commit");
+        System.out.println("File does not exist in that commit");
         return false;
     }
     /**
@@ -223,24 +223,14 @@ public class Commands implements Serializable {
      * @param commitID
      */
     public void checkout2(String commitID, String fN) {
-        Head h = Head.readHead();
-        String headCommitID = h.getCommitID();
-        Commit headCommit = Commit.readCommit(headCommitID);
-        if (!headCommit.fileNameToBlobID().containsKey(fN)) {
-            System.out.println("File does not exist in that commit.1");
+        //only need to check the commitID it takes in,
+        Commit c = Commit.readCommit(commitID);
+        if (c.getFileNameToBlobID(fN).equals(null)) {
+            System.out.println("File does not exist in that commit.");
             System.exit(0);
         } else {
-            Commit commitToCheckout = Commit.readCommit(commitID);
-            if (commitToCheckout == null) {
-                System.exit(0);
-            }
-            if (!commitToCheckout.fileNameToBlobID().containsKey(fN)) {
-                System.out.println("File does not exist in that commit.");
-                System.exit(0);
-            }
-            String blobID = commitToCheckout.getFileNameToBlobID(fN);
+            String blobID = c.getFileNameToBlobID(fN);
             Blobs b = Blobs.getBlob(blobID);
-            Blobs.saveBlob(b);
             writeContents(join(CWD, fN), b.getcontentsstr());
         }
     }
@@ -254,8 +244,11 @@ public class Commands implements Serializable {
         Commit headCommit = Commit.readCommit(headCommitID);
         Branches branches = Branches.readBranches(branchName);
         if (!branches.getBranchNameToCommit().containsKey(branchName)) {
-            System.out.println("No such branch exists");
+            System.out.println("No such branch exists.");
             return false;
+        }
+        if (branches.getBranchName(headCommitID).equals(branchName)){
+            System.out.println("No need to checkout the current branch.");
         }
         try {
             String branchHeadCommitID = branches.getBranchNameToCommit().get(branchName);
@@ -267,10 +260,10 @@ public class Commands implements Serializable {
                 }
             }
         }  catch (NullPointerException exception) {
-            for (String filename : headCommit.fileNameToBlobID().keySet()) {
-                String blobID = headCommit.fileNameToBlobID().get(filename);
+            for (String fN : headCommit.fileNameToBlobID().keySet()) {
+                String blobID = headCommit.fileNameToBlobID().get(fN);
                 Blobs b = Blobs.getBlob(blobID);
-                join(CWD, blobID).delete();
+                writeContents(join(CWD, fN), b.getcontentsstr());
                 Blobs.saveBlob(b);
                 Head.saveHead(h);
             }
@@ -305,17 +298,25 @@ public class Commands implements Serializable {
     /**
      * Method for globalLog.
      */
-    public boolean globalLog() {
+    public void globalLog() {
         List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
-        for (String f : commitsList) {
-            try {
-                Commit commit = Commit.readCommit(f);
-                commitFormat(commit.getMessage(), commit);
-            } catch (NullPointerException excp) {
-                return false;
+        Head h = Head.readHead();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
+        try {
+            while (headCommit != null) {
+                System.out.println("===");
+                System.out.println("commit " + headCommitID);
+                System.out.println("Date: " + headCommit.getTime());
+                System.out.println(headCommit.getMessage());
+                System.out.println("");
+                headCommitID = headCommit.getParentID1();
+                headCommit = Commit.readCommit(headCommitID);
             }
         }
-        return true;
+        catch (NullPointerException excp) {
+            System.exit(0);
+        }
     }
 
     public void commitFormat(String headCommitID, Commit headCommit) {
