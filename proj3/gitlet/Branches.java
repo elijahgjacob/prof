@@ -1,16 +1,19 @@
 package gitlet;
 
-
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.TreeMap;
+import java.io.File;
+
 
 public class Branches implements Serializable {
     /**
      * <String, String> <branchname, commitID>.
      **/
     private TreeMap<String, String> branchNameToCommit;
-
+    private final String BRANCHES = "BRANCHES";
     /**
      * Branch constructor.
      **/
@@ -22,7 +25,7 @@ public class Branches implements Serializable {
      * Method returns branchName to Commit TreeMap.
      **/
     public TreeMap<String, String> getBranchNameToCommit() {
-        return branchNameToCommit;
+        return this.branchNameToCommit;
     }
 
     /**
@@ -31,7 +34,7 @@ public class Branches implements Serializable {
      * @param branchName
      **/
     public String getCommitIDForBranch(String branchName) {
-        return branchNameToCommit.get(branchName);
+        return this.branchNameToCommit.get(branchName);
     }
 
     /**
@@ -65,10 +68,17 @@ public class Branches implements Serializable {
     /**
      * Returns the Branch object with that branchName
      */
-    public static Branches readBranches(String branchName) {
+    public static Branches readBranches(String BRANCHES) {
         Branches b;
-        File inFile = new File(".gitlet/" + branchName);
-        b = Utils.readObject(inFile, Branches.class);
+        File inFile = new File(".gitlet/"+ BRANCHES);
+        try {
+            ObjectInputStream inp =
+                    new ObjectInputStream(new FileInputStream(inFile));
+            b = (Branches) inp.readObject();
+            inp.close();
+        } catch (IOException | ClassNotFoundException excp) {
+            b = null;
+        }
         return b;
     }
 

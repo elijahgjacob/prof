@@ -75,7 +75,7 @@ public class Main {
                     String commitID  = args[1];
                     String checkoutFN1 = args[3];
                     c.checkout2(commitID, checkoutFN1);
-                } else if (args.length == 3 && !args[1].equals("--")){
+                } else if (args.length == 2){
                         if (!c.saveInit()) {
                             System.out.println("Directory not initialized");
                             System.exit(0);
@@ -119,16 +119,37 @@ public class Main {
                     System.exit(0);
                 }
                 c.globalLog();
+                break;
+            case "find":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                String findMessage = args[1];
+                c.find(findMessage);
+                break;
+            case "reset":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                String commitID = args[1];
+                c.reset(commitID);
+                break;
 
-//            case "branch":
-//                if (!c.saveInit()) {
-//                    System.out.println("Directory not initialized");
-//                    System.exit(0);
-//                }
-//                if (args.length > 3) {
-//                    System.out.println("Please enter the right amount of arguments");
-//                    System.exit(0);
-//                }
+            case "branch":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                if (args.length > 3) {
+                    System.out.println("Please enter the right amount of arguments");
+                    System.exit(0);
+                }
+                String branchName = args[1];
+                c.find(branchName);
+                break;
+
 //            case "rmbranch":
 //                if (!c.saveInit()) {
 //                    System.out.println("Directory not initialized");

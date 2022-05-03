@@ -4,25 +4,42 @@ import java.io.File;
 import java.io.Serializable;
 
 public class Blobs implements Serializable {
-    /**Name of file. **/
-    private String name;
-    /** Hash of file. **/
-    private String blobID;
-    /** Contents as a byte array. **/
-    private byte[] contents;
-    /** Contents as a string for testing. **/
-    private String contentstr;
-    /** Current Working Directory. */
+    /**
+     * Name of file.
+     **/
+    private final String name;
+    /**
+     * Hash of file.
+     **/
+    private final String blobID;
+    /**
+     * Contents as a byte array.
+     **/
+    private final byte[] contents;
+    /**
+     * Contents as a string for testing.
+     **/
+    private final String contentstr;
+    /**
+     * Current Working Directory.
+     */
     static final File CWD = new File(".");
 
-    /** Main folder. */
+    /**
+     * Main folder.
+     */
     static final File GITLET_DIR = new File(CWD, ".gitlet");
 
-    /** Directory folder that contains each commit hash. */
+    /**
+     * Directory folder that contains each commit hash.
+     */
     static final File BLOBS_DIR = Utils.join(GITLET_DIR, "blobs");
 
-    /** Blob constructor inputs NAME.
-     * @param fileName**/
+    /**
+     * Blob constructor inputs NAME.
+     *
+     * @param fileName
+     **/
     public Blobs(String fileName) {
         File f = new File(fileName);
         this.name = fileName;
@@ -39,7 +56,9 @@ public class Blobs implements Serializable {
         return this.contentstr;
     }
 
-    /** Returns hash generated. **/
+    /**
+     * Returns hash generated.
+     **/
     public String hash() {
         String hash = Utils.sha1(Utils.serialize(contents));
         return hash;

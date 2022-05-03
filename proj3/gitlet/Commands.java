@@ -10,29 +10,51 @@ import java.util.TreeMap;
 import static gitlet.Utils.*;
 
 public class Commands implements Serializable {
-    /**Current Working Directory.*/
+    /**
+     * Current Working Directory.
+     */
     static final File CWD = new File(System.getProperty("user.dir"));
-    /** Main metadata folder*/
+    /**
+     * Main metadata folder
+     */
     static final File GITLET_DIR = Utils.join(CWD, ".gitlet");
-    /** * Directory folder that every commit */
+    /**
+     * Directory folder that every commit
+     */
     static final File COMMIT_DIR = Utils.join(GITLET_DIR, "commits");
-    /** * Directory folder that holds every blob */
+    /**
+     * Directory folder that holds every blob
+     */
     static final File BLOBS_DIR = Utils.join(GITLET_DIR, "blobs");
-    /** * File that holds the Head commitID */
+    /**
+     * File that holds the Head commitID
+     */
     static final File HEAD = Utils.join(GITLET_DIR, "HEAD");
-    /** * File that holds the StagingArea object */
+    /**
+     * File that holds the StagingArea object
+     */
     static final File STAGING_AREA = Utils.join(GITLET_DIR, "STAGING_AREA");
-    /** * File that holds the Branches object */
+    /**
+     * File that holds the Branches object
+     */
     static final File BRANCHES = Utils.join(GITLET_DIR, "BRANCHES");
 
 
-    /** * File that holds the Head commitID */
+    /**
+     * File that holds the Head commitID
+     */
     private String parentID1 = " ";
-    /** * File that holds the Head commitID */
+    /**
+     * File that holds the Head commitID
+     */
     private String timestamp = " ";
-    /** * File that holds the Head commitID */
+    /**
+     * File that holds the Head commitID
+     */
     private static String message = "";
-    /** * File that holds the Head commitID */
+    /**
+     * File that holds the Head commitID
+     */
     private final String stagingareafn = "STAGING_AREA";
 
     public String getStagingareafn() {
@@ -66,6 +88,7 @@ public class Commands implements Serializable {
         h.updateHead(initialCommitID, "master");
         Head.saveHead(h);
     }
+
     /**
      * Method to check if directory exists.
      */
@@ -73,7 +96,7 @@ public class Commands implements Serializable {
         return GITLET_DIR.exists();
     }
 
-    public boolean add(String fN) throws  NullPointerException {
+    public boolean add(String fN) throws NullPointerException {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
         Head h = Head.readHead();
         String headCommitID = h.getCommitID();
@@ -97,10 +120,10 @@ public class Commands implements Serializable {
                 stage.saveStagingArea(stage);
                 return true;
             }
-            if (headCommit.fileNameToBlobID().containsKey(fN)){
+            if (headCommit.fileNameToBlobID().containsKey(fN)) {
                 String s = headCommit.getFileNameToBlobID(fN);
                 Blobs b = new Blobs(fN);
-                if (s.equals(b.getBlobID())){
+                if (s.equals(b.getBlobID())) {
                     System.exit(0);
                 }
             }
@@ -199,8 +222,10 @@ public class Commands implements Serializable {
         stage.toRemove.clear();
         stage.saveStagingArea(stage);
     }
+
     /**
      * Method to checkout.
+     *
      * @param fileName
      */
     public boolean checkout1(String fileName) {
@@ -217,15 +242,22 @@ public class Commands implements Serializable {
         System.out.println("File does not exist in that commit");
         return false;
     }
+
     /**
      * Method to checkout.
+     *
      * @param fN
      * @param commitID
      */
     public void checkout2(String commitID, String fN) {
         //only need to check the commitID it takes in,
+        List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
+        if (!commitsList.contains(commitID)) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
         Commit c = Commit.readCommit(commitID);
-        if (c.getFileNameToBlobID(fN).equals(null)) {
+        if (c.getFileNameToBlobID(fN) == null) {
             System.out.println("File does not exist in that commit.");
             System.exit(0);
         } else {
@@ -234,21 +266,24 @@ public class Commands implements Serializable {
             writeContents(join(CWD, fN), b.getcontentsstr());
         }
     }
+
     /**
      * Method to checkout.
+     *
      * @param branchName
      */
     public boolean checkout3(String branchName) {
         Head h = Head.readHead();
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
-        Branches branches = Branches.readBranches(branchName);
-        if (!branches.getBranchNameToCommit().containsKey(branchName)) {
+        Branches branches = Branches.readBranches("BRANCHES");
+        if (branches.getCommitIDForBranch(branchName) == null) {
             System.out.println("No such branch exists.");
             return false;
         }
-        if (branches.getBranchName(headCommitID).equals(branchName)){
+        if (branches.getBranchName(headCommitID).equals(branchName)) {
             System.out.println("No need to checkout the current branch.");
+            return false;
         }
         try {
             String branchHeadCommitID = branches.getBranchNameToCommit().get(branchName);
@@ -259,7 +294,7 @@ public class Commands implements Serializable {
                     return false;
                 }
             }
-        }  catch (NullPointerException exception) {
+        } catch (NullPointerException exception) {
             for (String fN : headCommit.fileNameToBlobID().keySet()) {
                 String blobID = headCommit.fileNameToBlobID().get(fN);
                 Blobs b = Blobs.getBlob(blobID);
@@ -289,9 +324,8 @@ public class Commands implements Serializable {
                 headCommitID = headCommit.getParentID1();
                 headCommit = Commit.readCommit(headCommitID);
             }
-        }
-        catch (NullPointerException excp) {
-           System.exit(0);
+        } catch (NullPointerException excp) {
+            System.exit(0);
         }
     }
 
@@ -300,36 +334,68 @@ public class Commands implements Serializable {
      */
     public void globalLog() {
         List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
-        Head h = Head.readHead();
-        String headCommitID = h.getCommitID();
-        Commit headCommit = Commit.readCommit(headCommitID);
-        try {
-            while (headCommit != null) {
-                System.out.println("===");
-                System.out.println("commit " + headCommitID);
-                System.out.println("Date: " + headCommit.getTime());
-                System.out.println(headCommit.getMessage());
-                System.out.println("");
-                headCommitID = headCommit.getParentID1();
-                headCommit = Commit.readCommit(headCommitID);
+        for (String s : commitsList) {
+            Commit c = Commit.readCommit(s);
+            System.out.println("===");
+            System.out.println("commit " + s);
+            System.out.println("Date: " + c.getTime());
+            System.out.println(c.getMessage());
+            System.out.println("");
+        }
+    }
+
+    public void find(String message) {
+        List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
+        boolean exists = false;
+        for (String s : commitsList) {
+            if (Commit.readCommit(s).getMessage().equals(message)) {
+                System.out.println(s);
+                exists = true;
             }
         }
-        catch (NullPointerException excp) {
-            System.exit(0);
+        if (!exists) {
+            System.out.println("Found no commit with that message.");
         }
     }
 
-    public void commitFormat(String headCommitID, Commit headCommit) {
-        System.out.println("===");
-        System.out.println("commit " + headCommitID);
-        System.out.println("Date: " + headCommit.getTime());
-        System.out.println(headCommit.getMessage());
-        System.out.println(" ");
-        System.out.print("===");
+
+    public void reset(String commitID) { //incomplete
+        List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
+        boolean exists = false;
+        for (String f : commitsList) {
+            if (f.equals(commitID)) {
+                exists = true;
+                break;
+            }
+        }
+        Commit c = Commit.readCommit(commitID);
+        Branches branches = new Branches();
+        String branchname = branches.getBranchName(commitID);
+        StagingArea stage = StagingArea.readStagingArea(stagingareafn);
+        for (String fN : c.fileNameToBlobID().keySet()) {
+            if (c.getFileNameToBlobID(fN) == null) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                Utils.join(CWD, fN).delete();
+            } else {
+                String blobID = c.getFileNameToBlobID(fN);
+                Blobs b = Blobs.getBlob(blobID);
+                Head h = new Head();
+                h.updateHead(commitID, branchname);
+                writeContents(join(CWD, fN), b.getcontentsstr());
+            }
+        }
+        if (exists) {
+            stage.toAdd.clear();
+            stage.toRemove.clear();
+            StagingArea.saveStagingArea(stage);
+            Branches.saveBranch(branches);
+        } else {
+            System.out.println("Found no commit with that message.");
+        }
     }
 
 
-    public boolean branch(String branchName) {
+    public void branch(String branchName) {
         Head h = Head.readHead();
         Branches b = Branches.readBranches("BRANCHES");
         String headCommitID = b.getCommitIDForBranch(branchName);
@@ -337,11 +403,11 @@ public class Commands implements Serializable {
         TreeMap<String, String> updatedContents = new TreeMap<>();
         if (b.getBranchNameToCommit().containsKey(branchName)) {
             System.out.println("Branch already exists.");
-            return false;
+            System.exit(0);
         }
-        for (String filename : headCommit.fileNameToBlobID().keySet()){
+        for (String fN : headCommit.fileNameToBlobID().keySet()) {
             String blobID = headCommit.getFileNameToBlobID(headCommitID);
-            updatedContents.put(filename, blobID);
+            updatedContents.put(fN, blobID);
         }
         Commit next = new Commit(message, updatedContents, parentID1);
         b.updateBranch(branchName, next.getCommitID());
@@ -349,7 +415,7 @@ public class Commands implements Serializable {
         Head.saveHead(h);
         Commit.saveCommit(next);
         Branches.saveBranch(b);
-        return true;
+        System.exit(0);
     }
 
     public static void status() {
@@ -361,14 +427,14 @@ public class Commands implements Serializable {
         String headCommitID = h.getCommitID();
         System.out.println("=== Branches ===");
         for (String s : b.getBranchNameToCommit().keySet()) {
-            if(b.getCommitIDForBranch(s).equals(headCommitID)){
+            if (b.getCommitIDForBranch(s).equals(headCommitID)) {
                 System.out.print("*");
             }
             System.out.println(s);
         }
         System.out.println("");
         System.out.println("=== Staged Files ===");
-        for (String s :  stage.getToAdd().keySet()) {
+        for (String s : stage.getToAdd().keySet()) {
             System.out.println(s);
         }
         System.out.println("");
@@ -398,7 +464,6 @@ public class Commands implements Serializable {
 //    static byte[] readCommit(File file) {
 //        return readContents(file);
 //    }
-
 
 
 }

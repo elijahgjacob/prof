@@ -44,7 +44,7 @@ public class StagingArea implements Serializable {
 
     public static StagingArea readStagingArea(String stagingID) {
         StagingArea stage;
-        File inFile = new File(".gitlet/"+stagingID);
+        File inFile = new File(".gitlet/"+ stagingID);
         try {
             ObjectInputStream inp =
                     new ObjectInputStream(new FileInputStream(inFile));
