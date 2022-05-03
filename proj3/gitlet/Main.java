@@ -146,8 +146,8 @@ public class Main {
                     System.out.println("Please enter the right amount of arguments");
                     System.exit(0);
                 }
-                String branchName = args[1];
-                c.find(branchName);
+                String branchNameB = args[1];
+                c.branch(branchNameB);
                 break;
 
 //            case "rmbranch":

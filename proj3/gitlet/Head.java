@@ -5,20 +5,20 @@ import java.io.Serializable;
 import java.io.File;
 
 public class Head implements Serializable {
-    private static final String filename = "HEAD";
     private String newCommitID;
     private String newBranchName;
-
 
     /**
      * Constructor takes in the branch that is checked out and the front commit of that branch.
      **/
     public Head() {
+        this.newCommitID = newCommitID;
+        this.newBranchName = newBranchName;
     }
 
     /** Constructor takes in the branch that is checked out and the front commit of that branch.*/
     public String getCommitID() {
-        return newCommitID;
+        return this.newCommitID;
     }
 
     /** Method updates the instances in the Head object.
@@ -30,9 +30,9 @@ public class Head implements Serializable {
 
     /** Method reads the Head object to the file.
      * @returns Head object*/
-    public static Head readHead() {
+    public static Head readHead(String HEAD) {
         Head head;
-        File inFile = new File(".gitlet/" + filename);
+        File inFile = new File(".gitlet/" + HEAD);
         head = Utils.readObject(inFile, Head.class);
         return head;
     }

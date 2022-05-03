@@ -57,7 +57,9 @@ public class Commands implements Serializable {
      */
     private final String stagingareafn = "STAGING_AREA";
 
-    public String getStagingareafn() {
+    private final String HEADFN = "HEAD";
+
+    public String getStagingAreaFn() {
         return stagingareafn;
     }
 
@@ -98,7 +100,7 @@ public class Commands implements Serializable {
 
     public boolean add(String fN) throws NullPointerException {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
-        Head h = Head.readHead();
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         File file = new File(fN);
@@ -142,7 +144,7 @@ public class Commands implements Serializable {
     public void rm(String fN) throws NullPointerException {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
         File f = Utils.join(CWD, fN);
-        Head h = Head.readHead();
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         if (stage.toAdd.size() != 0) { //if the file is not in the commit tracker but is staged
@@ -170,7 +172,7 @@ public class Commands implements Serializable {
      */
     public void commit(String message) {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
-        Head h = Head.readHead();
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         TreeMap<String, String> updatedContents = new TreeMap<>();
@@ -229,7 +231,7 @@ public class Commands implements Serializable {
      * @param fileName
      */
     public boolean checkout1(String fileName) {
-        Head h = Head.readHead();
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         if (headCommit.fileNameToBlobID().containsKey(fileName)) {
@@ -272,18 +274,18 @@ public class Commands implements Serializable {
      *
      * @param branchName
      */
-    public boolean checkout3(String branchName) {
-        Head h = Head.readHead();
+    public void checkout3(String branchName) {
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         Branches branches = Branches.readBranches("BRANCHES");
         if (branches.getCommitIDForBranch(branchName) == null) {
             System.out.println("No such branch exists.");
-            return false;
+            System.exit(0);
         }
         if (branches.getBranchName(headCommitID).equals(branchName)) {
             System.out.println("No need to checkout the current branch.");
-            return false;
+            System.exit(0);
         }
         try {
             String branchHeadCommitID = branches.getBranchNameToCommit().get(branchName);
@@ -291,7 +293,7 @@ public class Commands implements Serializable {
             for (String filename : branchHeadCommit.fileNameToBlobID().keySet()) {
                 if (!headCommit.fileNameToBlobID().containsKey(filename)) {
                     System.out.println("File not tracked");
-                    return false;
+                    System.exit(0);
                 }
             }
         } catch (NullPointerException exception) {
@@ -303,7 +305,7 @@ public class Commands implements Serializable {
                 Head.saveHead(h);
             }
         }
-        return true;
+        System.exit(0);
     }
 
     /**
@@ -311,7 +313,7 @@ public class Commands implements Serializable {
      */
     public void log() {
         //for each commit in the branch
-        Head h = Head.readHead();
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
         try {
@@ -395,35 +397,28 @@ public class Commands implements Serializable {
     }
 
 
-    public void branch(String branchName) {
-        Head h = Head.readHead();
+    public void branch(String branchNameB) {
+        Head h = Head.readHead(HEADFN);
+        String headCommitID = h.getCommitID();
         Branches b = Branches.readBranches("BRANCHES");
-        String headCommitID = b.getCommitIDForBranch(branchName);
-        Commit headCommit = Commit.readCommit(headCommitID);
-        TreeMap<String, String> updatedContents = new TreeMap<>();
-        if (b.getBranchNameToCommit().containsKey(branchName)) {
-            System.out.println("Branch already exists.");
+        if (b.getCommitIDForBranch(branchNameB) != null) {
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
+        } else {
+            b.updateBranch(branchNameB, headCommitID);
+            h.updateHead(headCommitID, branchNameB);
+            Head.saveHead(h);
+            Branches.saveBranch(b);
             System.exit(0);
         }
-        for (String fN : headCommit.fileNameToBlobID().keySet()) {
-            String blobID = headCommit.getFileNameToBlobID(headCommitID);
-            updatedContents.put(fN, blobID);
-        }
-        Commit next = new Commit(message, updatedContents, parentID1);
-        b.updateBranch(branchName, next.getCommitID());
-        h.updateHead(next.getCommitID(), branchName);
-        Head.saveHead(h);
-        Commit.saveCommit(next);
-        Branches.saveBranch(b);
-        System.exit(0);
     }
 
-    public static void status() {
+    public void status() {
         StagingArea stage;
         stage = StagingArea.readStagingArea("STAGING_AREA");
         Branches b;
         b = Branches.readBranches("BRANCHES");
-        Head h = Head.readHead();
+        Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         System.out.println("=== Branches ===");
         for (String s : b.getBranchNameToCommit().keySet()) {
