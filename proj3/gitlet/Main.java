@@ -30,37 +30,33 @@ public class Main {
                 c.init();
                 break;
             case "add":
-                String filename = args[1];
-                while (!c.add(filename)) {
-                    if (!c.saveInit()) {
-                        System.out.println("Directory not initialized");
-                        System.exit(0);
-                    }
-                    if (args.length != 2) {
-                        System.out.println("Please enter the right amount of arguments");
-                        System.exit(0);
-                    }
-                    if (!c.add(args[1])) {
-                        System.out.println("File does not exist.");
-                        System.exit(0);
-                    }
-                    c.add(filename);
-                }
-                break;
-            case "commit":
-                String message = args[1];
                 if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
                 }
-                if (args.length == 1) {
-                    System.out.println("Please enter a commit message");
+                if (args.length != 2) {
+                    System.out.println("Please enter the right amount of arguments");
+                    System.exit(0);
+                }
+                if (!c.add(args[1])) {
+                    System.out.println("File does not exist.");
+                    System.exit(0);
+                }
+                break;
+            case "commit":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                if (args.length == 1 || args[1].isEmpty()) {
+                    System.out.println("Please enter a commit message.");
                     System.exit(0);
                 }
                 if (args.length > 2) {
                     System.out.println("Please enter the right amount of arguments");
                     System.exit(0);
                 }
+                String message = args[1];
                 c.commit(message);
                 break;
             case "checkout":
@@ -83,7 +79,6 @@ public class Main {
                 }
                 break;
             case "rm":
-                String fN = args[1];
                 if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
@@ -92,9 +87,9 @@ public class Main {
                     System.out.println("Please enter the right amount of arguments");
                     System.exit(0);
                 }
+                String fN = args[1];
                 c.rm(fN);
                 break;
-
             case "log":
                 if (args.length > 2){
                     System.out.println("Please enter git --log only");
@@ -109,12 +104,13 @@ public class Main {
                 }
                 c.status();
                 break;
-//                if (args.length > 2) {
-//                    System.out.println("Please enter 'git status' only");
-//                    System.exit(0);
-//                }
-//                c.status();
-//                break;
+            case "global-log":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                c.globalLog();
+
 //            case "branch":
 //                if (!c.saveInit()) {
 //                    System.out.println("Directory not initialized");

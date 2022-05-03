@@ -22,10 +22,14 @@ public class StagingArea implements Serializable {
     public StagingArea(){
     }
 
-    public static void updateStage(String stagingID, TreeMap<String, String> toAdd, TreeMap<String, String> toRemove) {
+    /**
+     * Method adds the commit by commitID to the branchName.
+     * @param toAdd
+     * @param toRemove
+     **/
+    public static void updateStage(TreeMap<String, String> toAdd, TreeMap<String, String> toRemove) {
         toAdd = new TreeMap<>();
         toRemove = new TreeMap<>();
-        stagingID = getHash(toAdd, toRemove);
     }
 
 
@@ -37,29 +41,18 @@ public class StagingArea implements Serializable {
         return toRemove;
     }
 
-    /**
-     * Returns hash generated.
-     **/
-    public static String getHash(TreeMap<String, String> toAdd, TreeMap<String, String> toRemove) {
-        String var = "";
-        for (Map.Entry<String, String> mapElement :
-                toAdd.entrySet()) {
-            String value = mapElement.getValue();
-            var += value;
-        }
-        for (Map.Entry<String, String> mapElement :
-                toRemove.entrySet()) {
-            String value = mapElement.getValue();
-            var += value;
-        }
-        String hash = Utils.sha1(var);
-        return hash;
-    }
 
     public static StagingArea readStagingArea(String stagingID) {
         StagingArea stage;
         File inFile = new File(".gitlet/"+stagingID);
-        stage = Utils.readObject(inFile, StagingArea.class);
+        try {
+            ObjectInputStream inp =
+                    new ObjectInputStream(new FileInputStream(inFile));
+            stage = (StagingArea) inp.readObject();
+            inp.close();
+        } catch (IOException | ClassNotFoundException excp) {
+            stage = null;
+        }
         return stage;
     }
 

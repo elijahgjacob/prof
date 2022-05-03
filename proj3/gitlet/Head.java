@@ -16,18 +16,6 @@ public class Head implements Serializable {
         return newCommitID;
     }
 
-//    public String getHash(String newCommitID, String newBranchName){
-//        try {
-//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//            ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-//            objectStream.writeObject(this);
-//            objectStream.close();
-//            return Utils.sha1(stream.toByteArray());
-//        } catch (IOException excp){
-//            throw new IllegalArgumentException( ("Error occurred during hash"));
-//        }
-//    }
-
     // updateHead updates the HEAD contents and publishes to filesystem.
     public void updateHead(String newCommitID, String newBranchName){
         this.newCommitID = newCommitID;

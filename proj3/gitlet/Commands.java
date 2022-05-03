@@ -3,6 +3,7 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -51,7 +52,7 @@ public class Commands implements Serializable {
         join(".gitlet", "BRANCHES");
         join(".gitlet", "STAGING_AREA");
         StagingArea stage = new StagingArea();
-        StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
+        StagingArea.updateStage(stage.toAdd, stage.toRemove);
         StagingArea.saveStagingArea(stage);
         TreeMap<String, String> fileNametoBlobID = new TreeMap<>();
         message = "initial commit";
@@ -72,31 +73,41 @@ public class Commands implements Serializable {
         return GITLET_DIR.exists();
     }
 
-    public boolean add(String filename) throws  NullPointerException {
+    public boolean add(String fN) throws  NullPointerException {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
-        File file = new File(filename);
+        Head h = Head.readHead();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
+        File file = new File(fN);
+        if (!file.exists()) {
+            return false;
+        }
         if (stage == null) {
             System.out.println("Stage doesn't exist.");
             System.exit(0);
         }
         try {
-            if (stage.toAdd.size() != 0) {
-                if (stage.toAdd.containsKey(filename)) {
-                    System.out.println("Nothing to add.");
-                    return false;
+            if (stage.toAdd.containsKey(fN)) {
+                System.out.println("Nothing to add.");
+                return false;
+            }
+            if (stage.toRemove.containsKey(fN)) {
+                stage.toRemove.remove(fN);
+                StagingArea.updateStage(stage.toAdd, stage.toRemove);
+                stage.saveStagingArea(stage);
+                return true;
+            }
+            if (headCommit.fileNameToBlobID().containsKey(fN)){
+                String s = headCommit.getFileNameToBlobID(fN);
+                Blobs b = new Blobs(fN);
+                if (s.equals(b.getBlobID())){
+                    System.exit(0);
                 }
             }
-            if (stage.toRemove.size() != 0) {
-                if (stage.toRemove.containsKey(filename)) {
-                    stage.toRemove.remove(filename);
-                    StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
-                    stage.saveStagingArea(stage);
-                }
-            }
-            Blobs bl = new Blobs(filename);
-            stage.toAdd.put(filename, bl.getBlobID());
+            Blobs bl = new Blobs(fN);
+            stage.toAdd.put(fN, bl.getBlobID());
             Blobs.saveBlob(bl);
-            StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
+            StagingArea.updateStage(stage.toAdd, stage.toRemove);
             stage.saveStagingArea(stage);
             return true;
         } catch (NullPointerException excp) {
@@ -107,36 +118,28 @@ public class Commands implements Serializable {
 
     public void rm(String fN) throws NullPointerException {
         StagingArea stage = StagingArea.readStagingArea(stagingareafn);
-        File file = new File(fN);
-        if (stage == null) {
-            System.out.println("Stage doesn't exist.");
-            System.exit(0);
-        }
-        try {
-            if (stage.toRemove.size() != 0) {
-                if (stage.toRemove.containsKey(fN)) {
-                    System.out.println("Nothing to remove.");
-                    System.exit(0);
-                }
+        File f = Utils.join(CWD, fN);
+        Head h = Head.readHead();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
+        if (stage.toAdd.size() != 0) { //if the file is not in the commit tracker but is staged
+            if (stage.toAdd.containsKey(fN)) {
+                stage.toAdd.remove(fN);
+                StagingArea.updateStage(stage.toAdd, stage.toRemove);
+                stage.saveStagingArea(stage);
+                System.exit(0);
             }
-            if (stage.toAdd.size() != 0) {
-                if (stage.toAdd.containsKey(fN)) {
-                    stage.toAdd.remove(fN);
-                    StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
-                    stage.saveStagingArea(stage);
-                    System.exit(0);
-                }
-            }
-            Blobs bl = new Blobs(fN);
-            stage.toRemove.put(fN, bl.getBlobID());
-            Utils.restrictedDelete(fN);
-            Utils.restrictedDelete(".gitlet.blobs"+bl.getBlobID());
-            StagingArea.updateStage(stage.stagingID, stage.toAdd, stage.toRemove);
+        } else if (headCommit.fileNameToBlobID().containsKey(fN)) { //file isn't in commit tracker
+            String blobId = headCommit.fileNameToBlobID().get(fN);
+            stage.toRemove.put(fN, blobId); //file blob is
+            StagingArea.updateStage(stage.toAdd, stage.toRemove);
             stage.saveStagingArea(stage);
-        } catch (NullPointerException excp) {
-            System.out.println("File doesn't exist.");
+            Utils.restrictedDelete(f);
             System.exit(0);
+        } else {
+            System.out.println("No reason to remove the file.");
         }
+
     }
 
     /**
@@ -150,7 +153,7 @@ public class Commands implements Serializable {
         TreeMap<String, String> updatedContents = new TreeMap<>();
         if (stage.toAdd.isEmpty()) {
             if (stage.toRemove.isEmpty()) {
-                System.out.println("Nothing to add");
+                System.out.println("No changes added to the commit.");
                 System.exit(0);
             }
         }
@@ -354,10 +357,11 @@ public class Commands implements Serializable {
         Branches b;
         b = Branches.readBranches("BRANCHES");
         Head h = Head.readHead();
+        String headCommitID = h.getCommitID();
         System.out.println("=== Branches ===");
         for (String s : b.getBranchNameToCommit().keySet()) {
-            if (s.equals(h)) {
-                System.out.print("*" + s);
+            if(b.getCommitIDForBranch(s).equals(headCommitID)){
+                System.out.print("*");
             }
             System.out.println(s);
         }
