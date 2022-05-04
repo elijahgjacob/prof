@@ -402,6 +402,10 @@ public class Commands implements Serializable {
                 break;
             }
         }
+        if (!exists){
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
         Commit c = Commit.readCommit(commitID);
         Head h = Head.readHead(headFn);
         Commit headCommit = Commit.readCommit(h.getCommitID());
