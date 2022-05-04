@@ -33,7 +33,22 @@ public class UnitTest {
         assertEquals(commit1.getCommitID(), commit2.getParentID1());
         assertNotEquals(commit1, commit2);
     }
+
     @Test
+    public void initTest2() {
+        String message2 = "init";
+        TreeMap<String, String> commitmap2 = new TreeMap<>();
+        String message3 = "init";
+        TreeMap<String, String> commitmap3 = new TreeMap<>();
+        Commit commit2 = new Commit(message2, commitmap2, null);
+        Commit commit3 = new Commit(message3, commitmap3,
+                commit2.getCommitID());
+        assertEquals(commit2.getCommitID(), commit3.getParentID1());
+        assertNotEquals(commit2, commit3);
+    }
+
+    @Test
+
     public void singleBranchTest() throws IOException {
         String c = "abc";
         File fnc = new File("filea");
