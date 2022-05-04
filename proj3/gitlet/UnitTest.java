@@ -47,42 +47,6 @@ public class UnitTest {
         assertNotEquals(commit2, commit3);
     }
 
-    @Test
-
-    public void singleBranchTest() throws IOException {
-        String c = "abc";
-        File fnc = new File("filea");
-        fnc.createNewFile();
-        Utils.writeContents(fnc, c);
-        Blobs blob1 = new Blobs(fnc.getName());
-        String e = "abcde";
-        File fne = new File("fileb");
-        fnc.createNewFile();
-        Utils.writeContents(fne, e);
-        Blobs blob2 = new Blobs(fnc.getName());
-        TreeMap<String, String> blob1Map = new TreeMap<>();
-        blob1Map.put(c, blob1.getBlobID());
-        TreeMap<String, String> blob2Map = new TreeMap<>();
-        TreeMap<String, String> branchNameToCommit = new TreeMap<>();
-        blob2Map.put("filea", blob1.getBlobID());
-        blob2Map.put("fileb", blob2.getBlobID());
-        String message = "first";
-        String message1 = "second";
-        Commit firstcommit = new Commit(message,
-                blob1Map, null);
-        Branches b = new Branches();
-        Branches.saveBranch(b);
-        Commit secondcommit = new Commit(message1,
-                blob2Map, firstcommit.getCommitID());
-        Branches nb = new Branches();
-        Branches.saveBranch(b);
-        assertEquals("first", firstcommit.getMessage());
-        assertEquals("second", secondcommit.getMessage());
-        assertEquals(null, b.readBranches("master"));
-        assertEquals(secondcommit.getCommitID(),
-                b.getBranchNameToCommit().get("master"));
-    }
-
 }
 
 
