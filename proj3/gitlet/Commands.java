@@ -252,20 +252,28 @@ public class Commands implements Serializable {
      * @param commitID
      */
     public void checkout2(String commitID, String fN) {
-        //only need to check the commitID it takes in,
         List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
+        Head h = new Head();
+        String headCommitID = h.getCommitID();
+        Commit headCommit = Commit.readCommit(headCommitID);
         if (!commitsList.contains(commitID)) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
         Commit c = Commit.readCommit(commitID);
-        if (c.getFileNameToBlobID(fN) == null) {
+        if (!c.fileNameToBlobID().containsKey(fN)) {
             System.out.println("File does not exist in that commit.");
             System.exit(0);
         } else {
-            String blobID = c.getFileNameToBlobID(fN);
-            Blobs b = Blobs.getBlob(blobID);
-            writeContents(join(CWD, fN), b.getcontentsstr());
+            for (String headFName : headCommit.fileNameToBlobID().keySet()) {
+                if (headCommit.fileNameToBlobID().containsKey(headFName)) {
+                    join(CWD, headFName).delete();
+                }
+                String blobID = c.getFileNameToBlobID(fN);
+                Blobs b = Blobs.getBlob(blobID);
+                writeContents(join(CWD, fN), b.getcontentsstr());
+            }
+
         }
     }
 
@@ -275,6 +283,7 @@ public class Commands implements Serializable {
      * @param branchName
      */
     public void checkout3(String branchName) {
+        boolean untrackedFileIsNotPresent = false;
         Head h = Head.readHead(HEADFN);
         String headCommitID = h.getCommitID();
         Commit headCommit = Commit.readCommit(headCommitID);
@@ -287,18 +296,24 @@ public class Commands implements Serializable {
             System.out.println("No need to checkout the current branch.");
             System.exit(0);
         }
-        try {
-            String branchHeadCommitID = branches.getBranchNameToCommit().get(branchName);
-            Commit branchHeadCommit = Commit.readCommit(branchHeadCommitID);
-            for (String filename : branchHeadCommit.fileNameToBlobID().keySet()) {
-                if (!headCommit.fileNameToBlobID().containsKey(filename)) {
-                    System.out.println("File not tracked");
-                    System.exit(0);
-                }
+        String branchHeadCommitID = branches.getBranchNameToCommit().get(branchName);
+        Commit branchHeadCommit = Commit.readCommit(branchHeadCommitID);
+        for (String filename : branchHeadCommit.fileNameToBlobID().keySet()) {
+            File f = new File(filename);
+            if (!headCommit.fileNameToBlobID().containsKey(filename) && f.exists()) {
+                untrackedFileIsNotPresent = true;
+                break;
             }
-        } catch (NullPointerException exception) {
-            for (String fN : headCommit.fileNameToBlobID().keySet()) {
-                String blobID = headCommit.fileNameToBlobID().get(fN);
+        }
+        if (!untrackedFileIsNotPresent) {
+            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+            System.exit(0);
+        }
+        for (String fN : headCommit.fileNameToBlobID().keySet()) {
+            if (headCommit.fileNameToBlobID().containsKey(fN)){
+                join(CWD , fN).delete();
+            } else {
+                String blobID = branchHeadCommit.fileNameToBlobID().get(fN);
                 Blobs b = Blobs.getBlob(blobID);
                 writeContents(join(CWD, fN), b.getcontentsstr());
                 Blobs.saveBlob(b);
