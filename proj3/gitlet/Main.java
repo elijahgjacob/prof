@@ -99,6 +99,18 @@ public class Main {
                 String fN = args[1];
                 c.rm(fN);
                 break;
+            case "rm-branch":
+                if (!c.saveInit()) {
+                    System.out.println("Directory not initialized");
+                    System.exit(0);
+                }
+                if (args.length != 2) {
+                    System.out.println("Please enter the right amount of arguments");
+                    System.exit(0);
+                }
+                String branchName = args[1];
+                c.rmBranch(branchName);
+                break;
             case "log":
                 if (args.length > 2){
                     System.out.println("Please enter git --log only");

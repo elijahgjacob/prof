@@ -5,28 +5,35 @@ import java.io.Serializable;
 import java.io.File;
 
 public class Head implements Serializable {
-    private String newCommitID;
-    private String newBranchName;
+    private String commitID;
+    private String branchName;
 
     /**
      * Constructor takes in the branch that is checked out and the front commit of that branch.
      **/
     public Head() {
-        this.newCommitID = newCommitID;
-        this.newBranchName = newBranchName;
+        this.commitID = commitID;
+        this.branchName = branchName;
     }
 
     /** Constructor takes in the branch that is checked out and the front commit of that branch.*/
     public String getCommitID() {
-        return this.newCommitID;
+        return this.commitID;
+    }
+
+    /** Constructor takes in the branch that is checked out and the front commit of that branch.*/
+    public String getBranchName() {
+        return branchName;
     }
 
     /** Method updates the instances in the Head object.
      * @param newCommitID, */
     public void updateHead(String newCommitID, String newBranchName) {
-        this.newCommitID = newCommitID;
-        this.newBranchName = newBranchName;
+        this.commitID = newCommitID;
+        this.branchName = newBranchName;
     }
+
+
 
     /** Method reads the Head object to the file.
      * @returns Head object*/

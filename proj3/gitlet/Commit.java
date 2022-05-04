@@ -39,7 +39,7 @@ public class Commit implements Serializable {
         this.message = message;
         Date date = new Date();
         timestamp = timeFormat.format(date);
-        this.commitID = getCommitID();
+        this.commitID = hash();
         this.fileNameToBlobID = fileNameToBlobID;
     }
 
@@ -74,6 +74,9 @@ public class Commit implements Serializable {
 //    public String getCommitIDtoFileName(String commitID){
 //        return commitIDtoFileName.get(commitID);
 //    }
+    public String getCommitID() {
+        return this.commitID;
+    }
 
     public String getMessage() {
         return this.message;
@@ -87,7 +90,7 @@ public class Commit implements Serializable {
         return this.parentID1;
     }
 
-    public String getCommitID() {
+    public String hash() {
         String hash = Utils.sha1(Utils.serialize(this));
         return hash;
     }

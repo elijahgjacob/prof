@@ -13,7 +13,6 @@ public class Branches implements Serializable {
      * <String, String> <branchname, commitID>.
      **/
     private TreeMap<String, String> branchNameToCommit;
-    private final String BRANCHES = "BRANCHES";
     /**
      * Branch constructor.
      **/
@@ -48,22 +47,31 @@ public class Branches implements Serializable {
     }
 
     /**
+     * Method removes the branch by branchName.
+     *
+     * @param branchName
+     **/
+    public void removeBranch(String branchName) {
+        branchNameToCommit.remove(branchName);
+    }
+
+    /**
      * Method adds the commit by commitID to the branchName.
      *
      * @param commitID
      **/
-    public String getBranchName(String commitID) {
-        try {
-            for (String s : branchNameToCommit.keySet()) {
-                if (branchNameToCommit.get(s).equals(commitID)) {
-                    return s;
-                }
-            }
-        } catch (NullPointerException excp) {
-            System.out.println("Did not find branch.");
-        }
-        return " ";
-    }
+//    public String getBranchName(String commitID) {
+//        try {
+//            for (String s : branchNameToCommit.keySet()) {
+//                if (branchNameToCommit.get(s).equals(commitID)) {
+//                    return s;
+//                }
+//            }
+//        } catch (NullPointerException excp) {
+//            System.out.println("Did not find branch.");
+//        }
+//        return " ";
+//    }
 
     /**
      * Returns the Branch object with that branchName
