@@ -31,6 +31,7 @@ public class Branches implements Serializable {
      * Method gets the commit ID of the latest commit on that branch.
      *
      * @param branchName
+     * @return xyz
      **/
     public String getCommitIDForBranch(String branchName) {
         return this.branchNameToCommit.get(branchName);
@@ -48,7 +49,6 @@ public class Branches implements Serializable {
 
     /**
      * Method removes the branch by branchName.
-     *
      * @param branchName
      **/
     public void removeBranch(String branchName) {
@@ -60,25 +60,15 @@ public class Branches implements Serializable {
      *
      * @param commitID
      **/
-//    public String getBranchName(String commitID) {
-//        try {
-//            for (String s : branchNameToCommit.keySet()) {
-//                if (branchNameToCommit.get(s).equals(commitID)) {
-//                    return s;
-//                }
-//            }
-//        } catch (NullPointerException excp) {
-//            System.out.println("Did not find branch.");
-//        }
-//        return " ";
-//    }
 
     /**
-     * Returns the Branch object with that branchName
+     * Returns the Branch object with that branchName.
+     * @oaram branches
+     * @return b
      */
-    public static Branches readBranches(String BRANCHES) {
+    public static Branches readBranches(String branches) {
         Branches b;
-        File inFile = new File(".gitlet/"+ BRANCHES);
+        File inFile = new File(".gitlet/" + branches);
         try {
             ObjectInputStream inp =
                     new ObjectInputStream(new FileInputStream(inFile));

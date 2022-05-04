@@ -15,9 +15,9 @@ public class Blobs implements Serializable {
     /**
      * Contents as a byte array.
      **/
-    private final byte[] contents;
+    private byte[] contents;
     /**
-     * Contents as a string for testing.
+     * Contents as a string.
      **/
     private final String contentstr;
     /**
@@ -54,6 +54,10 @@ public class Blobs implements Serializable {
 
     public String getcontentsstr() {
         return this.contentstr;
+    }
+
+    public void setContents(byte[] byteArray) {
+        this.contents = byteArray;
     }
 
     /**

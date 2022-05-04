@@ -19,8 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
-import java.util.TreeMap;
-
 
 /** Assorted utilities.
  *  @author P. N. Hilfinger

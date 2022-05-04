@@ -28,7 +28,8 @@ public class UnitTest {
         String message2 = "init";
         TreeMap<String, String> commitmap2 = new TreeMap<>();
         Commit commit1 = new Commit(message1, commitmap1, null);
-        Commit commit2 = new Commit(message2, commitmap2, commit1.getCommitID());
+        Commit commit2 = new Commit(message2, commitmap2,
+                commit1.getCommitID());
         assertEquals(commit1.getCommitID(), commit2.getParentID1());
         assertNotEquals(commit1, commit2);
     }
@@ -52,26 +53,19 @@ public class UnitTest {
         blob2Map.put("fileb", blob2.getBlobID());
         String message = "first";
         String message1 = "second";
-        Commit firstcommit = new Commit(message, blob1Map, null);
+        Commit firstcommit = new Commit(message,
+                blob1Map, null);
         Branches b = new Branches();
         Branches.saveBranch(b);
-        Commit secondcommit = new Commit(message1, blob2Map, firstcommit.getCommitID());
+        Commit secondcommit = new Commit(message1,
+                blob2Map, firstcommit.getCommitID());
         Branches nb = new Branches();
         Branches.saveBranch(b);
         assertEquals("first", firstcommit.getMessage());
         assertEquals("second", secondcommit.getMessage());
         assertEquals(null, b.readBranches("master"));
-        assertEquals(secondcommit.getCommitID(), b.getBranchNameToCommit().get("master"));
-    }
-
-    //@Test
-    public void addTest() throws IOException {
-        File fnc = new File("filea");
-//        Commands.toAdd.put(fnc.Commit.get)
-        Commands repo = new Commands();
-        repo.add(fnc.getName());
-        //StagingArea stage = StagingArea.readStagingArea("STAGE");
-        //assertEquals(true, stage.toAdd.containsKey(fnc));
+        assertEquals(secondcommit.getCommitID(),
+                b.getBranchNameToCommit().get("master"));
     }
 
 }

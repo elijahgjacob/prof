@@ -1,33 +1,41 @@
 package gitlet;
-
-
 import java.io.Serializable;
 import java.io.File;
 
 public class Head implements Serializable {
+    /** Var for commitID*/
     private String commitID;
+    /** Var for commitID*/
     private String branchName;
 
     /**
-     * Constructor takes in the branch that is checked out and the front commit of that branch.
+     * Constructor front commit of that branch.
      **/
     public Head() {
         this.commitID = commitID;
         this.branchName = branchName;
     }
 
-    /** Constructor takes in the branch that is checked out and the front commit of that branch.*/
+    /**
+     * Constructor front commit of that branch.
+     * @return commit
+     **/
     public String getCommitID() {
         return this.commitID;
     }
 
-    /** Constructor takes in the branch that is checked out and the front commit of that branch.*/
+    /**
+     * Constructor front commit of that branch.
+     * @return commit
+     **/
     public String getBranchName() {
         return branchName;
     }
 
     /** Method updates the instances in the Head object.
-     * @param newCommitID, */
+     * @param newCommitID
+     * @param newBranchName
+     */
     public void updateHead(String newCommitID, String newBranchName) {
         this.commitID = newCommitID;
         this.branchName = newBranchName;
@@ -37,9 +45,9 @@ public class Head implements Serializable {
 
     /** Method reads the Head object to the file.
      * @returns Head object*/
-    public static Head readHead(String HEAD) {
+    public static Head readHead(String headFn) {
         Head head;
-        File inFile = new File(".gitlet/" + HEAD);
+        File inFile = new File(".gitlet/" + headFn);
         head = Utils.readObject(inFile, Head.class);
         return head;
     }

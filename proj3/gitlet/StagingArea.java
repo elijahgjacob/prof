@@ -1,25 +1,32 @@
 package gitlet;
-
-import org.checkerframework.checker.units.qual.K;
-
-import java.io.*;
-import java.sql.Blob;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.TreeMap;
+import java.io.File;
 
 
 public class StagingArea implements Serializable {
-
-    public TreeMap<String, String> toAdd = new TreeMap<String, String>(); //filename, blobID
-    public TreeMap<String, String> toRemove = new TreeMap<String, String>();
+    /**
+     * StagingArea CONSTRUCTOR.
+     **/
+    public TreeMap<String, String> toAdd =
+            new TreeMap<String, String>();
+    /**
+     * StagingArea CONSTRUCTOR.
+     **/
+    public TreeMap<String, String> toRemove =
+            new TreeMap<String, String>();
+    /**
+     * StagingArea CONSTRUCTOR.
+     **/
     public String stagingID = "STAGING_AREA";
 
     /**
-     * StagingArea CONSTRUCTOR
+     * StagingArea CONSTRUCTOR.
      **/
-    public StagingArea(){
+    public StagingArea() {
     }
 
     /**
@@ -27,24 +34,36 @@ public class StagingArea implements Serializable {
      * @param toAdd
      * @param toRemove
      **/
-    public static void updateStage(TreeMap<String, String> toAdd, TreeMap<String, String> toRemove) {
+    public static void updateStage(TreeMap<String,
+            String> toAdd, TreeMap<String, String> toRemove) {
         toAdd = new TreeMap<>();
         toRemove = new TreeMap<>();
     }
 
-
-    public TreeMap<String, String> getToAdd(){
+    /**
+     * StagingArea CONSTRUCTOR.
+     * @returns toAdd
+     **/
+    public TreeMap<String, String> getToAdd() {
         return toAdd;
     }
 
-    public TreeMap<String, String> getToRemove(){
+    /**
+     * StagingArea CONSTRUCTOR.
+     * @returns toRemove
+     **/
+    public TreeMap<String, String> getToRemove() {
         return toRemove;
     }
 
-
+    /**
+     * StagingArea CONSTRUCTOR.
+     * @param stagingID
+     * @return stage
+     **/
     public static StagingArea readStagingArea(String stagingID) {
         StagingArea stage;
-        File inFile = new File(".gitlet/"+ stagingID);
+        File inFile = new File(".gitlet/" + stagingID);
         try {
             ObjectInputStream inp =
                     new ObjectInputStream(new FileInputStream(inFile));
@@ -55,7 +74,10 @@ public class StagingArea implements Serializable {
         }
         return stage;
     }
-
+    /**
+     * StagingArea CONSTRUCTOR
+     * @param stage
+     **/
     public static void saveStagingArea(StagingArea stage) {
         Utils.writeObject(Commands.STAGING_AREA, stage);
     }
