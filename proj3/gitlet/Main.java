@@ -115,7 +115,7 @@ public class Main {
             c.log(); break;
         case "status":
             if (!c.saveInit()) {
-                System.out.println("Directory not initialized");
+                System.out.println("Not an initialized Gitlet directory.");
                 System.exit(0);
             }
             c.status();
