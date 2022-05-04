@@ -507,15 +507,6 @@ public class Commands implements Serializable {
         System.out.println();
     }
     /**
-     * getSplitPoints method.
-     * @param branchHeadCommit
-     * @param headCommit
-     * @return ID
-     */
-    public String getSplitPointID(Commit branchHeadCommit, Commit headCommit) {
-        return "";
-    }
-    /**
      * ifAncestor method.
      * @param branchHeadCommit
      * @param headCommit
@@ -529,6 +520,15 @@ public class Commands implements Serializable {
                               Commit headCommit, String splitPointID,
                               Head h, Branches branches, String branchName) {
         return true;
+    }
+    /**
+     * getSplitPoints method.
+     * @param branchHeadCommit
+     * @param headCommit
+     * @return ID
+     */
+    public String getSplitPointID(Commit branchHeadCommit, Commit headCommit) {
+        return "";
     }
     /**
      * ifMergeConflicts method.
