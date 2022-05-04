@@ -57,14 +57,13 @@ public class Branches implements Serializable {
 
     /**
      * Method adds the commit by commitID to the branchName.
-     *
      * @param commitID
      **/
 
     /**
      * Returns the Branch object with that branchName.
      * @oaram branches
-     * @return b
+     * @return blkn
      */
     public static Branches readBranches(String branches) {
         Branches b;

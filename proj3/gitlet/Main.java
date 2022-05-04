@@ -29,8 +29,7 @@ public class Main {
                         + "exists in the current directory.");
                 System.exit(0);
             }
-            c.init();
-            break;
+            c.init();break;
         case "add":
             if (!c.saveInit()) {
                 System.out.println("Directory not initialized");
@@ -62,32 +61,27 @@ public class Main {
                         + "of arguments");
                 System.exit(0);
             }
-            String message = args[1];
-            c.commit(message);
-            break;
+            String message = args[1]; c.commit(message); break;
         case "checkout":
             if (args.length == 3 && args[1].equals("--")) {
                 if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
                 }
-                String checkoutFN = args[2];
-                c.checkout1(checkoutFN);
+                String checkoutFN = args[2]; c.checkout1(checkoutFN);
             } else if (args.length == 4 && args[2].equals("--")) {
                 if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
                 }
-                String commitID = args[1];
-                String checkoutFN1 = args[3];
+                String commitID = args[1]; String checkoutFN1 = args[3];
                 c.checkout2(commitID, checkoutFN1);
             } else if (args.length == 2) {
                 if (!c.saveInit()) {
                     System.out.println("Directory not initialized");
                     System.exit(0);
                 }
-                String branchName = args[1];
-                c.checkout3(branchName);
+                String branchName = args[1]; c.checkout3(branchName);
             } else {
                 System.out.println("Incorrect operands.");
                 System.exit(0);
@@ -113,14 +107,12 @@ public class Main {
                 System.exit(0);
             }
             String branchName = args[1];
-            c.rmBranch(branchName);
-            break;
+            c.rmBranch(branchName); break;
         case "log": if (args.length > 2) {
                 System.out.println("Please enter git --log only");
                 System.exit(0);
             }
-            c.log();
-            break;
+            c.log(); break;
         case "status":
             if (!c.saveInit()) {
                 System.out.println("Directory not initialized");
@@ -170,7 +162,7 @@ public class Main {
                 System.exit(0);
             }
         default:
-            System.out.println("Invalid command");
+            System.out.println("No command with that name exists.");
     }
         System.exit(0);
     }
