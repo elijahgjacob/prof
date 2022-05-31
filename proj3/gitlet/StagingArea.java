@@ -1,10 +1,7 @@
 package gitlet;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+
+import java.io.*;
 import java.util.TreeMap;
-import java.io.File;
 
 
 public class StagingArea implements Serializable {
@@ -31,6 +28,7 @@ public class StagingArea implements Serializable {
 
     /**
      * Method adds the commit by commitID to the branchName.
+     *
      * @param toAdd
      * @param toRemove
      **/
@@ -42,22 +40,7 @@ public class StagingArea implements Serializable {
 
     /**
      * StagingArea CONSTRUCTOR.
-     * @returns toAdd
-     **/
-    public TreeMap<String, String> getToAdd() {
-        return toAdd;
-    }
-
-    /**
-     * StagingArea CONSTRUCTOR.
-     * @returns toRemove
-     **/
-    public TreeMap<String, String> getToRemove() {
-        return toRemove;
-    }
-
-    /**
-     * StagingArea CONSTRUCTOR.
+     *
      * @param stagingID
      * @return stage
      **/
@@ -74,12 +57,32 @@ public class StagingArea implements Serializable {
         }
         return stage;
     }
+
     /**
      * StagingArea CONSTRUCTOR
+     *
      * @param stage
      **/
     public static void saveStagingArea(StagingArea stage) {
         Utils.writeObject(Commands.STAGING_AREA, stage);
+    }
+
+    /**
+     * StagingArea CONSTRUCTOR.
+     *
+     * @returns toAdd
+     **/
+    public TreeMap<String, String> getToAdd() {
+        return toAdd;
+    }
+
+    /**
+     * StagingArea CONSTRUCTOR.
+     *
+     * @returns toRemove
+     **/
+    public TreeMap<String, String> getToRemove() {
+        return toRemove;
     }
 }
 

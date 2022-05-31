@@ -1,6 +1,7 @@
 package gitlet;
-import java.io.Serializable;
+
 import java.io.File;
+import java.io.Serializable;
 
 public class Head implements Serializable {
     /** Var for commitID*/

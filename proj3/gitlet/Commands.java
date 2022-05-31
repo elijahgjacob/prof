@@ -1,4 +1,5 @@
 package gitlet;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,8 +39,10 @@ public class Commands implements Serializable {
      * File that holds the Branches object.
      */
     static final File BRANCHES = Utils.join(GITLET_DIR, "BRANCHES");
-
-
+    /**
+     * File that holds the message.
+     */
+    private static String message = "";
     /**
      * File that holds the Head commitID.
      */
@@ -48,10 +51,6 @@ public class Commands implements Serializable {
      * File that holds the timestampe.
      */
     private final String timestamp = " ";
-    /**
-     * File that holds the message.
-     */
-    private static String message = "";
     /**
      * File that holds the Head commitID.
      */
@@ -94,13 +93,16 @@ public class Commands implements Serializable {
 
     /**
      * Method to check if directory exists.
+     *
      * @return t/f
      */
     public boolean saveInit() {
         return GITLET_DIR.exists();
     }
+
     /**
      * Add method.
+     *
      * @param fN
      * @return t/f
      */
@@ -146,8 +148,10 @@ public class Commands implements Serializable {
             return false;
         }
     }
+
     /**
      * rm method.
+     *
      * @param fN
      */
     public void rm(String fN) throws NullPointerException {
@@ -178,6 +182,7 @@ public class Commands implements Serializable {
 
     /**
      * commit method.
+     *
      * @param message
      */
     public void commit(String message) {
@@ -237,6 +242,7 @@ public class Commands implements Serializable {
 
     /**
      * checkout method.
+     *
      * @param fileName
      * @return t/f
      */
@@ -289,6 +295,7 @@ public class Commands implements Serializable {
 
     /**
      * Method to checkout.
+     *
      * @param branchName
      */
     public void checkout3(String branchName) {
@@ -376,8 +383,10 @@ public class Commands implements Serializable {
             System.out.println();
         }
     }
+
     /**
      * find method.
+     *
      * @param message
      */
     public void find(String message) {
@@ -393,6 +402,7 @@ public class Commands implements Serializable {
             System.out.println("Found no commit with that message.");
         }
     }
+
     public void reset(String commitID) {
         List<String> commitsList = plainFilenamesIn(COMMIT_DIR);
         boolean exists = false;
@@ -402,7 +412,7 @@ public class Commands implements Serializable {
                 break;
             }
         }
-        if (!exists){
+        if (!exists) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
@@ -439,6 +449,7 @@ public class Commands implements Serializable {
 
     /**
      * branch method.
+     *
      * @param branchNameB
      */
     public void branch(String branchNameB) {
@@ -454,8 +465,10 @@ public class Commands implements Serializable {
             System.exit(0);
         }
     }
+
     /**
      * rmBranch method.
+     *
      * @param branchNameB
      */
     public void rmBranch(String branchNameB) {
@@ -473,6 +486,7 @@ public class Commands implements Serializable {
             System.exit(0);
         }
     }
+
     /**
      * status method.
      */
@@ -506,8 +520,10 @@ public class Commands implements Serializable {
         System.out.println("=== Untracked Files ===");
         System.out.println();
     }
+
     /**
      * ifAncestor method.
+     *
      * @param branchHeadCommit
      * @param headCommit
      * @param splitPointID
@@ -521,8 +537,10 @@ public class Commands implements Serializable {
                               Head h, Branches branches, String branchName) {
         return true;
     }
+
     /**
      * getSplitPoints method.
+     *
      * @param branchHeadCommit
      * @param headCommit
      * @return ID
@@ -530,8 +548,10 @@ public class Commands implements Serializable {
     public String getSplitPointID(Commit branchHeadCommit, Commit headCommit) {
         return "";
     }
+
     /**
      * ifMergeConflicts method.
+     *
      * @param branchHeadCommit
      * @param splitPointID
      * @param headCommit
@@ -545,8 +565,10 @@ public class Commands implements Serializable {
                                  Branches branches, String branchName) {
         return true;
     }
+
     /**
      * ifMergeConflicts method.
+     *
      * @param branchHeadCommit
      * @param splitPointCommit
      * @param headCommit
@@ -558,8 +580,10 @@ public class Commands implements Serializable {
                                     Commit headCommit, String fileName) {
         return true;
     }
+
     /**
      * merge method.
+     *
      * @param branchName
      */
     public void merge(String branchName) {

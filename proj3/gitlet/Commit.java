@@ -43,7 +43,9 @@ public class Commit implements Serializable {
      **/
     private final String commitID;
 
-    /** * TreeMap for storing fileNames and their according BlobIDs **/
+    /**
+     * TreeMap for storing fileNames and their according BlobIDs
+     **/
     private final TreeMap<String, String> fileNameToBlobID;
 
     public Commit(String message, TreeMap<String, String> fileNameToBlobID, String parentID1) {
@@ -56,8 +58,34 @@ public class Commit implements Serializable {
     }
 
     /**
+     * TreeMap for storing fileNames and their according
+     * BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
+     * @param commitID
+     * @returns map
+     **/
+    public static Commit readCommit(String commitID) {
+        Commit c;
+        File inFile = Utils.join(".gitlet/commits/", commitID);
+        c = Utils.readObject(inFile, Commit.class);
+        return c;
+    }
+
+    /**
+     * TreeMap for storing fileNames and their according
+     * BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
+     * @param commit
+     **/
+    public static void saveCommit(Commit commit) {
+        File inFile = Utils.join(COMMIT_DIR, commit.getCommitID());
+        Utils.writeObject(inFile, commit);
+    }
+
+    /**
      * TreeMap for storing fileNames and their
      * according BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
      * @returns map
      **/
     public TreeMap<String, String> fileNameToBlobID() {
@@ -66,6 +94,7 @@ public class Commit implements Serializable {
 
     /**
      * Method adds the commit by commitID to the branchName
+     *
      * @param fileName
      * @return fileName
      **/
@@ -76,73 +105,63 @@ public class Commit implements Serializable {
     /**
      * Method adds the commit by commitID
      * to the branchName
+     *
      * @param fileName
      * @param blobID
      **/
     public void updateFileNameToBlobID(String fileName, String blobID) {
         fileNameToBlobID.put(fileName, blobID);
     }
+
     /**
      * TreeMap for storing fileNames and their
      * according BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
      * @returns map
      **/
     public String getCommitID() {
         return this.commitID;
     }
+
     /**
      * TreeMap for storing fileNames and their
      * according BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
      * @returns map
      **/
     public String getMessage() {
         return this.message;
     }
+
     /**
      * TreeMap for storing fileNames and their
      * according BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
      * @returns map
      **/
     public String getTime() {
         return this.timestamp;
     }
+
     /**
      * TreeMap for storing fileNames and their
      * according BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
      * @returns map
      **/
     public String getParentID1() {
         return this.parentID1;
     }
+
     /**
      * TreeMap for storing fileNames and their
      * according BlobIDs //fileName, BlobID //wug.txt, BlobID.
+     *
      * @returns map
      **/
     public String hash() {
         String hash = Utils.sha1(Utils.serialize(this));
         return hash;
-    }
-    /**
-     * TreeMap for storing fileNames and their according
-     * BlobIDs //fileName, BlobID //wug.txt, BlobID.
-     * @param commitID
-     * @returns map
-     **/
-    public static Commit readCommit(String commitID) {
-        Commit c;
-        File inFile = Utils.join(".gitlet/commits/", commitID);
-        c = Utils.readObject(inFile, Commit.class);
-        return c;
-    }
-    /**
-     * TreeMap for storing fileNames and their according
-     * BlobIDs //fileName, BlobID //wug.txt, BlobID.
-     * @param commit
-     **/
-    public static void saveCommit(Commit commit) {
-        File inFile = Utils.join(COMMIT_DIR, commit.getCommitID());
-        Utils.writeObject(inFile, commit);
     }
 
 }
