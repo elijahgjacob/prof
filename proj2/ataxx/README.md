@@ -70,8 +70,8 @@ If no input file is provided, the program reads from the standard input.
 
 ## Developer Information
 
-- **Author:** Paul N. Hilfinger  
-- **University:** Regents of the University of California
+- **Author:** Paul N. Hilfinger
+- **Project completed by:** Elijah Jacob
 
 ## Contributing
 
