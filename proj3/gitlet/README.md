@@ -1,4 +1,4 @@
-# Gitlet: A Tiny Stupid Version-Control System
+# Gitlet: A Tiny Version-Control System
 
 Gitlet is a simplified version-control system inspired by Git, implemented in Java. It allows you to manage file versions, track changes, and collaborate on projects using a command-line interface.
 
