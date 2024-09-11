@@ -1,6 +1,3 @@
-Here is the `README.md` content with proper formatting for you to copy:
-
-```markdown
 # Ataxx Game
 
 This project is the main program for the Ataxx game, implemented in Java. It provides both a graphical user interface (GUI) and a text-based interface for playing the game. Ataxx is a strategy board game where players attempt to take over the board by capturing their opponent's pieces.
