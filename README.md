@@ -1,15 +1,12 @@
 # Hi, I’m **Elijah Jacob** 
 
-<div style="display: flex; align-items: center; margin-bottom: 20px;">
-  <div style="flex: 2; padding-right: 20px;">
-    I’m Elijah Jacob — a tech enthusiast, problem solver, and entrepreneur passionate about building solutions that make a difference. I grew up in Kuwait as an Indian-American and recently graduated from UC Berkeley with a degree in Economics and Data Science, and I'm eager to leverage my technical skills and innovative mindset in real-world applications.
-    <br><br>
-    This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
-  </div>
-  <div style="flex: 1;">
-    <img src="https://github.com/elijahgjacob/elijah-repo/blob/main/image3.png" alt="Elijah Jacob" width="250" style="border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
-  </div>
+<div style="overflow: hidden;">
+  <img src="https://github.com/elijahgjacob/elijah-repo/blob/main/image3.png" alt="Elijah Jacob" width="250" style="float: right; margin-left: 20px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+  I’m Elijah Jacob — a tech enthusiast, problem solver, and entrepreneur passionate about building solutions that make a difference. I grew up in Kuwait as an Indian-American and recently graduated from UC Berkeley with a degree in Economics and Data Science. I'm eager to leverage my technical skills and innovative mindset in real-world applications.
+
+  This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
 </div>
+
 
 
 This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
