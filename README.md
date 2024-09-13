@@ -1,5 +1,7 @@
 # Hi, I’m **Elijah Jacob** 
 
+![image info](/elijahgjacob/elijah-repo/image.png)
+
 — a tech enthusiast, problem solver, and entrepreneur passionate about building solutions that make a difference. I recently graduated from UC Berkeley with a degree in Economics and Data Science, and I'm eager to leverage my technical skills and innovative mindset in real-world applications. This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
 
 ## 🚀 **Featured Projects in This Repository**
