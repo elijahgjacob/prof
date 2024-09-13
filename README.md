@@ -12,7 +12,6 @@
 </div>
 
 
-This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
 ## 🚀 **Featured Projects in This Repository**
 
 Here are four of my recent projects available in this repository:
