@@ -3,7 +3,15 @@
 
 <img src="https://github.com/elijahgjacob/elijah-repo/blob/main/image3.png" align="right" width="300" style="margin: 10px;">
 
-I’m Elijah Jacob — a tech enthusiast, problem solver, and entrepreneur passionate about building solutions that make a difference. I recently graduated from UC Berkeley with a degree in Economics and Data Science, and I'm eager to leverage my technical skills and innovative mindset in real-world applications. This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
+I’m Elijah Jacob — a tech enthusiast, problem solver, and entrepreneur passionate about building solutions that make a difference. I grew up in Kuwait as an Indian-American and recently graduated from UC Berkeley with a degree in Economics and Data Science, and I'm eager to leverage my technical skills and innovative mindset in real-world applications. 
+This repository showcases some of the key projects I've been working on, reflecting my expertise in software development, data science, and engineering.
+
+
+
+
+
+
+
 
 ## 🚀 **Featured Projects in This Repository**
 
