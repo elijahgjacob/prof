@@ -11,19 +11,19 @@ This repository showcases some of the key projects I've been working on, reflect
 
 Here are four of my recent projects available in this repository:
 
-1. **[Chronic Disease Prediction (Python)](link-to-your-repo)** 🧪 
+1. **[Chronic Disease Prediction (Python)](https://github.com/elijahgjacob/elijah-repo/tree/main/disease_prediction)** 🧪 
    - **Chronic Disease Prediction** is a machine learning project that predicts the likelihood of individuals being diagnosed with chronic conditions based on their health data. The project involves preprocessing steps such as feature encoding, handling missing data, and class imbalance adjustment using **SMOTE**. The model is built using an **XGBoost Classifier** and optimized via grid search with cross-validation. The project demonstrates my proficiency in data preprocessing, hyperparameter tuning, and evaluating classification models.
 
-2. **[Blocks: A Puzzle Game (Java)](link-to-your-repo)** 🧩 
+2. **[Blocks: A Puzzle Game (Java)](https://github.com/elijahgjacob/elijah-repo/tree/main/blocks)** 🧩 
    - **Blocks** is a Java-based puzzle game where players manipulate blocks to solve various challenges. The game features a graphical user interface (GUI), custom game logic, and sound effects to create an engaging and interactive experience. Players can test their critical thinking and problem-solving skills across multiple difficulty levels. The project emphasizes modularity and extensibility, allowing for easy addition of new levels and features.
 
-3. **[Enigma Machine Simulator (Java)](link-to-your-repo)** 👨‍💻 
+3. **[Enigma Machine Simulator (Java)](https://github.com/elijahgjacob/elijah-repo/tree/main/enigma)** 👨‍💻 
    - This project is a Java implementation of an Enigma machine simulator, inspired by the encryption machine used by the German military during World War II. The simulator supports encryption and decryption of messages with configurable rotors, reflectors, and plugboards. The project showcases my ability to work with complex algorithms, implement detailed command-line interfaces, and manage file input/output operations for processing cryptographic data.
 
-4. **[Ataxx: A Strategy Game (Java)](link-to-your-repo)**  ♟ 
+4. **[Ataxx: A Strategy Game (Java)](https://github.com/elijahgjacob/elijah-repo/tree/main/ataxx)**  ♟ 
    - **Ataxx** is a Java-based strategy board game that includes both a graphical user interface (GUI) and text-based interaction modes. Players compete to control the board by moving pieces and blocking opponents, with options for AI play and varying difficulty settings. The project demonstrates my skills in Java programming, GUI development, and implementing game logic algorithms.
 
-5. **[Gitlet: A Tiny Version-Control System (Java)](link-to-your-repo)**  🖥 
+5. **[Gitlet: A Tiny Version-Control System (Java)](https://github.com/elijahgjacob/elijah-repo/tree/main/gitlet)**  🖥 
    - **Gitlet** is a simplified version-control system inspired by Git, implemented in Java. It allows users to manage file versions, track changes, and collaborate on projects using a command-line interface. Key features include branching, merging, commit logging, and file restoration. This project highlights my understanding of version control concepts and showcases my ability to build complex software systems from scratch.
   
 
